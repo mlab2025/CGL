@@ -25,13 +25,18 @@
         header {
             background-color: #0055aa;
             color: white;
-            padding: 20px;
+            padding: 10px;
             text-align: center;
+        }
+        .banner {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
         }
         .container {
             padding: 20px;
         }
-        .services, .contact, .offer {
+        .section {
             background-color: white;
             padding: 15px;
             margin: 15px 0;
@@ -63,11 +68,18 @@
 
 <header id="home">
     <h1>CGL PATH LAB</h1>
-    <h2>आपका स्वागत है - एम.डी. नसीम</h2>
+    <h2>Authorised Collection Centre - M.D. Naseem</h2>
 </header>
 
+<img src="banner.jpg" alt="CGL Path Lab Banner" class="banner">
+
 <div class="container">
-    <section class="services" id="services">
+    <section class="section" id="about">
+        <h2>हमारे बारे में</h2>
+        <p>CGL Path Lab एक विश्वसनीय एवं अधिकृत संग्रहण केंद्र है जो आपके सभी डायग्नोस्टिक आवश्यकताओं को पूरा करता है।</p>
+    </section>
+
+    <section class="section" id="services">
         <h2>हमारी सेवाएं</h2>
         <ul>
             <li>पैथोलॉजी</li>
@@ -80,15 +92,16 @@
         </ul>
     </section>
 
-    <section class="offer">
-        अब सभी टेस्ट पर 50% तक की छूट – सीमित समय के लिए!
+    <section class="offer section">
+        📢 अब सभी टेस्ट पर 50% तक की छूट – सीमित समय के लिए!
     </section>
 
-    <section class="contact" id="contact">
+    <section class="section" id="contact">
         <h2>संपर्क जानकारी</h2>
         <p>📍 Shop No. 4, Kashmiri Market, Yusuf Sarai (AIIMS Gate No. 3), New Delhi – 110029</p>
         <p>📧 nasimcgl9711@gmail.com</p>
         <p>📞 9711374348, 8586095916</p>
+        <p>📱 WhatsApp Available</p>
     </section>
 </div>
 
