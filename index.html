@@ -20,7 +20,7 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px;bo
 .modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:15px;z-index:100}.modal-box{width:700px;max-width:100%;max-height:92vh;overflow:auto;padding:25px}.modal-header{display:flex;justify-content:space-between;align-items:center}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}
 .message{margin-top:10px;color:#dc2626;font-size:13px}.success{color:#15803d}
 @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.header-logo{width:120px}.header-title{display:none}}
-</style>
+@media(max-width:800px){.toolbar>div{min-width:100%!important}.toolbar button{width:100%}} </style>
 </head>
 <body>
 
@@ -35,7 +35,7 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px;bo
 <div id="adminPage" class="hidden"><header><div class="header-brand">
 <img src="micron-logo.png" class="header-logo" alt="Micron Laboratory">
 <div class="header-title"><h2>Inventory Admin</h2><span>Stock Management</span></div>
-</div><button id="logoutBtn" class="gray">Logout</button></header>
+</div><div style="display:flex;align-items:center;gap:10px"><span id="roleBadge" style="font-size:12px;background:#eef2ff;padding:7px 10px;border-radius:20px">Checking role...</span><button id="logoutBtn" class="gray">Logout</button></div></header>
 
 <div class="container"><div class="stats">
 <div class="stat"><small>Total Products</small><strong id="totalProducts">0</strong></div>
@@ -44,8 +44,29 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px;bo
 <div class="stat"><small>Expiring Soon</small><strong id="expiring">0</strong></div>
 </div>
 
-<div class="toolbar"><input id="search" type="text" placeholder="Search product / batch / supplier"><button id="addProductBtn">+ Add Product</button></div>
-<div class="card table-card"><table><thead><tr><th>Product</th><th>Batch / Lot</th><th>Entry Date</th><th>Expiry</th><th>Current Qty</th><th>Unit</th><th>Rate</th><th>GST</th><th>Actions</th></tr></thead><tbody id="inventoryBody"></tbody></table>
+<div class="toolbar" style="align-items:flex-end">
+<div style="min-width:190px;flex:1"><label>Product Filter</label><select id="productFilter"><option value="">All Products</option></select></div>
+<div style="min-width:180px;flex:1"><label>Batch / Lot</label><select id="batchFilter"><option value="">All Batches</option></select></div>
+<div style="min-width:165px"><label>Entry Date</label><input id="dateFilter" type="date"></div>
+<div style="min-width:175px"><label>Stock Status</label><select id="stockFilter"><option value="">All Stock</option><option value="in">In Stock</option><option value="low">Low Stock</option><option value="out">Out of Stock</option></select></div>
+<div style="min-width:250px;flex:1"><label>Search</label><input id="search" type="text" placeholder="Search product / batch / supplier" style="margin:0"></div>
+<button id="clearFiltersBtn" class="gray">Clear Filters</button><button id="addProductBtn">+ Add Product</button>
+</div>
+<div id="filterSummary" class="card" style="padding:15px 18px;margin-bottom:20px;display:flex;gap:25px;flex-wrap:wrap;align-items:center">
+<div><small style="color:#64748b">Showing Batches</small><strong id="filteredBatches" style="display:block;font-size:20px">0</strong></div>
+<div><small style="color:#64748b">Filtered Total Stock</small><strong id="filteredStock" style="display:block;font-size:20px">0</strong></div>
+<div id="selectedProductSummary" style="color:#64748b">All products</div>
+</div>
+<div id="userManagement" class="card hidden" style="padding:18px;margin-bottom:20px">
+<h3 style="margin-top:0">User Management</h3>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+<div style="min-width:260px;flex:1"><label>User Email</label><input id="roleEmail" type="email" placeholder="Existing Supabase Auth user email" style="margin:0"></div>
+<div style="min-width:190px"><label>Role</label><select id="roleSelect"><option value="admin">Full Admin</option><option value="manager">Stock Manager</option><option value="operator">Stock Operator</option></select></div>
+<button id="saveRoleBtn">Save Role</button></div>
+<div id="userMessage" class="message"></div>
+<div style="overflow:auto;margin-top:12px"><table style="min-width:600px"><thead><tr><th>Email</th><th>Role</th></tr></thead><tbody id="usersBody"></tbody></table></div>
+</div>
+<div class="card table-card"><table><thead><tr><th>Product</th><th>Batch / Lot</th><th>Entry Date</th><th>Expiry</th><th>Current Qty</th><th>Unit</th><th id="rateHeader">Rate</th><th>GST</th><th id="supplierHeader">Supplier</th><th>Actions</th></tr></thead><tbody id="inventoryBody"></tbody></table>
 <div id="noData" style="text-align:center;padding:30px;color:#64748b;">No inventory found.</div></div></div></div>
 
 <div id="productModal" class="modal hidden"><div class="card modal-box"><div class="modal-header"><h2 id="modalTitle">Add Product</h2><button id="closeProductModal" class="gray">×</button></div>
@@ -54,8 +75,8 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px;bo
 <div><label>Batch / Lot No. *</label><input id="batchNo" required></div><div><label>Entry Date *</label><input id="entryDate" type="date" required></div>
 <div><label>Expiry Date</label><input id="expiryDate" type="date"></div><div><label>Current Qty *</label><input id="currentQty" type="number" min="0" step="0.01" required></div>
 <div><label>Unit *</label><input id="unit" value="Kit" required></div><div><label>Units per Pack</label><input id="unitsPerPack" type="number" min="0"></div>
-<div><label>Rate</label><input id="rate" type="number" min="0" step="0.01"></div><div><label>GST %</label><input id="gstPercent" type="number" min="0" max="100" step="0.01"></div>
-<div><label>Supplier</label><input id="supplier"></div><div><label>Reorder Level</label><input id="reorderLevel" type="number" min="0"></div>
+<div id="rateField"><label>Rate</label><input id="rate" type="number" min="0" step="0.01"></div><div><label>GST %</label><input id="gstPercent" type="number" min="0" max="100" step="0.01"></div>
+<div id="supplierField"><label>Supplier *</label><input id="supplier"></div><div><label>Reorder Level</label><input id="reorderLevel" type="number" min="0"></div>
 </div><div style="text-align:right;margin-top:15px"><button type="button" id="cancelProduct" class="gray">Cancel</button> <button type="submit">Save Product</button></div>
 <div id="productMessage" class="message"></div></form></div></div>
 
@@ -68,29 +89,71 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px;bo
 const SUPABASE_URL="https://xldnayhoquadguepedqm.supabase.co";
 const SUPABASE_KEY="sb_publishable_EPC6EEnO2EEvcIQFtozteA_XTKMyPx1";
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let inventory=[],selectedProduct=null;
+let inventory=[],selectedProduct=null,currentRole="operator";
+const ROLE_PERMISSIONS={
+admin:{viewSensitive:true,canAdd:true,canEdit:true,canDelete:true,canStock:true,canUsers:true},
+manager:{viewSensitive:false,canAdd:true,canEdit:true,canDelete:false,canStock:true,canUsers:false},
+operator:{viewSensitive:false,canAdd:true,canEdit:false,canDelete:false,canStock:true,canUsers:false}
+};
+const perms=()=>ROLE_PERMISSIONS[currentRole]||ROLE_PERMISSIONS.operator;
 
 document.getElementById("loginBtn").addEventListener("click",async()=>{const email=document.getElementById("loginEmail").value.trim(),password=document.getElementById("loginPassword").value,message=document.getElementById("loginMessage");message.innerText="";if(!email||!password){message.innerText="Email aur password enter karo.";return}const {error}=await supabaseClient.auth.signInWithPassword({email,password});if(error){message.innerText=error.message;return}showAdmin()});
 document.getElementById("loginPassword").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("loginBtn").click()});
 async function checkSession(){const {data}=await supabaseClient.auth.getSession();if(data.session)showAdmin();else showLogin()}
 function showLogin(){document.getElementById("loginPage").classList.remove("hidden");document.getElementById("adminPage").classList.add("hidden")}
-function showAdmin(){document.getElementById("loginPage").classList.add("hidden");document.getElementById("adminPage").classList.remove("hidden");loadInventory()}
+async function showAdmin(){document.getElementById("loginPage").classList.add("hidden");document.getElementById("adminPage").classList.remove("hidden");await loadRole();loadInventory();if(perms().canUsers)loadUsers();}
 supabaseClient.auth.onAuthStateChange((event,session)=>{if(session)showAdmin();else showLogin()});
 document.getElementById("logoutBtn").addEventListener("click",async()=>{await supabaseClient.auth.signOut()});
 
-async function loadInventory(){const {data,error}=await supabaseClient.from("inventory_stock").select("*").eq("is_active",true).order("product_name",{ascending:true}).order("batch_no",{ascending:true});if(error){alert(error.message);return}inventory=data||[];renderInventory()}
-function renderInventory(){const search=document.getElementById("search").value.toLowerCase(),filtered=inventory.filter(item=>(item.product_name||"").toLowerCase().includes(search)||(item.batch_no||"").toLowerCase().includes(search)||(item.supplier||"").toLowerCase().includes(search)),body=document.getElementById("inventoryBody");body.innerHTML="";filtered.forEach(item=>{const row=document.createElement("tr");row.innerHTML=`<td><strong>${escapeHtml(item.product_name)}</strong><br><small>${escapeHtml(item.description||"")}</small></td><td>${escapeHtml(item.batch_no||"-")}</td><td>${item.entry_date||""}</td><td>${item.expiry_date||"-"}</td><td><strong>${item.current_qty}</strong></td><td>${escapeHtml(item.unit||"")}</td><td>₹${Number(item.rate||0).toLocaleString("en-IN")}</td><td>${item.gst_percent||0}%</td><td><button class="action-btn" onclick="openStock('${item.id}')">IN / OUT</button><button class="action-btn gray" onclick="editProduct('${item.id}')">Edit</button><button class="action-btn red" onclick="deleteProduct('${item.id}')">Delete</button></td>`;body.appendChild(row)});document.getElementById("noData").style.display=filtered.length?"none":"block";updateDashboard()}
+async function loadRole(){const {data,error}=await supabaseClient.from("inventory_user_roles").select("role").eq("user_id",(await supabaseClient.auth.getUser()).data.user.id).maybeSingle();if(!error&&data&&ROLE_PERMISSIONS[data.role])currentRole=data.role;else currentRole="operator";document.getElementById("roleBadge").innerText=currentRole==="admin"?"Full Admin":currentRole==="manager"?"Stock Manager":"Stock Operator";document.getElementById("userManagement").classList.toggle("hidden",!perms().canUsers);document.getElementById("addProductBtn").classList.toggle("hidden",!perms().canAdd);document.getElementById("rateHeader").classList.toggle("hidden",!perms().viewSensitive);document.getElementById("supplierHeader").classList.toggle("hidden",!perms().viewSensitive)}
+async function loadInventory(){const view=perms().viewSensitive?"inventory_admin_view":"inventory_staff_view";const {data,error}=await supabaseClient.from(view).select("*").eq("is_active",true).order("product_name",{ascending:true}).order("batch_no",{ascending:true});if(error){alert(error.message);return}inventory=data||[];populateFilters();renderInventory()}
+function populateFilters(){
+const ps=document.getElementById("productFilter"),bs=document.getElementById("batchFilter"),oldP=ps.value,oldB=bs.value;
+const products=[...new Set(inventory.map(x=>(x.product_name||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ps.innerHTML='<option value="">All Products</option>';
+products.forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;ps.appendChild(o)});
+if(products.includes(oldP))ps.value=oldP;
+const batches=[...new Set(inventory.filter(x=>!ps.value||x.product_name===ps.value).map(x=>(x.batch_no||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+bs.innerHTML='<option value="">All Batches</option>';
+batches.forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;bs.appendChild(o)});
+if(batches.includes(oldB))bs.value=oldB;
+}
+function getFilteredInventory(){
+const p=document.getElementById("productFilter").value,b=document.getElementById("batchFilter").value,d=document.getElementById("dateFilter").value,s=document.getElementById("stockFilter").value,q=document.getElementById("search").value.toLowerCase().trim();
+return inventory.filter(i=>{const qty=Number(i.current_qty||0),reorder=Number(i.reorder_level||0);
+if(p&&i.product_name!==p)return false;if(b&&i.batch_no!==b)return false;if(d&&i.entry_date!==d)return false;
+if(s==="out"&&qty!==0)return false;if(s==="low"&&(qty===0||qty>reorder))return false;if(s==="in"&&qty<=0)return false;
+if(q&&![(i.product_name||""),(i.batch_no||""),(i.supplier||""),(i.description||"")].join(" ").toLowerCase().includes(q))return false;return true;});
+}
+function renderInventory(){
+const filtered=getFilteredInventory(),body=document.getElementById("inventoryBody");body.innerHTML="";
+filtered.forEach(item=>{const row=document.createElement("tr"),qty=Number(item.current_qty||0),reorder=Number(item.reorder_level||0),status=qty===0?"Out of Stock":(qty<=reorder?"Low Stock":"In Stock");
+row.innerHTML=`<td><strong>${escapeHtml(item.product_name)}</strong><br><small>${escapeHtml(item.description||"")}</small></td><td>${escapeHtml(item.batch_no||"-")}</td><td>${item.entry_date||""}</td><td>${item.expiry_date||"-"}</td><td><strong>${item.current_qty}</strong><br><small>${status}</small></td><td>${escapeHtml(item.unit||"")}</td><td class="rateCell ${perms().viewSensitive?"":"hidden"}">${perms().viewSensitive?"₹"+Number(item.rate||0).toLocaleString("en-IN"):""}</td><td>${item.gst_percent||0}%</td><td class="supplierCell ${perms().viewSensitive?"":"hidden"}">${perms().viewSensitive?escapeHtml(item.supplier||""):""}</td><td>${perms().canStock?`<button class="action-btn" onclick="openStock('${item.id}')">IN / OUT</button>`:""}${perms().canEdit?`<button class="action-btn gray" onclick="editProduct('${item.id}')">Edit</button>`:""}${perms().canDelete?`<button class="action-btn red" onclick="deleteProduct('${item.id}')">Delete</button>`:""}</td>`;
+body.appendChild(row);});
+document.getElementById("noData").style.display=filtered.length?"none":"block";
+document.getElementById("filteredBatches").innerText=filtered.length;
+document.getElementById("filteredStock").innerText=filtered.reduce((a,i)=>a+Number(i.current_qty||0),0);
+document.getElementById("selectedProductSummary").innerText=document.getElementById("productFilter").value?document.getElementById("productFilter").value+" — all matching batches":"All products";
+updateDashboard();
+}
 function updateDashboard(){document.getElementById("totalProducts").innerText=inventory.length;let total=0,low=0,expiring=0,today=new Date();today.setHours(0,0,0,0);let future=new Date(today);future.setDate(future.getDate()+30);inventory.forEach(item=>{total+=Number(item.current_qty||0);if(Number(item.current_qty||0)<=Number(item.reorder_level||0))low++;if(item.expiry_date){let expiry=new Date(item.expiry_date);if(expiry>=today&&expiry<=future)expiring++}});document.getElementById("totalStock").innerText=total;document.getElementById("lowStock").innerText=low;document.getElementById("expiring").innerText=expiring}
 
 document.getElementById("addProductBtn").addEventListener("click",()=>openProductModal());
-function openProductModal(item=null){document.getElementById("productModal").classList.remove("hidden");document.getElementById("productMessage").innerText="";document.getElementById("modalTitle").innerText=item?"Edit Product":"Add Product";document.getElementById("productId").value=item?item.id:"";document.getElementById("productName").value=item?item.product_name:"";document.getElementById("description").value=item?item.description||"":"";document.getElementById("batchNo").value=item?item.batch_no:"";document.getElementById("entryDate").value=item?item.entry_date:new Date().toISOString().split("T")[0];document.getElementById("expiryDate").value=item?item.expiry_date||"":"";document.getElementById("currentQty").value=item?item.current_qty:0;document.getElementById("unit").value=item?item.unit:"Kit";document.getElementById("unitsPerPack").value=item?item.units_per_pack||"":"";document.getElementById("rate").value=item?item.rate||0:0;document.getElementById("gstPercent").value=item?item.gst_percent||0:0;document.getElementById("supplier").value=item?item.supplier||"":"";document.getElementById("reorderLevel").value=item?item.reorder_level||0:0}
+function openProductModal(item=null){document.getElementById("productModal").classList.remove("hidden");document.getElementById("rateField").classList.toggle("hidden",!perms().viewSensitive);document.getElementById("supplierField").classList.toggle("hidden",!perms().viewSensitive);document.getElementById("productMessage").innerText="";document.getElementById("modalTitle").innerText=item?"Edit Product":"Add Product";document.getElementById("productId").value=item?item.id:"";document.getElementById("productName").value=item?item.product_name:"";document.getElementById("description").value=item?item.description||"":"";document.getElementById("batchNo").value=item?item.batch_no:"";document.getElementById("entryDate").value=item?item.entry_date:new Date().toISOString().split("T")[0];document.getElementById("expiryDate").value=item?item.expiry_date||"":"";document.getElementById("currentQty").value=item?item.current_qty:0;document.getElementById("unit").value=item?item.unit:"Kit";document.getElementById("unitsPerPack").value=item?item.units_per_pack||"":"";document.getElementById("rate").value=item?item.rate||0:0;document.getElementById("gstPercent").value=item?item.gst_percent||0:0;document.getElementById("supplier").value=item?item.supplier||"":"";document.getElementById("reorderLevel").value=item?item.reorder_level||0:0}
 document.getElementById("closeProductModal").onclick=document.getElementById("cancelProduct").onclick=()=>document.getElementById("productModal").classList.add("hidden");
-document.getElementById("productForm").addEventListener("submit",async e=>{e.preventDefault();const id=document.getElementById("productId").value,product={product_name:document.getElementById("productName").value.trim(),description:document.getElementById("description").value.trim()||null,batch_no:document.getElementById("batchNo").value.trim(),entry_date:document.getElementById("entryDate").value,expiry_date:document.getElementById("expiryDate").value||null,current_qty:Number(document.getElementById("currentQty").value),unit:document.getElementById("unit").value.trim(),units_per_pack:Number(document.getElementById("unitsPerPack").value||0),rate:Number(document.getElementById("rate").value||0),gst_percent:Number(document.getElementById("gstPercent").value||0),supplier:document.getElementById("supplier").value.trim()||null,reorder_level:Number(document.getElementById("reorderLevel").value||0),is_active:true};let result=id?await supabaseClient.from("inventory_stock").update(product).eq("id",id):await supabaseClient.from("inventory_stock").insert(product);if(result.error){document.getElementById("productMessage").innerText=result.error.message;return}document.getElementById("productModal").classList.add("hidden");loadInventory()});
+document.getElementById("productForm").addEventListener("submit",async e=>{e.preventDefault();const id=document.getElementById("productId").value;const supplier=document.getElementById("supplier").value.trim();if(currentRole==="admin"&&!supplier){document.getElementById("productMessage").innerText="Supplier is mandatory for Full Admin.";return}const args={p_product_name:document.getElementById("productName").value.trim(),p_description:document.getElementById("description").value.trim()||null,p_batch_no:document.getElementById("batchNo").value.trim(),p_entry_date:document.getElementById("entryDate").value,p_expiry_date:document.getElementById("expiryDate").value||null,p_current_qty:Number(document.getElementById("currentQty").value),p_unit:document.getElementById("unit").value.trim(),p_units_per_pack:Number(document.getElementById("unitsPerPack").value||0),p_rate:Number(document.getElementById("rate").value||0),p_gst_percent:Number(document.getElementById("gstPercent").value||0),p_supplier:supplier,p_reorder_level:Number(document.getElementById("reorderLevel").value||0)};let result;if(id)result=await supabaseClient.rpc("inventory_update_product",{p_id:id,...args});else result=await supabaseClient.rpc("inventory_add_product",args);if(result.error){document.getElementById("productMessage").innerText=result.error.message;return}document.getElementById("productModal").classList.add("hidden");loadInventory()});
 window.editProduct=id=>{const item=inventory.find(x=>x.id===id);if(item)openProductModal(item)};
-window.deleteProduct=async id=>{if(!confirm("Is product ko permanently delete karna hai?"))return;const {error}=await supabaseClient.from("inventory_stock").delete().eq("id",id);if(error){alert(error.message);return}loadInventory()};
+window.deleteProduct=async id=>{if(!perms().canDelete){alert("Delete permission denied");return}if(!confirm("Is product ko permanently delete karna hai?"))return;const {error}=await supabaseClient.rpc("inventory_delete_product",{p_id:id});if(error){alert(error.message);return}loadInventory()};
 window.openStock=id=>{selectedProduct=inventory.find(x=>x.id===id);if(!selectedProduct)return;document.getElementById("stockModal").classList.remove("hidden");document.getElementById("stockProductName").innerText=selectedProduct.product_name;document.getElementById("stockBatchName").innerText=selectedProduct.batch_no||"-";document.getElementById("currentStock").innerText=selectedProduct.current_qty;document.getElementById("movementQty").value="";document.getElementById("stockMessage").innerText=""};
 async function stockMovement(type){if(!selectedProduct)return;const qty=Number(document.getElementById("movementQty").value),message=document.getElementById("stockMessage");if(!qty||qty<=0){message.innerText="Valid quantity enter karo.";return}const functionName=type==="IN"?"stock_in":"stock_out";const {data,error}=await supabaseClient.rpc(functionName,{p_inventory_id:selectedProduct.id,p_quantity:qty});if(error){message.innerText=error.message;return}message.classList.add("success");message.innerText="Stock updated. New stock: "+data;setTimeout(()=>{document.getElementById("stockModal").classList.add("hidden");message.classList.remove("success");loadInventory()},700)}
 document.getElementById("inStock").onclick=()=>stockMovement("IN");document.getElementById("outStock").onclick=()=>stockMovement("OUT");document.getElementById("closeStockModal").onclick=document.getElementById("cancelStock").onclick=()=>document.getElementById("stockModal").classList.add("hidden");document.getElementById("search").addEventListener("input",renderInventory);
+document.getElementById("productFilter").addEventListener("change",()=>{populateFilters();renderInventory()});
+document.getElementById("batchFilter").addEventListener("change",renderInventory);
+document.getElementById("dateFilter").addEventListener("change",renderInventory);
+document.getElementById("stockFilter").addEventListener("change",renderInventory);
+document.getElementById("clearFiltersBtn").addEventListener("click",()=>{document.getElementById("productFilter").value="";document.getElementById("batchFilter").innerHTML='<option value="">All Batches</option>';document.getElementById("dateFilter").value="";document.getElementById("stockFilter").value="";document.getElementById("search").value="";populateFilters();renderInventory();});
+async function loadUsers(){if(!perms().canUsers)return;const {data,error}=await supabaseClient.from("inventory_user_roles").select("email,role").order("email");if(error){document.getElementById("userMessage").innerText=error.message;return}document.getElementById("usersBody").innerHTML=(data||[]).map(u=>`<tr><td>${escapeHtml(u.email||"")}</td><td>${escapeHtml(u.role)}</td></tr>`).join("")}
+document.getElementById("saveRoleBtn").addEventListener("click",async()=>{const email=document.getElementById("roleEmail").value.trim(),role=document.getElementById("roleSelect").value,msg=document.getElementById("userMessage");msg.innerText="";if(!email){msg.innerText="Email enter karo.";return}const {error}=await supabaseClient.rpc("admin_set_inventory_role",{p_email:email,p_role:role});if(error){msg.innerText=error.message;return}msg.className="message success";msg.innerText="Role updated.";document.getElementById("roleEmail").value="";loadUsers()});
 function escapeHtml(value){return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}checkSession();
 </script>
 </body>
