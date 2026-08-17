@@ -20,7 +20,21 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px;bo
 .modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:15px;z-index:100}.modal-box{width:700px;max-width:100%;max-height:92vh;overflow:auto;padding:25px}.modal-header{display:flex;justify-content:space-between;align-items:center}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}
 .message{margin-top:10px;color:#dc2626;font-size:13px}.success{color:#15803d}
 @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.header-logo{width:120px}.header-title{display:none}}
-@media(max-width:800px){.toolbar>div{min-width:100%!important}.toolbar button{width:100%}} </style>
+@media(max-width:800px){.toolbar>div{min-width:100%!important}.toolbar button{width:100%}} 
+.inventory-toolbar{display:grid;grid-template-columns:1.15fr 1.15fr .9fr 1.05fr 1.45fr auto;gap:12px;align-items:end;margin:18px 0 20px}
+.filter-field label{display:block;font-size:13px;font-weight:600;margin:0 0 6px;color:#334155}
+.filter-field input,.filter-field select{width:100%;height:40px;box-sizing:border-box;margin:0}
+.filter-actions{display:flex;gap:8px;align-items:end;height:40px}
+.filter-actions button{height:40px;white-space:nowrap}
+.search-wrap{position:relative}
+.search-suggestions{position:absolute;z-index:50;top:44px;left:0;right:0;background:#fff;border:1px solid #dbe2ea;border-radius:10px;box-shadow:0 8px 24px rgba(15,23,42,.12);max-height:260px;overflow-y:auto}
+.search-suggestion{padding:10px 12px;border-bottom:1px solid #eef2f7;cursor:pointer}
+.search-suggestion:last-child{border-bottom:0}
+.search-suggestion:hover{background:#f1f5f9}
+.search-suggestion small{display:block;color:#64748b;margin-top:2px}
+@media(max-width:1150px){.inventory-toolbar{grid-template-columns:repeat(3,1fr)}.filter-actions{grid-column:1/-1}}
+@media(max-width:700px){.inventory-toolbar{grid-template-columns:1fr}.filter-actions{grid-column:auto}.filter-actions button{flex:1}.search-suggestions{max-height:220px}}
+</style>
 </head>
 <body>
 
@@ -44,27 +58,13 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px;bo
 <div class="stat"><small>Expiring Soon</small><strong id="expiring">0</strong></div>
 </div>
 
-<div class="toolbar" style="align-items:flex-end">
-<div style="min-width:190px;flex:1"><label>Product Filter</label><select id="productFilter"><option value="">All Products</option></select></div>
-<div style="min-width:180px;flex:1"><label>Batch / Lot</label><select id="batchFilter"><option value="">All Batches</option></select></div>
-<div style="min-width:165px"><label>Entry Date</label><input id="dateFilter" type="date"></div>
-<div style="min-width:175px"><label>Stock Status</label><select id="stockFilter"><option value="">All Stock</option><option value="in">In Stock</option><option value="low">Low Stock</option><option value="out">Out of Stock</option></select></div>
-<div style="min-width:250px;flex:1"><label>Search</label><input id="search" type="text" placeholder="Search product / batch / supplier" style="margin:0"></div>
-<button id="clearFiltersBtn" class="gray">Clear Filters</button><button id="addProductBtn">+ Add Product</button>
-</div>
-<div id="filterSummary" class="card" style="padding:15px 18px;margin-bottom:20px;display:flex;gap:25px;flex-wrap:wrap;align-items:center">
-<div><small style="color:#64748b">Showing Batches</small><strong id="filteredBatches" style="display:block;font-size:20px">0</strong></div>
-<div><small style="color:#64748b">Filtered Total Stock</small><strong id="filteredStock" style="display:block;font-size:20px">0</strong></div>
-<div id="selectedProductSummary" style="color:#64748b">All products</div>
-</div>
-<div id="userManagement" class="card hidden" style="padding:18px;margin-bottom:20px">
-<h3 style="margin-top:0">User Management</h3>
-<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
-<div style="min-width:260px;flex:1"><label>User Email</label><input id="roleEmail" type="email" placeholder="Existing Supabase Auth user email" style="margin:0"></div>
-<div style="min-width:190px"><label>Role</label><select id="roleSelect"><option value="admin">Full Admin</option><option value="manager">Stock Manager</option><option value="operator">Stock Operator</option></select></div>
-<button id="saveRoleBtn">Save Role</button></div>
-<div id="userMessage" class="message"></div>
-<div style="overflow:auto;margin-top:12px"><table style="min-width:600px"><thead><tr><th>Email</th><th>Role</th></tr></thead><tbody id="usersBody"></tbody></table></div>
+<div class="inventory-toolbar">
+  <div class="filter-field"><label>Product Filter</label><select id="productFilter"><option value="">All Products</option></select></div>
+  <div class="filter-field"><label>Batch / Lot</label><select id="batchFilter"><option value="">All Batches</option></select></div>
+  <div class="filter-field"><label>Entry Date</label><input id="dateFilter" type="date"></div>
+  <div class="filter-field"><label>Stock Status</label><select id="stockFilter"><option value="">All Stock</option><option value="in">In Stock</option><option value="low">Low Stock</option><option value="out">Out of Stock</option></select></div>
+  <div class="filter-field search-field"><label>Search Product / Batch</label><div class="search-wrap"><input id="search" type="text" autocomplete="off" placeholder="Type TSH, E2, batch..."><div id="searchSuggestions" class="search-suggestions hidden"></div></div></div>
+  <div class="filter-actions"><button id="clearFiltersBtn" class="gray">Clear Filters</button><button id="addProductBtn">+ Add Product</button></div>
 </div>
 <div class="card table-card"><table><thead><tr><th>Product</th><th>Batch / Lot</th><th>Entry Date</th><th>Expiry</th><th>Current Qty</th><th>Unit</th><th id="rateHeader">Rate</th><th>GST</th><th id="supplierHeader">Supplier</th><th>Actions</th></tr></thead><tbody id="inventoryBody"></tbody></table>
 <div id="noData" style="text-align:center;padding:30px;color:#64748b;">No inventory found.</div></div></div></div>
@@ -105,7 +105,18 @@ async function showAdmin(){document.getElementById("loginPage").classList.add("h
 supabaseClient.auth.onAuthStateChange((event,session)=>{if(session)showAdmin();else showLogin()});
 document.getElementById("logoutBtn").addEventListener("click",async()=>{await supabaseClient.auth.signOut()});
 
-async function loadRole(){const {data,error}=await supabaseClient.from("inventory_user_roles").select("role").eq("user_id",(await supabaseClient.auth.getUser()).data.user.id).maybeSingle();if(!error&&data&&ROLE_PERMISSIONS[data.role])currentRole=data.role;else currentRole="operator";document.getElementById("roleBadge").innerText=currentRole==="admin"?"Full Admin":currentRole==="manager"?"Stock Manager":"Stock Operator";document.getElementById("userManagement").classList.toggle("hidden",!perms().canUsers);document.getElementById("addProductBtn").classList.toggle("hidden",!perms().canAdd);document.getElementById("rateHeader").classList.toggle("hidden",!perms().viewSensitive);document.getElementById("supplierHeader").classList.toggle("hidden",!perms().viewSensitive)}
+async function loadRole(){
+  const user=(await supabaseClient.auth.getUser()).data.user;
+  const {data,error}=await supabaseClient.from("inventory_user_roles").select("role").eq("user_id",user.id).maybeSingle();
+  if(error){console.error("Role load error:",error);alert("Role load nahi ho raha: "+error.message);currentRole="operator";}
+  else if(data&&ROLE_PERMISSIONS[data.role]) currentRole=data.role;
+  else {currentRole="operator";console.warn("No role row found for",user.email);}
+  document.getElementById("roleBadge").innerText=currentRole==="admin"?"Full Admin":currentRole==="manager"?"Stock Manager":"Stock Operator";
+  document.getElementById("userManagement").classList.toggle("hidden",!perms().canUsers);
+  document.getElementById("addProductBtn").classList.toggle("hidden",!perms().canAdd);
+  document.getElementById("rateHeader").classList.toggle("hidden",!perms().viewSensitive);
+  document.getElementById("supplierHeader").classList.toggle("hidden",!perms().viewSensitive);
+}
 async function loadInventory(){const view=perms().viewSensitive?"inventory_admin_view":"inventory_staff_view";const {data,error}=await supabaseClient.from(view).select("*").eq("is_active",true).order("product_name",{ascending:true}).order("batch_no",{ascending:true});if(error){alert(error.message);return}inventory=data||[];populateFilters();renderInventory()}
 function populateFilters(){
 const ps=document.getElementById("productFilter"),bs=document.getElementById("batchFilter"),oldP=ps.value,oldB=bs.value;
@@ -146,7 +157,36 @@ window.editProduct=id=>{const item=inventory.find(x=>x.id===id);if(item)openProd
 window.deleteProduct=async id=>{if(!perms().canDelete){alert("Delete permission denied");return}if(!confirm("Is product ko permanently delete karna hai?"))return;const {error}=await supabaseClient.rpc("inventory_delete_product",{p_id:id});if(error){alert(error.message);return}loadInventory()};
 window.openStock=id=>{selectedProduct=inventory.find(x=>x.id===id);if(!selectedProduct)return;document.getElementById("stockModal").classList.remove("hidden");document.getElementById("stockProductName").innerText=selectedProduct.product_name;document.getElementById("stockBatchName").innerText=selectedProduct.batch_no||"-";document.getElementById("currentStock").innerText=selectedProduct.current_qty;document.getElementById("movementQty").value="";document.getElementById("stockMessage").innerText=""};
 async function stockMovement(type){if(!selectedProduct)return;const qty=Number(document.getElementById("movementQty").value),message=document.getElementById("stockMessage");if(!qty||qty<=0){message.innerText="Valid quantity enter karo.";return}const functionName=type==="IN"?"stock_in":"stock_out";const {data,error}=await supabaseClient.rpc(functionName,{p_inventory_id:selectedProduct.id,p_quantity:qty});if(error){message.innerText=error.message;return}message.classList.add("success");message.innerText="Stock updated. New stock: "+data;setTimeout(()=>{document.getElementById("stockModal").classList.add("hidden");message.classList.remove("success");loadInventory()},700)}
-document.getElementById("inStock").onclick=()=>stockMovement("IN");document.getElementById("outStock").onclick=()=>stockMovement("OUT");document.getElementById("closeStockModal").onclick=document.getElementById("cancelStock").onclick=()=>document.getElementById("stockModal").classList.add("hidden");document.getElementById("search").addEventListener("input",renderInventory);
+document.getElementById("inStock").onclick=()=>stockMovement("IN");document.getElementById("outStock").onclick=()=>stockMovement("OUT");document.getElementById("closeStockModal").onclick=document.getElementById("cancelStock").onclick=()=>document.getElementById("stockModal").classList.add("hidden");
+const searchInput=document.getElementById("search"),suggestionsBox=document.getElementById("searchSuggestions");
+function updateSearchSuggestions(){
+  const q=searchInput.value.trim().toLowerCase();
+  if(!q){suggestionsBox.classList.add("hidden");suggestionsBox.innerHTML="";return}
+  const matches=inventory.filter(i=>{
+    const text=[i.product_name||"",i.batch_no||"",i.description||""].join(" ").toLowerCase();
+    return text.includes(q);
+  }).slice(0,50);
+  suggestionsBox.innerHTML="";
+  if(!matches.length){suggestionsBox.innerHTML='<div class="search-suggestion">No matching product/batch</div>';suggestionsBox.classList.remove("hidden");return}
+  matches.forEach(item=>{
+    const d=document.createElement("div");
+    d.className="search-suggestion";
+    d.innerHTML=`<strong>${escapeHtml(item.product_name||"")}</strong><small>Batch/Lot: ${escapeHtml(item.batch_no||"-")} • Qty: ${escapeHtml(item.current_qty||0)}</small>`;
+    d.onclick=()=>{
+      document.getElementById("productFilter").value=item.product_name||"";
+      populateFilters();
+      document.getElementById("batchFilter").value=item.batch_no||"";
+      searchInput.value="";
+      suggestionsBox.classList.add("hidden");
+      renderInventory();
+    };
+    suggestionsBox.appendChild(d);
+  });
+  suggestionsBox.classList.remove("hidden");
+}
+searchInput.addEventListener("input",()=>{updateSearchSuggestions();renderInventory()});
+document.addEventListener("click",e=>{if(!e.target.closest(".search-wrap"))suggestionsBox.classList.add("hidden")});
+
 document.getElementById("productFilter").addEventListener("change",()=>{populateFilters();renderInventory()});
 document.getElementById("batchFilter").addEventListener("change",renderInventory);
 document.getElementById("dateFilter").addEventListener("change",renderInventory);
