@@ -2,2165 +2,353 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Micron Laboratory - Management Panel</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
-.hidden{display:none!important}
-button{border:0;border-radius:8px;padding:10px 14px;background:#2563eb;color:#fff;font-weight:bold;cursor:pointer}
-button:hover{opacity:.9}
-button.gray{background:#e2e8f0;color:#172033}
-button.red{background:#dc2626}
-button.green{background:#16a34a}
-input,select,textarea{
- width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;
- font-size:14px;background:#fff;margin-top:5px
-}
-textarea{min-height:80px;resize:vertical}
-label{display:block;font-size:13px;font-weight:bold;margin-top:10px}
-
-.login-page{
- min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px
-}
-.card{
- background:#fff;border:1px solid #e2e8f0;border-radius:14px;
- box-shadow:0 5px 20px rgba(0,0,0,.06)
-}
-.login-card{width:400px;padding:30px;text-align:center}
-.login-logo{width:220px;max-width:85%;margin:auto;display:block}
-.login-card h2{margin:12px 0 5px}
-.login-card p{color:#64748b}
-.message{font-size:13px;color:#dc2626;margin-top:10px}
-.success{color:#15803d}
-
-header{
- min-height:70px;background:#fff;border-bottom:1px solid #ddd;
- display:flex;align-items:center;justify-content:space-between;
- padding:8px 25px;gap:15px
-}
-.header-brand{display:flex;align-items:center;gap:14px}
-.header-logo{width:145px;max-height:55px;object-fit:contain}
-.header-title{border-left:1px solid #e2e8f0;padding-left:14px}
-.header-title h2{margin:0;font-size:19px}
-.header-title span{font-size:12px;color:#64748b}
-.header-right{display:flex;align-items:center;gap:10px}
-.role-badge{
- padding:7px 12px;border-radius:999px;background:#eef2ff;
- color:#3730a3;font-size:12px;font-weight:bold
-}
-
-.layout{display:flex;min-height:calc(100vh - 70px)}
-.sidebar{
- width:220px;background:#fff;border-right:1px solid #e2e8f0;padding:15px
-}
-.menu-btn{
- width:100%;text-align:left;background:transparent;color:#334155;
- margin-bottom:6px
-}
-.menu-btn:hover,.menu-btn.active{background:#eff6ff;color:#2563eb}
-.main{flex:1;padding:25px;min-width:0}
-
-.page-title{
- display:flex;justify-content:space-between;align-items:center;
- gap:10px;margin-bottom:20px
-}
-.page-title h2{margin:0}
-
-.stats{
- display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px
-}
-.stat{
- background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px
-}
-.stat small{color:#64748b}
-.stat strong{display:block;font-size:27px;margin-top:8px}
-
-.toolbar{
- display:flex;gap:10px;justify-content:space-between;
- align-items:end;margin-bottom:15px;flex-wrap:wrap
-}
-.toolbar .search{width:280px}
-
-.table-card{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:850px}
-th,td{
- padding:11px;border-bottom:1px solid #edf2f7;
- text-align:left;font-size:13px
-}
-th{background:#f8fafc}
-.action-btn{padding:6px 9px;font-size:12px;margin:2px}
-
-.modal{
- position:fixed;inset:0;background:rgba(15,23,42,.55);
- display:flex;align-items:center;justify-content:center;
- padding:15px;z-index:100
-}
-.modal-box{
- width:850px;max-width:100%;max-height:92vh;
- overflow:auto;padding:25px
-}
-.modal-header{
- display:flex;justify-content:space-between;align-items:center;
- margin-bottom:10px
-}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}
-.full{grid-column:1/-1}
-
-.items-table{width:100%;min-width:700px;margin-top:15px}
-.items-table input{margin:0}
-.total-box{
- margin-top:15px;margin-left:auto;max-width:330px
-}
-.total-row{
- display:flex;justify-content:space-between;
- padding:7px 0;border-bottom:1px solid #e2e8f0
-}
-.total-row.grand{font-size:18px;font-weight:bold}
-
-.badge{
- display:inline-block;padding:4px 8px;border-radius:999px;
- font-size:11px;font-weight:bold;background:#f1f5f9
-}
-
-@media(max-width:900px){
- .sidebar{width:180px}
- .stats{grid-template-columns:1fr 1fr}
-}
-@media(max-width:650px){
- header{padding:8px 12px}
- .header-logo{width:110px}
- .header-title{display:none}
- .layout{display:block}
- .sidebar{width:100%;border-right:0;border-bottom:1px solid #ddd;display:flex;overflow:auto}
- .menu-btn{min-width:130px}
- .main{padding:15px}
- .grid{grid-template-columns:1fr}
- .full{grid-column:auto}
- .stats{grid-template-columns:1fr 1fr}
-}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+.hidden{display:none!important}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 5px 20px rgba(0,0,0,.05)}
+button{border:0;border-radius:8px;padding:10px 14px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer}
+button.gray{background:#e2e8f0;color:#1e293b}button.red{background:#dc2626}
+input,select,textarea{width:100%;padding:10px 11px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;background:#fff}
+textarea{min-height:75px;resize:vertical}label{display:block;font-size:13px;font-weight:700;margin:9px 0 4px}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.login-card{width:400px;padding:30px;text-align:center}
+.login-logo{width:230px;max-width:85%;margin:auto auto 12px;display:block}.login-card p{color:#64748b}
+.message{margin-top:10px;color:#dc2626;font-size:13px}.success{color:#15803d}
+header{min-height:72px;background:#fff;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;padding:8px 25px;gap:20px}
+.header-brand{display:flex;align-items:center;gap:14px}.header-logo{width:150px;max-height:55px;object-fit:contain}.header-title{border-left:1px solid #e2e8f0;padding-left:14px}.header-title h2{margin:0;font-size:19px}.header-title span{color:#64748b;font-size:13px}
+.header-right{display:flex;align-items:center;gap:10px}.role-badge{padding:7px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700}
+.container{max-width:1450px;margin:auto;padding:25px}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.nav button.active{background:#111827}.section{display:none}.section.active{display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}.stat{padding:18px;cursor:pointer}.stat small{color:#64748b}.stat strong{display:block;font-size:28px;margin-top:8px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:15px}.toolbar .field{min-width:180px;flex:1}
+.table-card{overflow:auto}table{width:100%;border-collapse:collapse;min-width:800px}th,td{padding:11px;border-bottom:1px solid #edf2f7;text-align:left;font-size:13px}th{background:#f8fafc}
+.action-btn{padding:6px 9px;font-size:12px;margin:2px}.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:15px;z-index:100}.modal-box{width:850px;max-width:100%;max-height:92vh;overflow:auto;padding:25px}
+.modal-header{display:flex;justify-content:space-between;align-items:center}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}.full{grid-column:1/-1}.items-table{overflow:auto}.items-table table{min-width:900px}
+.summary{max-width:400px;margin-left:auto;margin-top:15px}.summary div{display:flex;justify-content:space-between;padding:5px 0}.summary .grand{font-size:18px;font-weight:700;border-top:1px solid #ddd;margin-top:5px;padding-top:10px}
+@media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.header-title{display:none}.header-logo{width:120px}}
 </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
 <div id="loginPage" class="login-page">
 <div class="card login-card">
 <img src="micron-logo.png" class="login-logo" alt="Micron Laboratory">
-<h2>Management Panel</h2>
-<p>Micron Laboratory</p>
-
-<label>Email</label>
-<input id="loginEmail" type="email" placeholder="Email">
-
-<label>Password</label>
-<input id="loginPassword" type="password" placeholder="Password">
-
-<button id="loginBtn" style="width:100%;margin-top:15px">Login</button>
+<h2>Micron Laboratory</h2><p>Management Panel</p>
+<label>Email</label><input id="loginEmail" type="email" autocomplete="username">
+<label>Password</label><input id="loginPassword" type="password" autocomplete="current-password">
+<button id="loginBtn" style="width:100%;margin-top:12px">Login</button>
 <div id="loginMessage" class="message"></div>
-</div>
-</div>
+</div></div>
 
-
-<!-- APP -->
 <div id="app" class="hidden">
-
 <header>
-<div class="header-brand">
-<img src="micron-logo.png" class="header-logo">
-<div class="header-title">
-<h2>Micron Laboratory</h2>
-<span id="headerText">Management Panel</span>
-</div>
-</div>
-
-<div class="header-right">
-<span id="roleBadge" class="role-badge">Loading...</span>
-<button id="logoutBtn" class="gray">Logout</button>
-</div>
+<div class="header-brand"><img src="micron-logo.png" class="header-logo"><div class="header-title"><h2>Micron Laboratory</h2><span>Management Panel</span></div></div>
+<div class="header-right"><span id="roleBadge" class="role-badge"></span><button id="logoutBtn" class="gray">Logout</button></div>
 </header>
 
-
-<div class="layout">
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-
-<button class="menu-btn active" data-page="dashboardPage">📊 Dashboard</button>
-
-<button class="menu-btn" data-page="inventoryPage">📦 Inventory</button>
-
-<button id="vendorsMenu" class="menu-btn admin-only" data-page="vendorsPage">
-🏢 Vendors
-</button>
-
-<button id="clientsMenu" class="menu-btn admin-only" data-page="clientsPage">
-👥 Clients
-</button>
-
-<button id="poMenu" class="menu-btn admin-only" data-page="poPage">
-🧾 Purchase Orders
-</button>
-
-<button id="quotationMenu" class="menu-btn admin-only" data-page="quotationPage">
-📄 Quotations
-</button>
-
+<div class="container">
+<div class="nav">
+<button data-section="inventory" class="navBtn active">📦 Inventory</button>
+<button data-section="vendors" class="navBtn adminOnly">🏢 Vendors</button>
+<button data-section="clients" class="navBtn adminOnly">👤 Clients</button>
+<button data-section="po" class="navBtn adminOnly">🧾 Purchase Orders</button>
+<button data-section="quotation" class="navBtn adminOnly">📄 Quotations</button>
 </div>
 
-
-<!-- MAIN -->
-<div class="main">
-
-<!-- DASHBOARD -->
-<section id="dashboardPage" class="page">
-
-<div class="page-title">
-<h2>Dashboard</h2>
-</div>
-
+<section id="inventory" class="section active">
 <div class="stats">
-<div class="stat">
-<small>Total Products</small>
-<strong id="dashProducts">0</strong>
+<div class="card stat"><small>Total Products</small><strong id="totalProducts">0</strong></div>
+<div class="card stat"><small>Total Stock</small><strong id="totalStock">0</strong></div>
+<div class="card stat"><small>Low Stock</small><strong id="lowStock">0</strong></div>
+<div class="card stat"><small>Expiring Soon</small><strong id="expiring">0</strong></div>
 </div>
-
-<div class="stat">
-<small>Total Stock</small>
-<strong id="dashStock">0</strong>
-</div>
-
-<div class="stat">
-<small>Total Vendors</small>
-<strong id="dashVendors">0</strong>
-</div>
-
-<div class="stat">
-<small>Total Clients</small>
-<strong id="dashClients">0</strong>
-</div>
-</div>
-
-<div class="card" style="padding:25px">
-<h3>Welcome to Micron Laboratory</h3>
-<p style="color:#64748b">
-Use the left menu to manage Inventory, Vendors, Clients,
-Purchase Orders and Quotations.
-</p>
-</div>
-
-</section>
-
-
-<!-- INVENTORY -->
-<section id="inventoryPage" class="page hidden">
-
-<div class="page-title">
-<h2>Inventory</h2>
+<div class="card table-card"><div style="padding:15px"><div class="toolbar">
+<div class="field"><label>Search</label><input id="invSearch" placeholder="Product / Batch"></div>
 <button id="addInventoryBtn">+ Add Product</button>
-</div>
-
-<div class="toolbar">
-<input class="search" id="inventorySearch"
-placeholder="Search product / batch...">
-</div>
-
-<div class="card table-card">
-<table>
-<thead>
-<tr>
-<th>Product</th>
-<th>Batch</th>
-<th>Expiry</th>
-<th>Qty</th>
-<th>Unit</th>
-<th>Rate</th>
-<th>Supplier</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody id="inventoryBody"></tbody>
-</table>
-</div>
-
+</div></div>
+<table><thead><tr><th>Product</th><th>Batch</th><th>Branch</th><th>Qty</th><th>Unit</th><th>Expiry</th><th>Rate</th><th>Supplier</th><th>Actions</th></tr></thead>
+<tbody id="inventoryBody"></tbody></table></div>
 </section>
 
-
-<!-- VENDORS -->
-<section id="vendorsPage" class="page hidden">
-
-<div class="page-title">
-<h2>Vendors</h2>
-<button id="addVendorBtn">+ Add Vendor</button>
-</div>
-
-<div class="toolbar">
-<input class="search" id="vendorSearch"
-placeholder="Search vendor...">
-</div>
-
-<div class="card table-card">
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Company</th>
-<th>Phone</th>
-<th>Email</th>
-<th>GSTIN</th>
-<th>Contact</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody id="vendorsBody"></tbody>
-</table>
-</div>
-
+<section id="vendors" class="section">
+<div class="card" style="padding:15px"><div class="toolbar"><div class="field"><label>Search Vendor</label><input id="vendorSearch" placeholder="Name / Company"></div><button onclick="openVendor()">+ Add Vendor</button></div>
+<div class="table-card"><table><thead><tr><th>Name</th><th>Company</th><th>Phone</th><th>Email</th><th>GSTIN</th><th>Actions</th></tr></thead><tbody id="vendorsBody"></tbody></table></div></div>
 </section>
 
-
-<!-- CLIENTS -->
-<section id="clientsPage" class="page hidden">
-
-<div class="page-title">
-<h2>Clients</h2>
-<button id="addClientBtn">+ Add Client</button>
-</div>
-
-<div class="toolbar">
-<input class="search" id="clientSearch"
-placeholder="Search client...">
-</div>
-
-<div class="card table-card">
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Company</th>
-<th>Phone</th>
-<th>Email</th>
-<th>GSTIN</th>
-<th>Contact</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody id="clientsBody"></tbody>
-</table>
-</div>
-
+<section id="clients" class="section">
+<div class="card" style="padding:15px"><div class="toolbar"><div class="field"><label>Search Client</label><input id="clientSearch" placeholder="Name / Company"></div><button onclick="openClient()">+ Add Client</button></div>
+<div class="table-card"><table><thead><tr><th>Name</th><th>Company</th><th>Phone</th><th>Email</th><th>GSTIN</th><th>Actions</th></tr></thead><tbody id="clientsBody"></tbody></table></div></div>
 </section>
 
-
-<!-- PURCHASE ORDERS -->
-<section id="poPage" class="page hidden">
-
-<div class="page-title">
-<h2>Purchase Orders</h2>
-<button id="addPOBtn">+ Create PO</button>
-</div>
-
-<div class="card table-card">
-<table>
-<thead>
-<tr>
-<th>PO No.</th>
-<th>Date</th>
-<th>Vendor</th>
-<th>Status</th>
-<th>Subtotal</th>
-<th>GST</th>
-<th>Grand Total</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody id="poBody"></tbody>
-</table>
-</div>
-
+<section id="po" class="section">
+<div class="card" style="padding:15px"><div class="toolbar"><button onclick="openPO()">+ New Purchase Order</button></div>
+<div class="table-card"><table><thead><tr><th>PO No.</th><th>Date</th><th>Vendor</th><th>Status</th><th>Subtotal</th><th>GST</th><th>Grand Total</th><th>Actions</th></tr></thead><tbody id="poBody"></tbody></table></div></div>
 </section>
 
-
-<!-- QUOTATIONS -->
-<section id="quotationPage" class="page hidden">
-
-<div class="page-title">
-<h2>Quotations</h2>
-<button id="addQuotationBtn">+ Create Quotation</button>
-</div>
-
-<div class="card table-card">
-<table>
-<thead>
-<tr>
-<th>Quotation No.</th>
-<th>Date</th>
-<th>Valid Until</th>
-<th>Client</th>
-<th>Status</th>
-<th>Subtotal</th>
-<th>GST</th>
-<th>Grand Total</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody id="quotationBody"></tbody>
-</table>
-</div>
-
+<section id="quotation" class="section">
+<div class="card" style="padding:15px"><div class="toolbar"><button onclick="openQuotation()">+ New Quotation</button></div>
+<div class="table-card"><table><thead><tr><th>Quotation No.</th><th>Date</th><th>Valid Until</th><th>Client</th><th>Status</th><th>Subtotal</th><th>GST</th><th>Grand Total</th><th>Actions</th></tr></thead><tbody id="quotationBody"></tbody></table></div></div>
 </section>
+</div></div>
 
-</div>
-</div>
-</div>
-
-
-<!-- VENDOR MODAL -->
-<div id="vendorModal" class="modal hidden">
-<div class="card modal-box">
-
-<div class="modal-header">
-<h2 id="vendorModalTitle">Add Vendor</h2>
-<button class="gray" onclick="closeModal('vendorModal')">×</button>
-</div>
-
-<form id="vendorForm">
-
-<input type="hidden" id="vendorId">
-
+<!-- Generic CRUD modal -->
+<div id="partyModal" class="modal hidden"><div class="card modal-box" style="max-width:650px">
+<div class="modal-header"><h2 id="partyTitle">Vendor</h2><button class="gray" onclick="closeModal('partyModal')">×</button></div>
+<form id="partyForm"><input type="hidden" id="partyId"><input type="hidden" id="partyType">
 <div class="grid">
+<div><label>Name *</label><input id="partyName" required></div><div><label>Company</label><input id="partyCompany"></div>
+<div><label>Phone</label><input id="partyPhone"></div><div><label>Email</label><input id="partyEmail" type="email"></div>
+<div><label>GSTIN</label><input id="partyGSTIN"></div><div><label>Contact Person</label><input id="partyContact"></div>
+<div class="full"><label>Address</label><textarea id="partyAddress"></textarea></div><div class="full"><label>Notes</label><textarea id="partyNotes"></textarea></div>
+</div><div style="text-align:right;margin-top:15px"><button type="button" class="gray" onclick="closeModal('partyModal')">Cancel</button> <button>Save</button></div>
+<div id="partyMessage" class="message"></div></form></div></div>
 
-<div>
-<label>Name *</label>
-<input id="vendorName" required>
-</div>
+<!-- Inventory modal -->
+<div id="inventoryModal" class="modal hidden"><div class="card modal-box">
+<div class="modal-header"><h2 id="invTitle">Add Product</h2><button class="gray" onclick="closeModal('inventoryModal')">×</button></div>
+<form id="inventoryForm"><input type="hidden" id="invId"><div class="grid">
+<div><label>Product Name *</label><input id="invProduct" required></div><div><label>Description</label><input id="invDescription"></div>
+<div><label>Branch *</label><select id="invBranch" required></select></div><div><label>Batch / Lot *</label><input id="invBatch" required></div>
+<div><label>Entry Date *</label><input id="invEntry" type="date" required></div><div><label>Expiry Date</label><input id="invExpiry" type="date"></div>
+<div><label>Current Qty *</label><input id="invQty" type="number" min="0" step=".01" required></div><div><label>Unit *</label><input id="invUnit" value="Kit" required></div>
+<div><label>Units per Pack</label><input id="invPack" type="number" min="0"></div><div><label>Rate</label><input id="invRate" type="number" min="0" step=".01"></div>
+<div><label>GST %</label><input id="invGST" type="number" min="0" max="100" step=".01"></div><div><label>Supplier</label><input id="invSupplier"></div>
+<div><label>Reorder Level</label><input id="invReorder" type="number" min="0"></div>
+</div><div style="text-align:right;margin-top:15px"><button type="button" class="gray" onclick="closeModal('inventoryModal')">Cancel</button> <button>Save Product</button></div>
+<div id="invMessage" class="message"></div></form></div></div>
 
-<div>
-<label>Company Name</label>
-<input id="vendorCompany">
-</div>
-
-<div>
-<label>Phone</label>
-<input id="vendorPhone">
-</div>
-
-<div>
-<label>Email</label>
-<input id="vendorEmail" type="email">
-</div>
-
-<div>
-<label>GSTIN</label>
-<input id="vendorGstin">
-</div>
-
-<div>
-<label>Contact Person</label>
-<input id="vendorContact">
-</div>
-
-<div class="full">
-<label>Address</label>
-<textarea id="vendorAddress"></textarea>
-</div>
-
-<div class="full">
-<label>Notes</label>
-<textarea id="vendorNotes"></textarea>
-</div>
-
-</div>
-
-<div style="text-align:right;margin-top:15px">
-<button type="button" class="gray" onclick="closeModal('vendorModal')">Cancel</button>
-<button type="submit">Save Vendor</button>
-</div>
-
-<div id="vendorMessage" class="message"></div>
-
-</form>
-</div>
-</div>
-
-
-<!-- CLIENT MODAL -->
-<div id="clientModal" class="modal hidden">
-<div class="card modal-box">
-
-<div class="modal-header">
-<h2 id="clientModalTitle">Add Client</h2>
-<button class="gray" onclick="closeModal('clientModal')">×</button>
-</div>
-
-<form id="clientForm">
-
-<input type="hidden" id="clientId">
-
+<!-- Document modal -->
+<div id="docModal" class="modal hidden"><div class="card modal-box">
+<div class="modal-header"><h2 id="docTitle">Document</h2><button class="gray" onclick="closeModal('docModal')">×</button></div>
+<form id="docForm"><input type="hidden" id="docType"><input type="hidden" id="docId">
 <div class="grid">
-
-<div>
-<label>Name *</label>
-<input id="clientName" required>
+<div><label id="partyLabel">Vendor</label><select id="docParty" required></select></div>
+<div><label>Date</label><input id="docDate" type="date" required></div>
+<div id="validBox"><label>Valid Until</label><input id="docValid" type="date"></div>
+<div><label>Status</label><select id="docStatus"></select></div>
+<div class="full"><label>Terms & Conditions</label><textarea id="docTerms"></textarea></div>
+<div class="full"><label>Notes</label><textarea id="docNotes"></textarea></div>
 </div>
-
-<div>
-<label>Company Name</label>
-<input id="clientCompany">
-</div>
-
-<div>
-<label>Phone</label>
-<input id="clientPhone">
-</div>
-
-<div>
-<label>Email</label>
-<input id="clientEmail" type="email">
-</div>
-
-<div>
-<label>GSTIN</label>
-<input id="clientGstin">
-</div>
-
-<div>
-<label>Contact Person</label>
-<input id="clientContact">
-</div>
-
-<div class="full">
-<label>Address</label>
-<textarea id="clientAddress"></textarea>
-</div>
-
-<div class="full">
-<label>Notes</label>
-<textarea id="clientNotes"></textarea>
-</div>
-
-</div>
-
-<div style="text-align:right;margin-top:15px">
-<button type="button" class="gray" onclick="closeModal('clientModal')">Cancel</button>
-<button type="submit">Save Client</button>
-</div>
-
-<div id="clientMessage" class="message"></div>
-
-</form>
-</div>
-</div>
-
-
-<!-- INVENTORY MODAL -->
-<div id="inventoryModal" class="modal hidden">
-<div class="card modal-box">
-
-<div class="modal-header">
-<h2 id="inventoryModalTitle">Add Product</h2>
-<button class="gray" onclick="closeModal('inventoryModal')">×</button>
-</div>
-
-<form id="inventoryForm">
-
-<input type="hidden" id="inventoryId">
-
-<div class="grid">
-
-<div>
-<label>Product Name *</label>
-<input id="invProduct" required>
-</div>
-
-<div>
-<label>Description</label>
-<input id="invDescription">
-</div>
-
-<div>
-<label>Batch / Lot *</label>
-<input id="invBatch" required>
-</div>
-
-<div>
-<label>Entry Date *</label>
-<input id="invEntryDate" type="date" required>
-</div>
-
-<div>
-<label>Expiry Date</label>
-<input id="invExpiry" type="date">
-</div>
-
-<div>
-<label>Current Qty *</label>
-<input id="invQty" type="number" step="0.01" required>
-</div>
-
-<div>
-<label>Unit</label>
-<input id="invUnit" value="Kit">
-</div>
-
-<div>
-<label>Rate</label>
-<input id="invRate" type="number" step="0.01">
-</div>
-
-<div>
-<label>GST %</label>
-<input id="invGst" type="number" step="0.01">
-</div>
-
-<div>
-<label>Supplier</label>
-<input id="invSupplier">
-</div>
-
-<div>
-<label>Reorder Level</label>
-<input id="invReorder" type="number" step="0.01">
-</div>
-
-</div>
-
-<div style="text-align:right;margin-top:15px">
-<button type="button" class="gray" onclick="closeModal('inventoryModal')">Cancel</button>
-<button type="submit">Save Product</button>
-</div>
-
-<div id="inventoryMessage" class="message"></div>
-
-</form>
-</div>
-</div>
-
-
-<!-- PO MODAL -->
-<div id="poModal" class="modal hidden">
-<div class="card modal-box">
-
-<div class="modal-header">
-<h2>Create Purchase Order</h2>
-<button class="gray" onclick="closeModal('poModal')">×</button>
-</div>
-
-<form id="poForm">
-
-<div class="grid">
-
-<div>
-<label>PO Date *</label>
-<input id="poDate" type="date" required>
-</div>
-
-<div>
-<label>Vendor *</label>
-<select id="poVendor" required></select>
-</div>
-
-<div>
-<label>Status</label>
-<select id="poStatus">
-<option>Draft</option>
-<option>Pending</option>
-<option>Approved</option>
-<option>Received</option>
-<option>Cancelled</option>
-</select>
-</div>
-
-<div class="full">
-<label>Notes</label>
-<textarea id="poNotes"></textarea>
-</div>
-
-<div class="full">
-<label>Terms & Conditions</label>
-<textarea id="poTerms"></textarea>
-</div>
-
-</div>
-
 <h3>Items</h3>
-
-<div style="overflow:auto">
-<table class="items-table">
-<thead>
-<tr>
-<th>Product</th>
-<th>Description</th>
-<th>Qty</th>
-<th>Unit</th>
-<th>Rate</th>
-<th>GST %</th>
-<th>Total</th>
-<th></th>
-</tr>
-</thead>
-<tbody id="poItems"></tbody>
-</table>
-</div>
-
-<button type="button" class="gray" id="addPOItem">+ Add Item</button>
-
-<div class="total-box">
-<div class="total-row">
-<span>Subtotal</span>
-<strong id="poSubtotal">₹0.00</strong>
-</div>
-
-<div class="total-row">
-<span>GST</span>
-<strong id="poGst">₹0.00</strong>
-</div>
-
-<div class="total-row grand">
-<span>Grand Total</span>
-<strong id="poGrand">₹0.00</strong>
-</div>
-</div>
-
-<div style="text-align:right;margin-top:20px">
-<button type="button" class="gray" onclick="closeModal('poModal')">Cancel</button>
-<button type="submit">Save Purchase Order</button>
-</div>
-
-<div id="poMessage" class="message"></div>
-
-</form>
-</div>
-</div>
-
-
-<!-- QUOTATION MODAL -->
-<div id="quotationModal" class="modal hidden">
-<div class="card modal-box">
-
-<div class="modal-header">
-<h2>Create Quotation</h2>
-<button class="gray" onclick="closeModal('quotationModal')">×</button>
-</div>
-
-<form id="quotationForm">
-
-<div class="grid">
-
-<div>
-<label>Quotation Date *</label>
-<input id="quotationDate" type="date" required>
-</div>
-
-<div>
-<label>Valid Until</label>
-<input id="quotationValid" type="date">
-</div>
-
-<div>
-<label>Client *</label>
-<select id="quotationClient" required></select>
-</div>
-
-<div>
-<label>Status</label>
-<select id="quotationStatus">
-<option>Draft</option>
-<option>Sent</option>
-<option>Accepted</option>
-<option>Rejected</option>
-<option>Expired</option>
-</select>
-</div>
-
-<div class="full">
-<label>Notes</label>
-<textarea id="quotationNotes"></textarea>
-</div>
-
-<div class="full">
-<label>Terms & Conditions</label>
-<textarea id="quotationTerms"></textarea>
-</div>
-
-</div>
-
-<h3>Items / Tests</h3>
-
-<div style="overflow:auto">
-<table class="items-table">
-<thead>
-<tr>
-<th>Item / Test</th>
-<th>Description</th>
-<th>Qty</th>
-<th>Unit</th>
-<th>Rate</th>
-<th>Discount %</th>
-<th>GST %</th>
-<th>Total</th>
-<th></th>
-</tr>
-</thead>
-
-<tbody id="quotationItems"></tbody>
-</table>
-</div>
-
-<button type="button" class="gray" id="addQuotationItem">
-+ Add Item
-</button>
-
-<div class="total-box">
-
-<div class="total-row">
-<span>Subtotal</span>
-<strong id="quotationSubtotal">₹0.00</strong>
-</div>
-
-<div class="total-row">
-<span>Discount</span>
-<strong id="quotationDiscount">₹0.00</strong>
-</div>
-
-<div class="total-row">
-<span>GST</span>
-<strong id="quotationGst">₹0.00</strong>
-</div>
-
-<div class="total-row grand">
-<span>Grand Total</span>
-<strong id="quotationGrand">₹0.00</strong>
-</div>
-
-</div>
-
-<div style="text-align:right;margin-top:20px">
-<button type="button" class="gray" onclick="closeModal('quotationModal')">Cancel</button>
-<button type="submit">Save Quotation</button>
-</div>
-
-<div id="quotationMessage" class="message"></div>
-
-</form>
-</div>
-</div>
-
+<div class="items-table"><table><thead><tr><th>Item</th><th>Description</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Discount %</th><th>GST %</th><th>Total</th><th></th></tr></thead><tbody id="docItems"></tbody></table></div>
+<button type="button" class="gray" style="margin-top:10px" onclick="addDocItem()">+ Add Item</button>
+<div class="summary"><div><span>Subtotal</span><strong id="docSubtotal">₹0.00</strong></div><div><span>Discount</span><strong id="docDiscount">₹0.00</strong></div><div><span>GST</span><strong id="docGST">₹0.00</strong></div><div class="grand"><span>Grand Total</span><strong id="docGrand">₹0.00</strong></div></div>
+<div style="text-align:right;margin-top:15px"><button type="button" class="gray" onclick="closeModal('docModal')">Cancel</button> <button>Save Document</button></div>
+<div id="docMessage" class="message"></div></form></div></div>
 
 <script>
-
 const SUPABASE_URL="https://xldnayhoquadguepedqm.supabase.co";
 const SUPABASE_KEY="sb_publishable_EPC6EEnO2EEvcIQFtozteA_XTKMyPx1";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const supabaseClient=supabase.createClient(
- SUPABASE_URL,
- SUPABASE_KEY
-);
-
-let currentUser=null;
-let currentRole="operator";
-
-let inventory=[];
-let vendors=[];
-let clients=[];
-
+let role="operator",branchId=null,inventory=[],vendors=[],clients=[],branches=[],editingParty=null,docItems=[];
 const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const today=()=>new Date().toISOString().slice(0,10);
+const admin=()=>role==="admin";
 
-function today(){
- return new Date().toISOString().split("T")[0];
+async function context(){
+ const u=(await db.auth.getUser()).data.user;if(!u)throw Error("Login session nahi mila.");
+ const r=await db.from("inventory_user_roles").select("role").eq("user_id",u.id).maybeSingle();if(r.error)throw r.error;
+ role=r.data?.role||"operator";
+ const b=await db.from("inventory_user_branches").select("branch_id").eq("user_id",u.id).maybeSingle();if(b.error)throw b.error;
+ branchId=b.data?.branch_id||null;$("roleBadge").textContent=role==="admin"?"Full Admin":role==="manager"?"Stock Manager":"Stock Operator";
+ document.querySelectorAll(".adminOnly").forEach(x=>x.classList.toggle("hidden",!admin()));
 }
 
-function money(n){
- return "₹"+Number(n||0).toLocaleString("en-IN",{
-  minimumFractionDigits:2,
-  maximumFractionDigits:2
- });
+async function loadBranches(){
+ const r=await db.from("inventory_branches").select("id,branch_name,is_active").eq("is_active",true).order("branch_name");
+ if(r.error)throw r.error;branches=r.data||[];
+ $("invBranch").innerHTML=branches.filter(b=>admin()||b.id===branchId).map(b=>`<option value="${b.id}">${esc(b.branch_name)}</option>`).join("");
+ if(branchId&&!admin())$("invBranch").value=branchId;
 }
-
-function esc(v){
- return String(v??"")
- .replace(/&/g,"&amp;")
- .replace(/</g,"&lt;")
- .replace(/>/g,"&gt;")
- .replace(/"/g,"&quot;")
- .replace(/'/g,"&#039;");
-}
-
-function closeModal(id){
- $(id).classList.add("hidden");
-}
-
-function admin(){
- return currentRole==="admin";
-}
-
-
-/* =========================
-LOGIN
-========================= */
-
-$("loginBtn").onclick=login;
-
-$("loginPassword").addEventListener("keydown",e=>{
- if(e.key==="Enter")login();
-});
-
-async function login(){
-
- const email=$("loginEmail").value.trim();
- const password=$("loginPassword").value;
- const msg=$("loginMessage");
-
- msg.innerText="";
-
- if(!email||!password){
-  msg.innerText="Email aur password enter karo.";
-  return;
- }
-
- const {error}=await supabaseClient.auth.signInWithPassword({
-  email,
-  password
- });
-
- if(error){
-  msg.innerText=error.message;
-  return;
- }
-
- await startApp();
-}
-
-
-async function startApp(){
-
- const res=await supabaseClient.auth.getUser();
-
- if(!res.data.user){
-  showLogin();
-  return;
- }
-
- currentUser=res.data.user;
-
- const roleRes=await supabaseClient
- .from("inventory_user_roles")
- .select("role")
- .eq("user_id",currentUser.id)
- .maybeSingle();
-
- if(roleRes.error){
-  $("loginMessage").innerText=roleRes.error.message;
-  await supabaseClient.auth.signOut();
-  return;
- }
-
- currentRole=roleRes.data?.role||"operator";
-
- $("loginPage").classList.add("hidden");
- $("app").classList.remove("hidden");
-
- $("roleBadge").innerText=
- currentRole==="admin"?"FULL ADMIN":
- currentRole==="manager"?"MANAGER":"OPERATOR";
-
- $("headerText").innerText=
- currentRole==="admin"
- ?"All Management Modules"
- :"Inventory Management";
-
- document.querySelectorAll(".admin-only").forEach(el=>{
-  el.classList.toggle("hidden",!admin());
- });
-
- await loadAll();
-}
-
-
-function showLogin(){
- $("app").classList.add("hidden");
- $("loginPage").classList.remove("hidden");
-}
-
-
-$("logoutBtn").onclick=async()=>{
- await supabaseClient.auth.signOut();
- showLogin();
-};
-
-
-/* =========================
-NAVIGATION
-========================= */
-
-document.querySelectorAll(".menu-btn").forEach(btn=>{
-
- btn.onclick=()=>{
-
-  if(btn.classList.contains("hidden"))return;
-
-  document.querySelectorAll(".page").forEach(p=>{
-   p.classList.add("hidden");
-  });
-
-  $(btn.dataset.page).classList.remove("hidden");
-
-  document.querySelectorAll(".menu-btn").forEach(x=>{
-   x.classList.remove("active");
-  });
-
-  btn.classList.add("active");
- };
-
-});
-
-
-/* =========================
-LOAD ALL
-========================= */
-
-async function loadAll(){
-
- await loadInventory();
-
- if(admin()){
-  await loadVendors();
-  await loadClients();
-  await loadPOs();
-  await loadQuotations();
- }
-
- updateDashboard();
-}
-
-
-/* =========================
-INVENTORY
-========================= */
 
 async function loadInventory(){
-
- let q=supabaseClient
- .from("inventory_stock")
- .select("*")
- .eq("is_active",true)
- .order("product_name");
-
- const {data,error}=await q;
-
- if(error){
-  console.error(error);
-  return;
- }
-
- inventory=data||[];
- renderInventory();
+ let q=db.from("inventory_stock").select("*").eq("is_active",true).order("product_name");
+ if(!admin()&&branchId)q=q.eq("branch_id",branchId);
+ const r=await q;if(r.error)throw r.error;inventory=r.data||[];renderInventory();
 }
-
-
 function renderInventory(){
-
- const search=$("inventorySearch").value.toLowerCase();
-
- const list=inventory.filter(x=>
-  !search ||
-  [
-   x.product_name,
-   x.batch_no,
-   x.supplier,
-   x.description
-  ].join(" ").toLowerCase().includes(search)
- );
-
- $("inventoryBody").innerHTML=list.map(x=>`
-
- <tr>
-
- <td>
- <strong>${esc(x.product_name)}</strong>
- <br><small>${esc(x.description||"")}</small>
- </td>
-
- <td>${esc(x.batch_no||"-")}</td>
- <td>${esc(x.expiry_date||"-")}</td>
- <td><strong>${esc(x.current_qty)}</strong></td>
- <td>${esc(x.unit||"-")}</td>
- <td>${money(x.rate)}</td>
- <td>${esc(x.supplier||"-")}</td>
-
- <td>
- <button class="action-btn gray"
- onclick="editInventory('${x.id}')">Edit</button>
-
- <button class="action-btn red"
- onclick="deleteInventory('${x.id}')">Delete</button>
- </td>
-
- </tr>
-
- `).join("");
+ const s=$("invSearch").value.toLowerCase();
+ const list=inventory.filter(x=>(`${x.product_name} ${x.batch_no} ${x.supplier}`.toLowerCase()).includes(s));
+ $("inventoryBody").innerHTML=list.map(x=>{
+ const b=branches.find(z=>z.id===x.branch_id);
+ return `<tr><td><strong>${esc(x.product_name)}</strong><br><small>${esc(x.description||"")}</small></td>
+ <td>${esc(x.batch_no)}</td><td>${esc(b?.branch_name||"-")}</td><td>${esc(x.current_qty)}</td><td>${esc(x.unit)}</td>
+ <td>${esc(x.expiry_date||"-")}</td><td>${money(x.rate)}</td><td>${esc(x.supplier||"-")}</td>
+ <td><button class="action-btn gray" onclick="editInventory('${x.id}')">Edit</button>
+ <button class="action-btn red" onclick="deleteInventory('${x.id}')">Delete</button></td></tr>`;
+ }).join("");
+ $("totalProducts").textContent=new Set(inventory.map(x=>x.product_name)).size;
+ $("totalStock").textContent=inventory.reduce((a,x)=>a+Number(x.current_qty||0),0);
+ $("lowStock").textContent=inventory.filter(x=>Number(x.current_qty||0)<=Number(x.reorder_level||0)).length;
+ const now=new Date(),future=new Date();future.setDate(future.getDate()+30);
+ $("expiring").textContent=inventory.filter(x=>x.expiry_date&&new Date(x.expiry_date)>=now&&new Date(x.expiry_date)<=future).length;
 }
+$("invSearch").oninput=renderInventory;
 
-
-$("inventorySearch").oninput=renderInventory;
-
-
-$("addInventoryBtn").onclick=()=>{
-
- $("inventoryModalTitle").innerText="Add Product";
-
- $("inventoryForm").reset();
-
- $("inventoryId").value="";
- $("invEntryDate").value=today();
-
- $("inventoryModal").classList.remove("hidden");
-};
-
-
-window.editInventory=id=>{
-
- const x=inventory.find(i=>i.id===id);
- if(!x)return;
-
- $("inventoryModalTitle").innerText="Edit Product";
-
- $("inventoryId").value=x.id;
- $("invProduct").value=x.product_name||"";
- $("invDescription").value=x.description||"";
- $("invBatch").value=x.batch_no||"";
- $("invEntryDate").value=x.entry_date||"";
- $("invExpiry").value=x.expiry_date||"";
- $("invQty").value=x.current_qty||0;
- $("invUnit").value=x.unit||"Kit";
- $("invRate").value=x.rate||0;
- $("invGst").value=x.gst_percent||0;
- $("invSupplier").value=x.supplier||"";
- $("invReorder").value=x.reorder_level||0;
-
- $("inventoryModal").classList.remove("hidden");
-};
-
+function openInventory(item=null){
+ $("inventoryModal").classList.remove("hidden");$("invMessage").textContent="";
+ $("invTitle").textContent=item?"Edit Product":"Add Product";$("invId").value=item?.id||"";
+ $("invProduct").value=item?.product_name||"";$("invDescription").value=item?.description||"";
+ $("invBatch").value=item?.batch_no||"";$("invEntry").value=item?.entry_date||today();$("invExpiry").value=item?.expiry_date||"";
+ $("invQty").value=item?.current_qty??0;$("invUnit").value=item?.unit||"Kit";$("invPack").value=item?.units_per_pack??"";
+ $("invRate").value=item?.rate??0;$("invGST").value=item?.gst_percent??0;$("invSupplier").value=item?.supplier||"";
+ $("invReorder").value=item?.reorder_level??0;$("invBranch").value=item?.branch_id||branchId||branches[0]?.id||"";
+}
+$("addInventoryBtn").onclick=()=>openInventory();
+window.editInventory=id=>openInventory(inventory.find(x=>x.id===id));
+window.deleteInventory=async id=>{if(!confirm("Delete product?"))return;const r=await db.from("inventory_stock").delete().eq("id",id);if(r.error)return alert(r.error.message);loadInventory()};
 
 $("inventoryForm").onsubmit=async e=>{
-
- e.preventDefault();
-
- const id=$("inventoryId").value;
-
- const obj={
-  product_name:$("invProduct").value.trim(),
-  description:$("invDescription").value.trim()||null,
-  batch_no:$("invBatch").value.trim(),
-  entry_date:$("invEntryDate").value,
-  expiry_date:$("invExpiry").value||null,
-  current_qty:Number($("invQty").value||0),
-  unit:$("invUnit").value.trim()||"Kit",
-  rate:Number($("invRate").value||0),
-  gst_percent:Number($("invGst").value||0),
-  supplier:$("invSupplier").value.trim()||null,
-  reorder_level:Number($("invReorder").value||0),
-  is_active:true
- };
-
- let result;
-
- if(id){
-
-  result=await supabaseClient
-  .from("inventory_stock")
-  .update(obj)
-  .eq("id",id);
-
- }else{
-
-  result=await supabaseClient
-  .from("inventory_stock")
-  .insert(obj);
-
- }
-
- if(result.error){
-  $("inventoryMessage").innerText=result.error.message;
-  return;
- }
-
- closeModal("inventoryModal");
- await loadInventory();
- updateDashboard();
+ e.preventDefault();const id=$("invId").value;
+ const data={product_name:$("invProduct").value.trim(),description:$("invDescription").value.trim()||null,branch_id:$("invBranch").value,
+ batch_no:$("invBatch").value.trim(),entry_date:$("invEntry").value,expiry_date:$("invExpiry").value||null,current_qty:Number($("invQty").value),
+ unit:$("invUnit").value.trim(),units_per_pack:Number($("invPack").value||0),rate:Number($("invRate").value||0),
+ gst_percent:Number($("invGST").value||0),supplier:$("invSupplier").value.trim()||"Not specified",reorder_level:Number($("invReorder").value||0),is_active:true};
+ let r=id?await db.from("inventory_stock").update(data).eq("id",id):await db.from("inventory_stock").insert(data);
+ if(r.error){$("invMessage").textContent=r.error.message;return}closeModal("inventoryModal");loadInventory();
 };
 
-
-window.deleteInventory=async id=>{
-
- if(!confirm("Product delete karna hai?"))return;
-
- const {error}=await supabaseClient
- .from("inventory_stock")
- .delete()
- .eq("id",id);
-
- if(error){
-  alert(error.message);
-  return;
- }
-
- await loadInventory();
- updateDashboard();
-};
-
-
-/* =========================
-VENDORS
-========================= */
-
-async function loadVendors(){
-
- const {data,error}=await supabaseClient
- .from("vendors")
- .select("*")
- .eq("is_active",true)
- .order("name");
-
- if(error){
-  console.error(error);
-  return;
- }
-
- vendors=data||[];
- renderVendors();
+async function loadParties(){
+ let v=await db.from("vendors").select("*").eq("is_active",true).order("name");if(v.error)throw v.error;vendors=v.data||[];
+ let c=await db.from("clients").select("*").eq("is_active",true).order("name");if(c.error)throw c.error;clients=c.data||[];
+ renderVendors();renderClients();
 }
-
-
 function renderVendors(){
-
- const q=$("vendorSearch").value.toLowerCase();
-
- const list=vendors.filter(x=>
-  !q ||
-  [
-   x.name,
-   x.company_name,
-   x.phone,
-   x.email,
-   x.gstin,
-   x.contact_person
-  ].join(" ").toLowerCase().includes(q)
- );
-
- $("vendorsBody").innerHTML=list.map(x=>`
-
- <tr>
-
- <td><strong>${esc(x.name)}</strong></td>
- <td>${esc(x.company_name||"-")}</td>
- <td>${esc(x.phone||"-")}</td>
- <td>${esc(x.email||"-")}</td>
- <td>${esc(x.gstin||"-")}</td>
- <td>${esc(x.contact_person||"-")}</td>
-
- <td>
-
- <button class="action-btn gray"
- onclick="editVendor('${x.id}')">
- Edit
- </button>
-
- <button class="action-btn red"
- onclick="deleteVendor('${x.id}')">
- Delete
- </button>
-
- </td>
-
- </tr>
-
- `).join("");
+ const s=$("vendorSearch").value.toLowerCase();$("vendorsBody").innerHTML=vendors.filter(x=>(`${x.name} ${x.company_name}`.toLowerCase()).includes(s)).map(x=>partyRow(x,"vendor")).join("");
 }
-
-
-$("vendorSearch").oninput=renderVendors;
-
-
-$("addVendorBtn").onclick=()=>{
-
- $("vendorForm").reset();
- $("vendorId").value="";
- $("vendorModalTitle").innerText="Add Vendor";
- $("vendorModal").classList.remove("hidden");
-
-};
-
-
-window.editVendor=id=>{
-
- const x=vendors.find(v=>v.id===id);
- if(!x)return;
-
- $("vendorId").value=x.id;
- $("vendorName").value=x.name||"";
- $("vendorCompany").value=x.company_name||"";
- $("vendorPhone").value=x.phone||"";
- $("vendorEmail").value=x.email||"";
- $("vendorGstin").value=x.gstin||"";
- $("vendorContact").value=x.contact_person||"";
- $("vendorAddress").value=x.address||"";
- $("vendorNotes").value=x.notes||"";
-
- $("vendorModalTitle").innerText="Edit Vendor";
- $("vendorModal").classList.remove("hidden");
-};
-
-
-$("vendorForm").onsubmit=async e=>{
-
- e.preventDefault();
-
- const id=$("vendorId").value;
-
- const obj={
-  name:$("vendorName").value.trim(),
-  company_name:$("vendorCompany").value.trim()||null,
-  phone:$("vendorPhone").value.trim()||null,
-  email:$("vendorEmail").value.trim()||null,
-  gstin:$("vendorGstin").value.trim()||null,
-  contact_person:$("vendorContact").value.trim()||null,
-  address:$("vendorAddress").value.trim()||null,
-  notes:$("vendorNotes").value.trim()||null,
-  is_active:true
- };
-
- let result;
-
- if(id){
-
-  result=await supabaseClient
-  .from("vendors")
-  .update(obj)
-  .eq("id",id);
-
- }else{
-
-  result=await supabaseClient
-  .from("vendors")
-  .insert(obj);
-
- }
-
- if(result.error){
-  $("vendorMessage").innerText=result.error.message;
-  return;
- }
-
- closeModal("vendorModal");
-
- await loadVendors();
- updateDashboard();
-};
-
-
-window.deleteVendor=async id=>{
-
- if(!confirm("Vendor delete karna hai?"))return;
-
- const {error}=await supabaseClient
- .from("vendors")
- .update({is_active:false})
- .eq("id",id);
-
- if(error){
-  alert(error.message);
-  return;
- }
-
- await loadVendors();
- updateDashboard();
-};
-
-
-/* =========================
-CLIENTS
-========================= */
-
-async function loadClients(){
-
- const {data,error}=await supabaseClient
- .from("clients")
- .select("*")
- .eq("is_active",true)
- .order("name");
-
- if(error){
-  console.error(error);
-  return;
- }
-
- clients=data||[];
- renderClients();
-}
-
-
 function renderClients(){
-
- const q=$("clientSearch").value.toLowerCase();
-
- const list=clients.filter(x=>
-  !q ||
-  [
-   x.name,
-   x.company_name,
-   x.phone,
-   x.email,
-   x.gstin,
-   x.contact_person
-  ].join(" ").toLowerCase().includes(q)
- );
-
- $("clientsBody").innerHTML=list.map(x=>`
-
- <tr>
-
- <td><strong>${esc(x.name)}</strong></td>
- <td>${esc(x.company_name||"-")}</td>
- <td>${esc(x.phone||"-")}</td>
- <td>${esc(x.email||"-")}</td>
- <td>${esc(x.gstin||"-")}</td>
- <td>${esc(x.contact_person||"-")}</td>
-
- <td>
-
- <button class="action-btn gray"
- onclick="editClient('${x.id}')">
- Edit
- </button>
-
- <button class="action-btn red"
- onclick="deleteClient('${x.id}')">
- Delete
- </button>
-
- </td>
-
- </tr>
-
- `).join("");
+ const s=$("clientSearch").value.toLowerCase();$("clientsBody").innerHTML=clients.filter(x=>(`${x.name} ${x.company_name}`.toLowerCase()).includes(s)).map(x=>partyRow(x,"client")).join("");
 }
+function partyRow(x,t){return `<tr><td>${esc(x.name)}</td><td>${esc(x.company_name||"-")}</td><td>${esc(x.phone||"-")}</td><td>${esc(x.email||"-")}</td><td>${esc(x.gstin||"-")}</td>
+<td><button class="action-btn gray" onclick="openParty('${t}','${x.id}')">Edit</button><button class="action-btn red" onclick="deleteParty('${t}','${x.id}')">Delete</button></td></tr>`}
+$("vendorSearch").oninput=renderVendors;$("clientSearch").oninput=renderClients;
 
-
-$("clientSearch").oninput=renderClients;
-
-
-$("addClientBtn").onclick=()=>{
-
- $("clientForm").reset();
- $("clientId").value="";
- $("clientModalTitle").innerText="Add Client";
- $("clientModal").classList.remove("hidden");
-
+window.openVendor=()=>openParty("vendor");
+window.openClient=()=>openParty("client");
+window.openParty=(type,id=null)=>{
+ editingParty=id;$("partyModal").classList.remove("hidden");$("partyType").value=type;$("partyTitle").textContent=(type==="vendor"?"Vendor":"Client")+(id?" — Edit":" — Add");$("partyMessage").textContent="";
+ const arr=type==="vendor"?vendors:clients,x=arr.find(a=>a.id===id)||{};
+ $("partyId").value=id||"";$("partyName").value=x.name||"";$("partyCompany").value=x.company_name||"";$("partyPhone").value=x.phone||"";$("partyEmail").value=x.email||"";
+ $("partyGSTIN").value=x.gstin||"";$("partyContact").value=x.contact_person||"";$("partyAddress").value=x.address||"";$("partyNotes").value=x.notes||"";
+};
+window.deleteParty=async(type,id)=>{
+ if(!confirm(`Delete ${type}?`))return;
+ const table=type==="vendor"?"vendors":"clients",r=await db.from(table).update({is_active:false}).eq("id",id);
+ if(r.error)return alert(r.error.message);loadParties();
+};
+$("partyForm").onsubmit=async e=>{
+ e.preventDefault();const type=$("partyType").value,table=type==="vendor"?"vendors":"clients",id=$("partyId").value;
+ const data={name:$("partyName").value.trim(),company_name:$("partyCompany").value.trim()||null,address:$("partyAddress").value.trim()||null,phone:$("partyPhone").value.trim()||null,email:$("partyEmail").value.trim()||null,gstin:$("partyGSTIN").value.trim()||null,contact_person:$("partyContact").value.trim()||null,notes:$("partyNotes").value.trim()||null,is_active:true};
+ const r=id?await db.from(table).update(data).eq("id",id):await db.from(table).insert(data);
+ if(r.error){$("partyMessage").textContent=r.error.message;return}closeModal("partyModal");loadParties();
 };
 
+function fillPartySelect(type){
+ const arr=type==="po"?vendors:clients;
+ $("docParty").innerHTML='<option value="">Select</option>'+arr.map(x=>`<option value="${x.id}">${esc(x.company_name||x.name)}</option>`).join("");
+}
+function openDocument(type,id=null){
+ $("docModal").classList.remove("hidden");$("docType").value=type;$("docId").value=id||"";$("docItems").innerHTML="";docItems=[];
+ $("docTitle").textContent=type==="po"?"Purchase Order":"Quotation";$("partyLabel").textContent=type==="po"?"Vendor":"Client";
+ $("validBox").classList.toggle("hidden",type==="po");fillPartySelect(type);
+ const statuses=type==="po"?["draft","sent","accepted","rejected"]:["draft","sent","accepted","rejected","expired"];
+ $("docStatus").innerHTML=statuses.map(x=>`<option value="${x}">${x.toUpperCase()}</option>`).join("");
+ $("docDate").value=today();$("docValid").value="";$("docTerms").value="";$("docNotes").value="";
+ if(id)loadDocumentForEdit(type,id);else addDocItem();
+}
+window.openPO=()=>openDocument("po");
+window.openQuotation=()=>openDocument("quotation");
 
-window.editClient=id=>{
-
- const x=clients.find(c=>c.id===id);
- if(!x)return;
-
- $("clientId").value=x.id;
- $("clientName").value=x.name||"";
- $("clientCompany").value=x.company_name||"";
- $("clientPhone").value=x.phone||"";
- $("clientEmail").value=x.email||"";
- $("clientGstin").value=x.gstin||"";
- $("clientContact").value=x.contact_person||"";
- $("clientAddress").value=x.address||"";
- $("clientNotes").value=x.notes||"";
-
- $("clientModalTitle").innerText="Edit Client";
- $("clientModal").classList.remove("hidden");
-
-};
-
-
-$("clientForm").onsubmit=async e=>{
-
- e.preventDefault();
-
- const id=$("clientId").value;
-
- const obj={
-  name:$("clientName").value.trim(),
-  company_name:$("clientCompany").value.trim()||null,
-  phone:$("clientPhone").value.trim()||null,
-  email:$("clientEmail").value.trim()||null,
-  gstin:$("clientGstin").value.trim()||null,
-  contact_person:$("clientContact").value.trim()||null,
-  address:$("clientAddress").value.trim()||null,
-  notes:$("clientNotes").value.trim()||null,
-  is_active:true
- };
-
- let result;
-
- if(id){
-
-  result=await supabaseClient
-  .from("clients")
-  .update(obj)
-  .eq("id",id);
-
+function addDocItem(item={}){
+ const i=docItems.length;docItems.push({...item});
+ const tr=document.createElement("tr");tr.dataset.i=i;
+ tr.innerHTML=`<td><input class="di-name" value="${esc(item.product_name||item.item_name||"")}"></td>
+ <td><input class="di-desc" value="${esc(item.description||"")}"></td>
+ <td><input class="di-qty" type="number" min="0" step=".01" value="${item.quantity??1}"></td>
+ <td><input class="di-unit" value="${esc(item.unit||"Nos")}"></td>
+ <td><input class="di-rate" type="number" min="0" step=".01" value="${item.rate??0}"></td>
+ <td><input class="di-disc" type="number" min="0" max="100" step=".01" value="${item.discount_percent??0}"></td>
+ <td><input class="di-gst" type="number" min="0" max="100" step=".01" value="${item.gst_percent??18}"></td>
+ <td class="di-total">₹0.00</td><td><button type="button" class="red" onclick="removeDocItem(${i})">×</button></td>`;
+ $("docItems").appendChild(tr);tr.querySelectorAll("input").forEach(x=>x.oninput=recalcDoc);recalcDoc();
+}
+window.removeDocItem=i=>{docItems[i]=null;const tr=$(`docItems`).querySelector(`tr[data-i="${i}"]`);if(tr)tr.remove();recalcDoc()};
+function collectItems(){
+ return [...$("docItems").querySelectorAll("tr")].map(tr=>({name:tr.querySelector(".di-name").value.trim(),description:tr.querySelector(".di-desc").value.trim(),
+ quantity:Number(tr.querySelector(".di-qty").value||0),unit:tr.querySelector(".di-unit").value.trim(),rate:Number(tr.querySelector(".di-rate").value||0),
+ discount:Number(tr.querySelector(".di-disc").value||0),gst:Number(tr.querySelector(".di-gst").value||0)})).filter(x=>x.name&&x.quantity>0);
+}
+function recalcDoc(){
+ let sub=0,disc=0,gst=0;
+ $("docItems").querySelectorAll("tr").forEach(tr=>{
+  const q=Number(tr.querySelector(".di-qty").value||0),r=Number(tr.querySelector(".di-rate").value||0),d=Number(tr.querySelector(".di-disc").value||0),g=Number(tr.querySelector(".di-gst").value||0);
+  const gross=q*r,da=gross*d/100,tax=gross-da,ga=tax*g/100,total=tax+ga;sub+=gross;disc+=da;gst+=ga;tr.querySelector(".di-total").textContent=money(total);
+ });
+ $("docSubtotal").textContent=money(sub);$("docDiscount").textContent=money(disc);$("docGST").textContent=money(gst);$("docGrand").textContent=money(sub-disc+gst);
+}
+$("docForm").onsubmit=async e=>{
+ e.preventDefault();const type=$("docType").value,id=$("docId").value,items=collectItems();
+ if(!$("docParty").value||!items.length){$("docMessage").textContent="Party aur kam se kam 1 item zaroori hai.";return}
+ let sub=0,disc=0,gst=0;items.forEach(x=>{const gross=x.quantity*x.rate,da=gross*x.discount/100,tax=gross-da,ga=tax*x.gst/100;sub+=gross;disc+=da;gst+=ga});
+ const grand=sub-disc+gst;
+ if(type==="po"){
+  const data={po_date:$("docDate").value,vendor_id:$("docParty").value,status:$("docStatus").value,subtotal:sub,gst_amount:gst,grand_total:grand,terms_conditions:$("docTerms").value||null,notes:$("docNotes").value||null};
+  let r=id?await db.from("purchase_orders").update(data).eq("id",id):await db.from("purchase_orders").insert(data).select("id").single();
+  if(r.error){$("docMessage").textContent=r.error.message;return}
+  const poid=id||r.data.id;await db.from("purchase_order_items").delete().eq("purchase_order_id",poid);
+  const rows=items.map(x=>({purchase_order_id:poid,product_name:x.name,description:x.description||null,quantity:x.quantity,unit:x.unit,rate:x.rate,gst_percent:x.gst,taxable_amount:x.quantity*x.rate-x.quantity*x.rate*x.discount/100,gst_amount:(x.quantity*x.rate-x.quantity*x.rate*x.discount/100)*x.gst/100,total_amount:(x.quantity*x.rate-x.quantity*x.rate*x.discount/100)*(1+x.gst/100)}));
+  const ir=await db.from("purchase_order_items").insert(rows);if(ir.error){$("docMessage").textContent=ir.error.message;return}
  }else{
-
-  result=await supabaseClient
-  .from("clients")
-  .insert(obj);
-
+  const data={quotation_date:$("docDate").value,valid_until:$("docValid").value||null,client_id:$("docParty").value,status:$("docStatus").value,
+  subtotal:sub,discount_amount:disc,gst_amount:gst,grand_total:grand,terms_conditions:$("docTerms").value||null,notes:$("docNotes").value||null};
+  let r=id?await db.from("quotations").update(data).eq("id",id):await db.from("quotations").insert(data).select("id").single();
+  if(r.error){$("docMessage").textContent=r.error.message;return}
+  const qid=id||r.data.id;await db.from("quotation_items").delete().eq("quotation_id",qid);
+  const rows=items.map(x=>({quotation_id:qid,item_name:x.name,description:x.description||null,quantity:x.quantity,unit:x.unit,rate:x.rate,discount_percent:x.discount,gst_percent:x.gst,
+  taxable_amount:x.quantity*x.rate-x.quantity*x.rate*x.discount/100,discount_amount:x.quantity*x.rate*x.discount/100,gst_amount:(x.quantity*x.rate-x.quantity*x.rate*x.discount/100)*x.gst/100,total_amount:(x.quantity*x.rate-x.quantity*x.rate*x.discount/100)*(1+x.gst/100)}));
+  const ir=await db.from("quotation_items").insert(rows);if(ir.error){$("docMessage").textContent=ir.error.message;return}
  }
-
- if(result.error){
-  $("clientMessage").innerText=result.error.message;
-  return;
- }
-
- closeModal("clientModal");
-
- await loadClients();
- updateDashboard();
+ closeModal("docModal");loadDocuments();
 };
 
-
-window.deleteClient=async id=>{
-
- if(!confirm("Client delete karna hai?"))return;
-
- const {error}=await supabaseClient
- .from("clients")
- .update({is_active:false})
- .eq("id",id);
-
- if(error){
-  alert(error.message);
-  return;
- }
-
- await loadClients();
- updateDashboard();
-};
-
-
-/* =========================
-PO
-========================= */
-
-async function loadPOs(){
-
- const {data,error}=await supabaseClient
- .from("purchase_orders")
- .select("*, vendors(name,company_name)")
- .order("po_number",{ascending:false});
-
- if(error){
-  console.error(error);
-  return;
- }
-
- const list=data||[];
-
- $("poBody").innerHTML=list.map(x=>`
-
- <tr>
-
- <td>PO-${x.po_number}</td>
- <td>${esc(x.po_date||"-")}</td>
- <td>${esc(x.vendors?.company_name||x.vendors?.name||"-")}</td>
- <td><span class="badge">${esc(x.status||"")}</span></td>
- <td>${money(x.subtotal)}</td>
- <td>${money(x.gst_amount)}</td>
- <td><strong>${money(x.grand_total)}</strong></td>
-
- <td>
- <button class="action-btn red"
- onclick="deletePO('${x.id}')">
- Delete
- </button>
- </td>
-
- </tr>
-
- `).join("");
+async function loadDocuments(){
+ let p=await db.from("purchase_orders").select("*").order("po_date",{ascending:false});if(p.error)console.warn(p.error);else $("poBody").innerHTML=(p.data||[]).map(x=>{const v=vendors.find(a=>a.id===x.vendor_id);return `<tr><td>${esc(x.po_number)}</td><td>${esc(x.po_date)}</td><td>${esc(v?.company_name||v?.name||"-")}</td><td>${esc(x.status)}</td><td>${money(x.subtotal)}</td><td>${money(x.gst_amount)}</td><td>${money(x.grand_total)}</td><td><button class="action-btn gray" onclick="editPO('${x.id}')">Edit</button><button class="action-btn red" onclick="deletePO('${x.id}')">Delete</button></td></tr>`}).join("");
+ let q=await db.from("quotations").select("*").order("quotation_date",{ascending:false});if(q.error)console.warn(q.error);else $("quotationBody").innerHTML=(q.data||[]).map(x=>{const c=clients.find(a=>a.id===x.client_id);return `<tr><td>${esc(x.quotation_number)}</td><td>${esc(x.quotation_date)}</td><td>${esc(x.valid_until||"-")}</td><td>${esc(c?.company_name||c?.name||"-")}</td><td>${esc(x.status)}</td><td>${money(x.subtotal)}</td><td>${money(x.gst_amount)}</td><td>${money(x.grand_total)}</td><td><button class="action-btn gray" onclick="editQuotation('${x.id}')">Edit</button><button class="action-btn red" onclick="deleteQuotation('${x.id}')">Delete</button></td></tr>`}).join("");
 }
-
-
-$("addPOBtn").onclick=async()=>{
-
- await loadVendors();
-
- $("poForm").reset();
- $("poDate").value=today();
-
- $("poVendor").innerHTML=
- '<option value="">Select Vendor</option>'+
- vendors.map(v=>
-  `<option value="${v.id}">
-   ${esc(v.company_name||v.name)}
-  </option>`
- ).join("");
-
- $("poItems").innerHTML="";
- addPOItem();
-
- calculatePO();
-
- $("poModal").classList.remove("hidden");
-};
-
-
-$("addPOItem").onclick=addPOItem;
-
-
-function addPOItem(){
-
- const tr=document.createElement("tr");
-
- tr.innerHTML=`
-
- <td>
- <input class="po-product" placeholder="Product">
- </td>
-
- <td>
- <input class="po-description" placeholder="Description">
- </td>
-
- <td>
- <input class="po-qty" type="number" min="0" step="0.01" value="1">
- </td>
-
- <td>
- <input class="po-unit" value="Kit">
- </td>
-
- <td>
- <input class="po-rate" type="number" min="0" step="0.01" value="0">
- </td>
-
- <td>
- <input class="po-gst" type="number" min="0" step="0.01" value="18">
- </td>
-
- <td class="po-total">₹0.00</td>
-
- <td>
- <button type="button" class="action-btn red remove-item">×</button>
- </td>
-
- `;
-
- $("poItems").appendChild(tr);
-
- tr.querySelectorAll("input").forEach(i=>{
-  i.oninput=calculatePO;
- });
-
- tr.querySelector(".remove-item").onclick=()=>{
-  tr.remove();
-  calculatePO();
- };
-
+async function loadDocumentForEdit(type,id){
+ const table=type==="po"?"purchase_orders":"quotations",r=await db.from(table).select("*").eq("id",id).single();if(r.error)return;
+ const x=r.data;$("docParty").value=type==="po"?x.vendor_id:x.client_id;$("docDate").value=type==="po"?x.po_date:x.quotation_date;$("docValid").value=x.valid_until||"";
+ $("docStatus").value=x.status||"draft";$("docTerms").value=x.terms_conditions||"";$("docNotes").value=x.notes||"";
+ const it=await db.from(type==="po"?"purchase_order_items":"quotation_items").select("*").eq(type==="po"?"purchase_order_id":"quotation_id",id);
+ if(it.error)return;
+ $("docItems").innerHTML="";docItems=[];(it.data||[]).forEach(a=>addDocItem(a));
 }
-
-
-function calculatePO(){
-
- let subtotal=0;
- let gst=0;
-
- document.querySelectorAll("#poItems tr").forEach(tr=>{
-
-  const qty=Number(tr.querySelector(".po-qty").value||0);
-  const rate=Number(tr.querySelector(".po-rate").value||0);
-  const gstP=Number(tr.querySelector(".po-gst").value||0);
-
-  const taxable=qty*rate;
-  const gstAmount=taxable*gstP/100;
-  const total=taxable+gstAmount;
-
-  subtotal+=taxable;
-  gst+=gstAmount;
-
-  tr.querySelector(".po-total").innerText=money(total);
-
- });
-
- $("poSubtotal").innerText=money(subtotal);
- $("poGst").innerText=money(gst);
- $("poGrand").innerText=money(subtotal+gst);
-
-}
-
-
-$("poForm").onsubmit=async e=>{
-
- e.preventDefault();
-
- const vendorId=$("poVendor").value;
-
- if(!vendorId){
-  $("poMessage").innerText="Vendor select karo.";
-  return;
- }
-
- const rows=[...document.querySelectorAll("#poItems tr")];
-
- if(!rows.length){
-  $("poMessage").innerText="Kam se kam ek item add karo.";
-  return;
- }
-
- let subtotal=0;
- let gstAmount=0;
-
- const items=rows.map(tr=>{
-
-  const quantity=Number(tr.querySelector(".po-qty").value||0);
-  const rate=Number(tr.querySelector(".po-rate").value||0);
-  const gstPercent=Number(tr.querySelector(".po-gst").value||0);
-
-  const taxable=quantity*rate;
-  const gst=taxable*gstPercent/100;
-  const total=taxable+gst;
-
-  subtotal+=taxable;
-  gstAmount+=gst;
-
-  return{
-   product_name:tr.querySelector(".po-product").value.trim(),
-   description:tr.querySelector(".po-description").value.trim()||null,
-   quantity,
-   unit:tr.querySelector(".po-unit").value.trim()||"Kit",
-   rate,
-   gst_percent:gstPercent,
-   taxable_amount:taxable,
-   gst_amount:gst,
-   total_amount:total
-  };
-
- });
-
- const {data:po,error}=await supabaseClient
- .from("purchase_orders")
- .insert({
-  po_date:$("poDate").value,
-  vendor_id:vendorId,
-  status:$("poStatus").value,
-  subtotal,
-  gst_amount:gstAmount,
-  grand_total:subtotal+gstAmount,
-  terms_conditions:$("poTerms").value.trim()||null,
-  notes:$("poNotes").value.trim()||null
- })
- .select()
- .single();
-
- if(error){
-  $("poMessage").innerText=error.message;
-  return;
- }
-
- const itemRows=items.map(x=>({
-  ...x,
-  purchase_order_id:po.id
- }));
-
- const itemResult=await supabaseClient
- .from("purchase_order_items")
- .insert(itemRows);
-
- if(itemResult.error){
-
-  $("poMessage").innerText=itemResult.error.message;
-
-  await supabaseClient
-  .from("purchase_orders")
-  .delete()
-  .eq("id",po.id);
-
-  return;
- }
-
- closeModal("poModal");
-
- await loadPOs();
-
- alert("Purchase Order saved successfully.");
-
-};
-
-
-window.deletePO=async id=>{
-
- if(!confirm("Purchase Order delete karna hai?"))return;
-
- const {error}=await supabaseClient
- .from("purchase_orders")
- .delete()
- .eq("id",id);
-
- if(error){
-  alert(error.message);
-  return;
- }
-
- await loadPOs();
-};
-
-
-/* =========================
-QUOTATIONS
-========================= */
-
-async function loadQuotations(){
-
- const {data,error}=await supabaseClient
- .from("quotations")
- .select("*, clients(name,company_name)")
- .order("quotation_number",{ascending:false});
-
- if(error){
-  console.error(error);
-  return;
- }
-
- $("quotationBody").innerHTML=(data||[]).map(x=>`
-
- <tr>
-
- <td>Q-${x.quotation_number}</td>
- <td>${esc(x.quotation_date||"-")}</td>
- <td>${esc(x.valid_until||"-")}</td>
-
- <td>
- ${esc(x.clients?.company_name||x.clients?.name||"-")}
- </td>
-
- <td>
- <span class="badge">${esc(x.status||"")}</span>
- </td>
-
- <td>${money(x.subtotal)}</td>
- <td>${money(x.gst_amount)}</td>
-
- <td>
- <strong>${money(x.grand_total)}</strong>
- </td>
-
- <td>
-
- <button class="action-btn red"
- onclick="deleteQuotation('${x.id}')">
- Delete
- </button>
-
- </td>
-
- </tr>
-
- `).join("");
-}
-
-
-$("addQuotationBtn").onclick=async()=>{
-
- await loadClients();
-
- $("quotationForm").reset();
-
- $("quotationDate").value=today();
-
- $("quotationClient").innerHTML=
- '<option value="">Select Client</option>'+
- clients.map(c=>
- `<option value="${c.id}">
- ${esc(c.company_name||c.name)}
- </option>`
- ).join("");
-
- $("quotationItems").innerHTML="";
-
- addQuotationItem();
-
- calculateQuotation();
-
- $("quotationModal").classList.remove("hidden");
-};
-
-
-$("addQuotationItem").onclick=addQuotationItem;
-
-
-function addQuotationItem(){
-
- const tr=document.createElement("tr");
-
- tr.innerHTML=`
-
- <td>
- <input class="q-name" placeholder="Test / Item">
- </td>
-
- <td>
- <input class="q-description" placeholder="Description">
- </td>
-
- <td>
- <input class="q-qty" type="number" min="0" step="0.01" value="1">
- </td>
-
- <td>
- <input class="q-unit" value="Test">
- </td>
-
- <td>
- <input class="q-rate" type="number" min="0" step="0.01" value="0">
- </td>
-
- <td>
- <input class="q-discount" type="number" min="0" step="0.01" value="0">
- </td>
-
- <td>
- <input class="q-gst" type="number" min="0" step="0.01" value="18">
- </td>
-
- <td class="q-total">₹0.00</td>
-
- <td>
- <button type="button" class="action-btn red remove-q">×</button>
- </td>
-
- `;
-
- $("quotationItems").appendChild(tr);
-
- tr.querySelectorAll("input").forEach(i=>{
-  i.oninput=calculateQuotation;
- });
-
- tr.querySelector(".remove-q").onclick=()=>{
-  tr.remove();
-  calculateQuotation();
- };
-
-}
-
-
-function calculateQuotation(){
-
- let subtotal=0;
- let discount=0;
- let gst=0;
-
- document.querySelectorAll("#quotationItems tr").forEach(tr=>{
-
-  const qty=Number(tr.querySelector(".q-qty").value||0);
-  const rate=Number(tr.querySelector(".q-rate").value||0);
-  const discP=Number(tr.querySelector(".q-discount").value||0);
-  const gstP=Number(tr.querySelector(".q-gst").value||0);
-
-  const gross=qty*rate;
-  const disc=gross*discP/100;
-  const taxable=gross-disc;
-  const gstAmt=taxable*gstP/100;
-  const total=taxable+gstAmt;
-
-  subtotal+=gross;
-  discount+=disc;
-  gst+=gstAmt;
-
-  tr.querySelector(".q-total").innerText=money(total);
-
- });
-
- $("quotationSubtotal").innerText=money(subtotal);
- $("quotationDiscount").innerText=money(discount);
- $("quotationGst").innerText=money(gst);
- $("quotationGrand").innerText=money(subtotal-discount+gst);
-
-}
-
-
-$("quotationForm").onsubmit=async e=>{
-
- e.preventDefault();
-
- const clientId=$("quotationClient").value;
-
- if(!clientId){
-  $("quotationMessage").innerText="Client select karo.";
-  return;
- }
-
- const rows=[...document.querySelectorAll("#quotationItems tr")];
-
- if(!rows.length){
-  $("quotationMessage").innerText="Kam se kam ek item add karo.";
-  return;
- }
-
- let subtotal=0;
- let discountAmount=0;
- let gstAmount=0;
-
- const items=rows.map(tr=>{
-
-  const quantity=Number(tr.querySelector(".q-qty").value||0);
-  const rate=Number(tr.querySelector(".q-rate").value||0);
-  const discountPercent=Number(tr.querySelector(".q-discount").value||0);
-  const gstPercent=Number(tr.querySelector(".q-gst").value||0);
-
-  const gross=quantity*rate;
-  const discount=gross*discountPercent/100;
-  const taxable=gross-discount;
-  const gst=taxable*gstPercent/100;
-  const total=taxable+gst;
-
-  subtotal+=gross;
-  discountAmount+=discount;
-  gstAmount+=gst;
-
-  return{
-   item_name:tr.querySelector(".q-name").value.trim(),
-   description:tr.querySelector(".q-description").value.trim()||null,
-   quantity,
-   unit:tr.querySelector(".q-unit").value.trim()||"Test",
-   rate,
-   discount_percent:discountPercent,
-   gst_percent:gstPercent,
-   taxable_amount:taxable,
-   discount_amount:discount,
-   gst_amount:gst,
-   total_amount:total
-  };
-
- });
-
- const grandTotal=subtotal-discountAmount+gstAmount;
-
- const {data:quotation,error}=await supabaseClient
- .from("quotations")
- .insert({
-  quotation_date:$("quotationDate").value,
-  valid_until:$("quotationValid").value||null,
-  client_id:clientId,
-  status:$("quotationStatus").value,
-  subtotal,
-  discount_amount:discountAmount,
-  gst_amount:gstAmount,
-  grand_total:grandTotal,
-  terms_conditions:$("quotationTerms").value.trim()||null,
-  notes:$("quotationNotes").value.trim()||null
- })
- .select()
- .single();
-
- if(error){
-  $("quotationMessage").innerText=error.message;
-  return;
- }
-
- const itemRows=items.map(x=>({
-  ...x,
-  quotation_id:quotation.id
- }));
-
- const result=await supabaseClient
- .from("quotation_items")
- .insert(itemRows);
-
- if(result.error){
-
-  $("quotationMessage").innerText=result.error.message;
-
-  await supabaseClient
-  .from("quotations")
-  .delete()
-  .eq("id",quotation.id);
-
-  return;
- }
-
- closeModal("quotationModal");
-
- await loadQuotations();
-
- alert("Quotation saved successfully.");
-
-};
-
-
-window.deleteQuotation=async id=>{
-
- if(!confirm("Quotation delete karna hai?"))return;
-
- const {error}=await supabaseClient
- .from("quotations")
- .delete()
- .eq("id",id);
-
- if(error){
-  alert(error.message);
-  return;
- }
-
- await loadQuotations();
-};
-
-
-/* =========================
-DASHBOARD
-========================= */
-
-function updateDashboard(){
-
- $("dashProducts").innerText=inventory.length;
-
- $("dashStock").innerText=
- inventory.reduce((sum,x)=>sum+Number(x.current_qty||0),0);
-
- $("dashVendors").innerText=vendors.length;
-
- $("dashClients").innerText=clients.length;
-}
-
-
-/* =========================
-AUTH CHECK
-========================= */
-
-supabaseClient.auth.onAuthStateChange((event,session)=>{
-
- if(event==="SIGNED_OUT"){
-  showLogin();
- }
-
+window.editPO=id=>openDocument("po",id);window.editQuotation=id=>openDocument("quotation",id);
+window.deletePO=async id=>{if(!confirm("Delete PO?"))return;let r=await db.from("purchase_order_items").delete().eq("purchase_order_id",id);if(r.error)return alert(r.error.message);r=await db.from("purchase_orders").delete().eq("id",id);if(r.error)return alert(r.error.message);loadDocuments()};
+window.deleteQuotation=async id=>{if(!confirm("Delete quotation?"))return;let r=await db.from("quotation_items").delete().eq("quotation_id",id);if(r.error)return alert(r.error.message);r=await db.from("quotations").delete().eq("id",id);if(r.error)return alert(r.error.message);loadDocuments()};
+
+function closeModal(id){$(id).classList.add("hidden")}
+document.querySelectorAll(".navBtn").forEach(btn=>btn.onclick=()=>{
+ document.querySelectorAll(".navBtn").forEach(x=>x.classList.remove("active"));btn.classList.add("active");
+ document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));$(btn.dataset.section).classList.add("active");
 });
+$("loginBtn").onclick=async()=>{
+ const m=$("loginMessage");m.textContent="";
+ const r=await db.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});
+ if(r.error){m.textContent=r.error.message;return}await start();
+};
+$("loginPassword").onkeydown=e=>{if(e.key==="Enter")$("loginBtn").click()};
+$("logoutBtn").onclick=async()=>db.auth.signOut();
 
-
-(async()=>{
-
- const {data}=await supabaseClient.auth.getSession();
-
- if(data.session){
-  await startApp();
- }else{
-  showLogin();
- }
-
-})();
-
+async function start(){
+ try{await context();$("loginPage").classList.add("hidden");$("app").classList.remove("hidden");await loadBranches();await loadInventory();if(admin()){await loadParties();await loadDocuments()}}
+ catch(e){console.error(e);$("loginMessage").textContent=e.message;await db.auth.signOut()}
+}
+db.auth.onAuthStateChange((event)=>{if(event==="SIGNED_OUT"){$("app").classList.add("hidden");$("loginPage").classList.remove("hidden")}});
+(async()=>{const s=await db.auth.getSession();if(s.data.session)start()})();
 </script>
-
 </body>
 </html>
