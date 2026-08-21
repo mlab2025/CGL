@@ -25,7 +25,27 @@ header{min-height:72px;background:#fff;border-bottom:1px solid #ddd;display:flex
 <button id="loginBtn" style="width:100%;margin-top:10px">Login</button><div id="loginMessage" class="message"></div>
 </div></div>
 
-<div id="adminPage" class="hidden"><header><div class="header-brand"><img src="micron-logo.png" class="header-logo" alt="Micron Laboratory"><div class="header-title"><h2>Inventory Admin</h2><span id="headerBranchText">Stock Management</span></div></div><div class="header-right"><span id="roleBadge" class="role-badge">Loading...</span><button id="logoutBtn" class="gray">Logout</button></div></header>
+<div id="adminPage" class="hidden"><<header>
+  <div class="header-brand">
+    <img src="micron-logo.png" class="header-logo" alt="Micron Laboratory">
+
+    <div class="header-title">
+      <h2>Micron Laboratory</h2>
+      <span id="headerBranchText">Stock Management</span>
+    </div>
+  </div>
+
+  <div class="main-menu">
+    <button id="menuInventory" class="menu-btn active">📦 Inventory</button>
+    <button id="menuPO" class="menu-btn hidden">📄 PO</button>
+    <button id="menuQuotation" class="menu-btn hidden">🧾 Quotation</button>
+  </div>
+
+  <div class="header-right">
+    <span id="roleBadge" class="role-badge">Loading...</span>
+    <button id="logoutBtn" class="gray">Logout</button>
+  </div>
+</header>>
 <div class="container">
 <div class="stats"><div class="stat" id="statProducts"><small>Total Products</small><strong id="totalProducts">0</strong></div><div class="stat" id="statStock"><small>Total Stock</small><strong id="totalStock">0</strong></div><div class="stat" id="statLow"><small>Low Stock</small><strong id="lowStock">0</strong></div><div class="stat" id="statExpiring"><small>Expiring Soon</small><strong id="expiring">0</strong></div></div>
 
