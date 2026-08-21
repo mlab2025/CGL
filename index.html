@@ -3,20 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Micron Laboratory - Management System</title>
+<title>Micron Laboratory - Management Panel</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{box-sizing:border-box}
-
 body{
  margin:0;
  font-family:Arial,sans-serif;
  background:#f4f7fb;
  color:#172033
 }
-
 .hidden{display:none!important}
 
 button{
@@ -24,29 +22,39 @@ button{
  border-radius:8px;
  padding:10px 15px;
  background:#2563eb;
- color:#fff;
+ color:white;
  font-weight:bold;
  cursor:pointer
 }
+button:hover{opacity:.9}
+button.gray{background:#e2e8f0;color:#1e293b}
+button.red{background:#dc2626}
+button.green{background:#16a34a}
 
-button:hover{opacity:.92}
-
-button.gray{
- background:#e2e8f0;
- color:#1e293b
+input,select,textarea{
+ width:100%;
+ padding:10px 11px;
+ border:1px solid #cbd5e1;
+ border-radius:8px;
+ font-size:14px;
+ background:#fff
+}
+textarea{min-height:80px;resize:vertical}
+label{
+ display:block;
+ font-size:13px;
+ font-weight:bold;
+ margin:8px 0 5px
 }
 
-button.red{background:#dc2626}
-
 .card{
- background:#fff;
+ background:white;
  border:1px solid #e2e8f0;
  border-radius:14px;
- box-shadow:0 5px 20px rgba(0,0,0,.06)
+ box-shadow:0 5px 20px rgba(0,0,0,.05)
 }
 
 /* LOGIN */
-
 .login-page{
  min-height:100vh;
  display:flex;
@@ -54,65 +62,33 @@ button.red{background:#dc2626}
  justify-content:center;
  padding:20px
 }
-
 .login-card{
  width:400px;
+ max-width:100%;
  padding:30px;
  text-align:center
 }
-
 .login-logo{
  width:230px;
  max-width:85%;
- height:auto;
- margin:0 auto 12px;
- display:block
+ margin-bottom:15px
 }
-
-.login-card h2{margin:8px 0 4px}
-
+.login-card h2{margin:5px 0}
 .login-card p{
  color:#64748b;
- margin:0 0 22px
+ margin-bottom:22px
 }
-
-label{
- display:block;
- text-align:left;
- font-size:13px;
- font-weight:600;
- margin-top:8px
-}
-
-input,select,textarea{
- width:100%;
- padding:10px 11px;
- margin:5px 0 0;
- border:1px solid #cbd5e1;
- border-radius:8px;
- font-size:14px;
- background:#fff;
- min-height:40px
-}
-
-textarea{
- min-height:80px;
- resize:vertical
-}
-
 .message{
  margin-top:10px;
- color:#dc2626;
- font-size:13px
+ font-size:13px;
+ color:#dc2626
 }
-
 .success{color:#15803d}
 
 /* HEADER */
-
 header{
- min-height:72px;
- background:#fff;
+ min-height:70px;
+ background:white;
  border-bottom:1px solid #ddd;
  display:flex;
  align-items:center;
@@ -120,74 +96,61 @@ header{
  padding:8px 25px;
  gap:20px
 }
-
 .header-brand{
  display:flex;
  align-items:center;
- gap:14px
+ gap:15px
 }
-
 .header-logo{
  width:150px;
  max-height:55px;
  object-fit:contain
 }
-
 .header-title{
  border-left:1px solid #e2e8f0;
- padding-left:14px
+ padding-left:15px
 }
-
 .header-title h2{
  margin:0;
  font-size:19px
 }
-
 .header-title span{
  color:#64748b;
  font-size:13px
 }
-
 .header-right{
  display:flex;
  align-items:center;
  gap:10px
 }
-
 .role-badge{
- padding:7px 10px;
+ padding:7px 12px;
  border-radius:999px;
  background:#eef2ff;
  color:#3730a3;
  font-size:12px;
- font-weight:700
+ font-weight:bold
 }
 
 /* NAV */
-
-.navbar{
- background:#fff;
+.nav{
+ background:white;
  border-bottom:1px solid #e2e8f0;
- padding:12px 25px;
+ padding:10px 25px;
  display:flex;
- gap:10px;
+ gap:8px;
  flex-wrap:wrap
 }
-
-.nav-btn{
+.nav button{
  background:#f1f5f9;
- color:#334155;
- border:1px solid #e2e8f0
+ color:#334155
 }
-
-.nav-btn.active{
+.nav button.active{
  background:#2563eb;
- color:#fff;
- border-color:#2563eb
+ color:white
 }
 
 /* MAIN */
-
 .container{
  max-width:1450px;
  margin:auto;
@@ -198,21 +161,15 @@ header{
  display:flex;
  justify-content:space-between;
  align-items:center;
- margin-bottom:18px
+ margin-bottom:18px;
+ gap:10px
 }
-
-.page-title h1{
- margin:0;
- font-size:25px
-}
-
+.page-title h2{margin:0}
 .page-title p{
- margin:5px 0 0;
+ margin:4px 0 0;
  color:#64748b;
  font-size:13px
 }
-
-/* STATS */
 
 .stats{
  display:grid;
@@ -220,16 +177,13 @@ header{
  gap:15px;
  margin-bottom:20px
 }
-
 .stat{
- background:#fff;
+ background:white;
  border:1px solid #e2e8f0;
  border-radius:14px;
  padding:18px
 }
-
 .stat small{color:#64748b}
-
 .stat strong{
  display:block;
  font-size:28px;
@@ -237,18 +191,16 @@ header{
 }
 
 /* TOOLBAR */
-
 .toolbar{
- background:#fff;
- padding:16px;
+ background:white;
  border:1px solid #e2e8f0;
- border-radius:14px;
+ border-radius:12px;
+ padding:15px;
  display:grid;
  grid-template-columns:repeat(4,1fr);
  gap:12px;
- margin-bottom:18px
+ margin-bottom:15px
 }
-
 .toolbar-actions{
  display:flex;
  align-items:end;
@@ -256,62 +208,31 @@ header{
 }
 
 /* TABLE */
-
 .table-card{
  overflow:auto
 }
-
 table{
  width:100%;
  border-collapse:collapse;
  min-width:900px
 }
-
 th,td{
- padding:12px;
+ padding:11px;
  border-bottom:1px solid #edf2f7;
  text-align:left;
  font-size:13px
 }
-
 th{
  background:#f8fafc;
- font-weight:700
+ font-weight:bold
 }
-
 .action-btn{
  padding:6px 9px;
  font-size:12px;
  margin:2px
 }
 
-.badge{
- display:inline-block;
- padding:5px 8px;
- border-radius:999px;
- font-size:11px;
- font-weight:bold;
- background:#eef2ff;
- color:#3730a3
-}
-
-.badge.green{
- background:#dcfce7;
- color:#166534
-}
-
-.badge.yellow{
- background:#fef3c7;
- color:#92400e
-}
-
-.badge.red{
- background:#fee2e2;
- color:#991b1b
-}
-
 /* MODAL */
-
 .modal{
  position:fixed;
  inset:0;
@@ -322,93 +243,69 @@ th{
  padding:15px;
  z-index:100
 }
-
 .modal-box{
- width:900px;
+ width:850px;
  max-width:100%;
  max-height:92vh;
  overflow:auto;
  padding:25px
 }
-
 .modal-header{
  display:flex;
  justify-content:space-between;
  align-items:center;
  margin-bottom:15px
 }
-
 .grid{
  display:grid;
  grid-template-columns:1fr 1fr;
  gap:0 15px
 }
+.full{grid-column:1/-1}
 
-.full{
- grid-column:1/-1
+.items-table{
+ margin-top:15px;
+ overflow:auto
 }
-
-/* ITEMS */
-
-.items-header{
- display:flex;
- justify-content:space-between;
- align-items:center;
- margin:20px 0 10px
+.items-table table{
+ min-width:850px
 }
-
-.item-row{
- display:grid;
- grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;
- gap:8px;
- margin-bottom:8px;
- align-items:end
-}
-
 .total-box{
- margin-top:20px;
+ margin-top:15px;
  margin-left:auto;
- width:350px;
- max-width:100%
+ max-width:350px
 }
-
 .total-row{
  display:flex;
  justify-content:space-between;
- padding:8px 0;
- border-bottom:1px solid #e2e8f0
+ padding:7px 0;
+ border-bottom:1px solid #eee
 }
-
 .total-row.grand{
  font-size:18px;
  font-weight:bold
 }
 
 /* EMPTY */
-
 .empty{
- text-align:center;
  padding:35px;
+ text-align:center;
  color:#64748b
 }
 
-/* RESPONSIVE */
-
-@media(max-width:1000px){
+@media(max-width:900px){
  .stats{grid-template-columns:1fr 1fr}
  .toolbar{grid-template-columns:1fr 1fr}
- .item-row{grid-template-columns:1fr 1fr}
 }
-
-@media(max-width:700px){
+@media(max-width:650px){
  .header-title{display:none}
  .header-logo{width:120px}
  .role-badge{display:none}
- .container{padding:15px}
- .stats{grid-template-columns:1fr 1fr}
+ .stats{grid-template-columns:1fr}
  .toolbar{grid-template-columns:1fr}
  .grid{grid-template-columns:1fr}
  .full{grid-column:auto}
+ .container{padding:15px}
 }
 </style>
 </head>
@@ -421,25 +318,18 @@ th{
 
 <div class="card login-card">
 
-<img src="micron-logo.png"
-     class="login-logo"
-     alt="Micron Laboratory">
+<img src="micron-logo.png" class="login-logo" alt="Micron Laboratory">
 
-<h2>Micron Laboratory</h2>
-<p>Management System</p>
+<h2>Management Panel</h2>
+<p>Micron Laboratory</p>
 
 <label>Email</label>
-<input id="loginEmail"
-       type="email"
-       placeholder="Email">
+<input id="loginEmail" type="email" placeholder="Email">
 
 <label>Password</label>
-<input id="loginPassword"
-       type="password"
-       placeholder="Password">
+<input id="loginPassword" type="password" placeholder="Password">
 
-<button id="loginBtn"
-        style="width:100%;margin-top:12px">
+<button id="loginBtn" style="width:100%;margin-top:12px">
 Login
 </button>
 
@@ -449,38 +339,30 @@ Login
 </div>
 
 
-<!-- ================= APP ================= -->
+<!-- ================= MAIN PANEL ================= -->
 
-<div id="appPage" class="hidden">
+<div id="mainPage" class="hidden">
 
 <header>
 
 <div class="header-brand">
 
-<img src="micron-logo.png"
-     class="header-logo"
-     alt="Micron Laboratory">
+<img src="micron-logo.png" class="header-logo">
 
 <div class="header-title">
-
 <h2>Micron Laboratory</h2>
-
-<span id="headerSubtitle">
-Management System
-</span>
-
+<span>Management System</span>
 </div>
+
 </div>
 
 <div class="header-right">
 
-<span id="roleBadge"
-      class="role-badge">
+<span id="roleBadge" class="role-badge">
 Loading...
 </span>
 
-<button id="logoutBtn"
-        class="gray">
+<button id="logoutBtn" class="gray">
 Logout
 </button>
 
@@ -489,42 +371,40 @@ Logout
 </header>
 
 
-<!-- ================= NAV ================= -->
+<!-- NAVIGATION -->
 
-<div class="navbar">
+<div class="nav">
 
-<button id="inventoryNav"
-        class="nav-btn active">
-📦 Inventory
+<button id="navInventory" class="active">
+Inventory
 </button>
 
-<button id="poNav"
-        class="nav-btn hidden">
-🧾 Purchase Orders
+<button id="navPO" class="hidden">
+Purchase Orders
 </button>
 
-<button id="quotationNav"
-        class="nav-btn hidden">
-📄 Quotations
+<button id="navQuotation" class="hidden">
+Quotations
 </button>
 
 </div>
+
+
+<div class="container">
 
 
 <!-- ================= INVENTORY ================= -->
 
 <section id="inventorySection">
 
-<div class="container">
-
 <div class="page-title">
 
 <div>
-<h1>Inventory</h1>
-<p>Stock Management</p>
+<h2>Inventory</h2>
+<p>Stock management</p>
 </div>
 
-<button id="addProductBtn">
+<button id="addInventoryBtn">
 + Add Product
 </button>
 
@@ -560,7 +440,9 @@ Logout
 
 <div>
 <label>Branch</label>
-<select id="branchFilter"></select>
+<select id="branchFilter">
+<option value="">All Branches</option>
+</select>
 </div>
 
 <div>
@@ -573,7 +455,7 @@ Logout
 <div>
 <label>Stock Status</label>
 <select id="stockFilter">
-<option value="">All Stock</option>
+<option value="">All</option>
 <option value="in">In Stock</option>
 <option value="low">Low Stock</option>
 <option value="out">Out of Stock</option>
@@ -582,15 +464,7 @@ Logout
 
 <div>
 <label>Search</label>
-<input id="inventorySearch"
-       placeholder="Product / Batch">
-</div>
-
-<div class="toolbar-actions">
-<button id="clearInventory"
-        class="gray">
-Clear
-</button>
+<input id="inventorySearch" placeholder="Product / Batch">
 </div>
 
 </div>
@@ -601,30 +475,27 @@ Clear
 <table>
 
 <thead>
+
 <tr>
 <th>Product</th>
 <th>Batch</th>
 <th>Branch</th>
-<th>Entry</th>
 <th>Expiry</th>
 <th>Qty</th>
 <th>Unit</th>
 <th>Rate</th>
-<th>GST</th>
 <th>Supplier</th>
-<th>Action</th>
+<th>Actions</th>
 </tr>
+
 </thead>
 
 <tbody id="inventoryBody"></tbody>
 
 </table>
 
-<div id="inventoryEmpty"
-     class="empty">
+<div id="inventoryEmpty" class="empty">
 No inventory found.
-</div>
-
 </div>
 
 </div>
@@ -634,21 +505,43 @@ No inventory found.
 
 <!-- ================= PURCHASE ORDERS ================= -->
 
-<section id="poSection"
-         class="hidden">
-
-<div class="container">
+<section id="poSection" class="hidden">
 
 <div class="page-title">
 
 <div>
-<h1>Purchase Orders</h1>
-<p>Admin Only</p>
+<h2>Purchase Orders</h2>
+<p>Admin only</p>
 </div>
 
-<button id="newPOBtn">
-+ New Purchase Order
+<button id="addPOBtn">
++ Create PO
 </button>
+
+</div>
+
+
+<div class="toolbar">
+
+<div>
+<label>Status</label>
+<select id="poStatusFilter">
+<option value="">All Status</option>
+<option>Draft</option>
+<option>Pending</option>
+<option>Approved</option>
+<option>Received</option>
+<option>Cancelled</option>
+</select>
+</div>
+
+<div>
+<label>Search PO</label>
+<input id="poSearch" placeholder="PO number">
+</div>
+
+<div></div>
+<div></div>
 
 </div>
 
@@ -658,6 +551,7 @@ No inventory found.
 <table>
 
 <thead>
+
 <tr>
 <th>PO No.</th>
 <th>Date</th>
@@ -666,19 +560,17 @@ No inventory found.
 <th>Subtotal</th>
 <th>GST</th>
 <th>Grand Total</th>
-<th>Action</th>
+<th>Actions</th>
 </tr>
+
 </thead>
 
 <tbody id="poBody"></tbody>
 
 </table>
 
-<div id="poEmpty"
-     class="empty">
-No Purchase Orders found.
-</div>
-
+<div id="poEmpty" class="empty">
+No purchase orders found.
 </div>
 
 </div>
@@ -688,21 +580,47 @@ No Purchase Orders found.
 
 <!-- ================= QUOTATIONS ================= -->
 
-<section id="quotationSection"
-         class="hidden">
-
-<div class="container">
+<section id="quotationSection" class="hidden">
 
 <div class="page-title">
 
 <div>
-<h1>Quotations</h1>
-<p>Admin Only</p>
+<h2>Quotations</h2>
+<p>Admin only</p>
 </div>
 
-<button id="newQuotationBtn">
-+ New Quotation
+<button id="addQuotationBtn">
++ Create Quotation
 </button>
+
+</div>
+
+
+<div class="toolbar">
+
+<div>
+<label>Status</label>
+
+<select id="quotationStatusFilter">
+
+<option value="">All Status</option>
+<option>Draft</option>
+<option>Sent</option>
+<option>Accepted</option>
+<option>Rejected</option>
+<option>Expired</option>
+
+</select>
+
+</div>
+
+<div>
+<label>Search Quotation</label>
+<input id="quotationSearch" placeholder="Quotation number">
+</div>
+
+<div></div>
+<div></div>
 
 </div>
 
@@ -712,6 +630,7 @@ No Purchase Orders found.
 <table>
 
 <thead>
+
 <tr>
 <th>Quotation No.</th>
 <th>Date</th>
@@ -721,151 +640,122 @@ No Purchase Orders found.
 <th>Subtotal</th>
 <th>GST</th>
 <th>Grand Total</th>
-<th>Action</th>
+<th>Actions</th>
 </tr>
+
 </thead>
 
 <tbody id="quotationBody"></tbody>
 
 </table>
 
-<div id="quotationEmpty"
-     class="empty">
-No Quotations found.
-</div>
-
+<div id="quotationEmpty" class="empty">
+No quotations found.
 </div>
 
 </div>
 
 </section>
 
+</div>
+</div>
+
 
 <!-- ================= INVENTORY MODAL ================= -->
 
-<div id="productModal"
-     class="modal hidden">
+<div id="inventoryModal" class="modal hidden">
 
 <div class="card modal-box">
 
 <div class="modal-header">
 
-<h2 id="productModalTitle">
+<h2 id="inventoryModalTitle">
 Add Product
 </h2>
 
-<button class="gray"
-        id="closeProduct">
+<button id="closeInventoryModal" class="gray">
 ×
 </button>
 
 </div>
 
 
-<form id="productForm">
+<form id="inventoryForm">
 
-<input type="hidden"
-       id="productId">
-
+<input type="hidden" id="inventoryId">
 
 <div class="grid">
 
 <div>
 <label>Product Name *</label>
-<input id="productName"
-       required>
+<input id="invProductName" required>
 </div>
 
 <div>
 <label>Description</label>
-<input id="productDescription">
+<input id="invDescription">
 </div>
 
 <div>
 <label>Branch *</label>
-<select id="productBranch"
-        required>
-</select>
+<select id="invBranch" required></select>
 </div>
 
 <div>
-<label>Batch / Lot No. *</label>
-<input id="batchNo"
-       required>
+<label>Batch / Lot *</label>
+<input id="invBatch" required>
 </div>
 
 <div>
 <label>Entry Date *</label>
-<input id="entryDate"
-       type="date"
-       required>
+<input id="invEntryDate" type="date" required>
 </div>
 
 <div>
 <label>Expiry Date</label>
-<input id="expiryDate"
-       type="date">
+<input id="invExpiry" type="date">
 </div>
 
 <div>
-<label>Current Qty *</label>
-<input id="currentQty"
-       type="number"
-       min="0"
-       step="0.01"
-       required>
+<label>Current Quantity *</label>
+<input id="invQty" type="number" min="0" step="0.01" required>
 </div>
 
 <div>
 <label>Unit *</label>
-<input id="unit"
-       value="Kit"
-       required>
+<input id="invUnit" value="Kit" required>
 </div>
 
 <div>
 <label>Units Per Pack</label>
-<input id="unitsPerPack"
-       type="number"
-       min="0">
+<input id="invPack" type="number" min="0">
 </div>
 
 <div>
 <label>Rate</label>
-<input id="rate"
-       type="number"
-       min="0"
-       step="0.01">
+<input id="invRate" type="number" min="0" step="0.01">
 </div>
 
 <div>
 <label>GST %</label>
-<input id="gstPercent"
-       type="number"
-       min="0"
-       step="0.01">
+<input id="invGST" type="number" min="0" max="100" step="0.01">
 </div>
 
 <div>
 <label>Supplier</label>
-<input id="supplier">
+<input id="invSupplier">
 </div>
 
 <div>
 <label>Reorder Level</label>
-<input id="reorderLevel"
-       type="number"
-       min="0">
+<input id="invReorder" type="number" min="0">
 </div>
 
 </div>
 
+<div style="text-align:right;margin-top:18px">
 
-<div style="text-align:right;margin-top:20px">
-
-<button type="button"
-        id="cancelProduct"
-        class="gray">
+<button type="button" id="cancelInventory" class="gray">
 Cancel
 </button>
 
@@ -875,93 +765,25 @@ Save Product
 
 </div>
 
-<div id="productMessage"
-     class="message">
-</div>
+<div id="inventoryMessage" class="message"></div>
 
 </form>
 
 </div>
-
-</div>
-
-
-<!-- ================= STOCK MODAL ================= -->
-
-<div id="stockModal"
-     class="modal hidden">
-
-<div class="card modal-box"
-     style="max-width:430px">
-
-<div class="modal-header">
-
-<h2>Stock Movement</h2>
-
-<button id="closeStock"
-        class="gray">
-×
-</button>
-
-</div>
-
-<p>
-Product:
-<strong id="stockProduct"></strong>
-</p>
-
-<p>
-Batch:
-<strong id="stockBatch"></strong>
-</p>
-
-<p>
-Current Stock:
-<strong id="stockCurrent"></strong>
-</p>
-
-<label>Quantity</label>
-
-<input id="movementQty"
-       type="number"
-       min="0.01"
-       step="0.01">
-
-<div style="text-align:right;margin-top:15px">
-
-<button id="outBtn"
-        class="red">
-OUT
-</button>
-
-<button id="inBtn">
-IN
-</button>
-
-</div>
-
-<div id="stockMessage"
-     class="message">
-</div>
-
-</div>
-
 </div>
 
 
 <!-- ================= PO MODAL ================= -->
 
-<div id="poModal"
-     class="modal hidden">
+<div id="poModal" class="modal hidden">
 
 <div class="card modal-box">
 
 <div class="modal-header">
 
-<h2>New Purchase Order</h2>
+<h2>Create Purchase Order</h2>
 
-<button id="closePO"
-        class="gray">
+<button id="closePOModal" class="gray">
 ×
 </button>
 
@@ -974,44 +796,74 @@ IN
 
 <div>
 <label>PO Date *</label>
-<input id="poDate"
-       type="date"
-       required>
+<input id="poDate" type="date" required>
 </div>
 
 <div>
 <label>Vendor *</label>
-<select id="poVendor"
-        required>
-<option value="">Select Vendor</option>
+<select id="poVendor" required></select>
+</div>
+
+<div>
+<label>Status</label>
+
+<select id="poStatus">
+
+<option>Draft</option>
+<option>Pending</option>
+<option>Approved</option>
+<option>Received</option>
+<option>Cancelled</option>
+
 </select>
+
+</div>
+
+<div>
+<label>Notes</label>
+<input id="poNotes">
 </div>
 
 <div class="full">
+
 <label>Terms & Conditions</label>
 <textarea id="poTerms"></textarea>
-</div>
 
-<div class="full">
-<label>Notes</label>
-<textarea id="poNotes"></textarea>
 </div>
 
 </div>
 
-
-<div class="items-header">
 
 <h3>Items</h3>
 
-<button type="button"
-        id="addPOItem">
-+ Add Item
-</button>
+<div class="items-table">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Product</th>
+<th>Description</th>
+<th>Qty</th>
+<th>Unit</th>
+<th>Rate</th>
+<th>GST %</th>
+<th>Total</th>
+<th></th>
+</tr>
+
+</thead>
+
+<tbody id="poItemsBody"></tbody>
+
+</table>
 
 </div>
 
-<div id="poItems"></div>
+<button type="button" id="addPOItem" style="margin-top:10px">
++ Add Item
+</button>
 
 
 <div class="total-box">
@@ -1036,9 +888,7 @@ IN
 
 <div style="text-align:right;margin-top:20px">
 
-<button type="button"
-        class="gray"
-        id="cancelPO">
+<button type="button" id="cancelPO" class="gray">
 Cancel
 </button>
 
@@ -1048,30 +898,25 @@ Save Purchase Order
 
 </div>
 
-<div id="poMessage"
-     class="message">
-</div>
+<div id="poMessage" class="message"></div>
 
 </form>
 
 </div>
-
 </div>
 
 
 <!-- ================= QUOTATION MODAL ================= -->
 
-<div id="quotationModal"
-     class="modal hidden">
+<div id="quotationModal" class="modal hidden">
 
 <div class="card modal-box">
 
 <div class="modal-header">
 
-<h2>New Quotation</h2>
+<h2>Create Quotation</h2>
 
-<button id="closeQuotation"
-        class="gray">
+<button id="closeQuotationModal" class="gray">
 ×
 </button>
 
@@ -1084,60 +929,82 @@ Save Purchase Order
 
 <div>
 <label>Quotation Date *</label>
-<input id="quotationDate"
-       type="date"
-       required>
+<input id="quotationDate" type="date" required>
 </div>
 
 <div>
 <label>Valid Until</label>
-<input id="validUntil"
-       type="date">
+<input id="quotationValid" type="date">
 </div>
 
 <div>
 <label>Client *</label>
-<select id="quotationClient"
-        required>
-<option value="">Select Client</option>
-</select>
+<select id="quotationClient" required></select>
 </div>
 
 <div>
 <label>Status</label>
+
 <select id="quotationStatus">
-<option value="draft">Draft</option>
-<option value="sent">Sent</option>
-<option value="accepted">Accepted</option>
-<option value="rejected">Rejected</option>
+
+<option>Draft</option>
+<option>Sent</option>
+<option>Accepted</option>
+<option>Rejected</option>
+<option>Expired</option>
+
 </select>
+
 </div>
 
 <div class="full">
+
+<label>Notes</label>
+<input id="quotationNotes">
+
+</div>
+
+<div class="full">
+
 <label>Terms & Conditions</label>
 <textarea id="quotationTerms"></textarea>
-</div>
 
-<div class="full">
-<label>Notes</label>
-<textarea id="quotationNotes"></textarea>
 </div>
 
 </div>
 
-
-<div class="items-header">
 
 <h3>Items</h3>
 
-<button type="button"
-        id="addQuotationItem">
-+ Add Item
-</button>
+<div class="items-table">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Item</th>
+<th>Description</th>
+<th>Qty</th>
+<th>Unit</th>
+<th>Rate</th>
+<th>Discount %</th>
+<th>GST %</th>
+<th>Total</th>
+<th></th>
+</tr>
+
+</thead>
+
+<tbody id="quotationItemsBody"></tbody>
+
+</table>
 
 </div>
 
-<div id="quotationItems"></div>
+<button type="button" id="addQuotationItem" style="margin-top:10px">
++ Add Item
+</button>
 
 
 <div class="total-box">
@@ -1167,9 +1034,7 @@ Save Purchase Order
 
 <div style="text-align:right;margin-top:20px">
 
-<button type="button"
-        class="gray"
-        id="cancelQuotation">
+<button type="button" id="cancelQuotation" class="gray">
 Cancel
 </button>
 
@@ -1179,14 +1044,11 @@ Save Quotation
 
 </div>
 
-<div id="quotationMessage"
-     class="message">
-</div>
+<div id="quotationMessage" class="message"></div>
 
 </form>
 
 </div>
-
 </div>
 
 
@@ -1203,10 +1065,7 @@ const SUPABASE_KEY =
 "sb_publishable_EPC6EEnO2EEvcIQFtozteA_XTKMyPx1";
 
 const supabaseClient =
-supabase.createClient(
- SUPABASE_URL,
- SUPABASE_KEY
-);
+supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 
 /* =========================================================
@@ -1219,19 +1078,20 @@ let currentBranchId=null;
 
 let branches=[];
 let inventory=[];
-
 let vendors=[];
 let clients=[];
-
-let selectedStock=null;
 
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
+function $(id){
+ return document.getElementById(id);
+}
+
 function escapeHtml(value){
- return String(value ?? "")
+ return String(value??"")
  .replace(/&/g,"&amp;")
  .replace(/</g,"&lt;")
  .replace(/>/g,"&gt;")
@@ -1240,14 +1100,11 @@ function escapeHtml(value){
 }
 
 function today(){
- return new Date()
- .toISOString()
- .split("T")[0];
+ return new Date().toISOString().split("T")[0];
 }
 
-function money(value){
- return "₹"+Number(value||0)
- .toLocaleString("en-IN",{
+function money(n){
+ return "₹"+Number(n||0).toLocaleString("en-IN",{
   minimumFractionDigits:2,
   maximumFractionDigits:2
  });
@@ -1270,16 +1127,13 @@ function isAdmin(){
 
 
 /* =========================================================
-   LOAD USER
+   USER CONTEXT
 ========================================================= */
 
-async function loadUser(){
+async function loadUserContext(){
 
  const userResult =
  await supabaseClient.auth.getUser();
-
- if(userResult.error)
-  throw userResult.error;
 
  currentUser=userResult.data.user;
 
@@ -1314,37 +1168,23 @@ async function loadUser(){
  branchResult.data?.branch_id || null;
 
 
- document.getElementById("roleBadge")
- .innerText=roleName();
+ $("roleBadge").innerText=roleName();
 
 
- /*
-    PO + QUOTATION
-    ONLY ADMIN
- */
+ /* ADMIN ONLY */
 
- document.getElementById("poNav")
- .classList.toggle(
-  "hidden",
-  !isAdmin()
- );
+ if(isAdmin()){
 
- document.getElementById("quotationNav")
- .classList.toggle(
-  "hidden",
-  !isAdmin()
- );
+  $("navPO").classList.remove("hidden");
+  $("navQuotation").classList.remove("hidden");
 
+ }else{
 
- /*
-    Header
- */
+  $("navPO").classList.add("hidden");
+  $("navQuotation").classList.add("hidden");
 
- document.getElementById("headerSubtitle")
- .innerText =
- isAdmin()
- ? "Inventory • Purchase Orders • Quotations"
- : "Inventory • Stock Management";
+ }
+
 }
 
 
@@ -1367,50 +1207,42 @@ async function loadBranches(){
  branches=result.data||[];
 
 
- const filter =
- document.getElementById("branchFilter");
-
- const productBranch =
- document.getElementById("productBranch");
-
-
- filter.innerHTML =
+ $("branchFilter").innerHTML =
  isAdmin()
- ? `<option value="">All Branches</option>`
- : "";
+ ?
+ '<option value="">All Branches</option>'
+ :
+ "";
 
- productBranch.innerHTML="";
+
+ $("invBranch").innerHTML="";
 
 
  branches.forEach(branch=>{
 
-  if(
-   isAdmin() ||
-   branch.id===currentBranchId
-  ){
+  if(isAdmin() || branch.id===currentBranchId){
 
-   const option=
-   document.createElement("option");
+   const o=document.createElement("option");
+   o.value=branch.id;
+   o.textContent=branch.branch_name;
 
-   option.value=branch.id;
-   option.textContent=branch.branch_name;
+   $("branchFilter").appendChild(o);
 
-   filter.appendChild(
-    option.cloneNode(true)
-   );
 
-   productBranch.appendChild(
-    option
-   );
+   const o2=document.createElement("option");
+   o2.value=branch.id;
+   o2.textContent=branch.branch_name;
+
+   $("invBranch").appendChild(o2);
+
   }
 
  });
 
 
- if(!isAdmin()){
-  filter.value=currentBranchId||"";
-  productBranch.value=currentBranchId||"";
- }
+ if(!isAdmin())
+  $("branchFilter").value=currentBranchId||"";
+
 }
 
 
@@ -1420,119 +1252,90 @@ async function loadBranches(){
 
 async function loadInventory(){
 
- let query =
+ let query=
  supabaseClient
  .from("inventory_stock")
  .select("*")
  .eq("is_active",true)
  .order("product_name");
 
- if(
-  !isAdmin() &&
-  currentBranchId
- ){
-  query=query.eq(
-   "branch_id",
-   currentBranchId
-  );
+ if(!isAdmin() && currentBranchId){
+
+  query=query.eq("branch_id",currentBranchId);
+
  }
 
  const result=await query;
 
  if(result.error){
+
+  console.error(result.error);
   alert(result.error.message);
   return;
+
  }
 
  inventory=result.data||[];
 
- populateProductFilter();
+ populateInventoryFilters();
  renderInventory();
+
 }
 
 
-function populateProductFilter(){
+function populateInventoryFilters(){
 
- const select=
- document.getElementById("productFilter");
+ const products=
+ [...new Set(
+  inventory
+  .map(x=>x.product_name)
+  .filter(Boolean)
+ )].sort();
 
- const products=[
-  ...new Set(
-   inventory
-   .map(x=>x.product_name)
-   .filter(Boolean)
-  )
- ].sort();
+ $("productFilter").innerHTML=
+ '<option value="">All Products</option>';
 
- select.innerHTML=
- `<option value="">All Products</option>`;
+ products.forEach(p=>{
 
- products.forEach(product=>{
+  const o=document.createElement("option");
 
-  const option=
-  document.createElement("option");
+  o.value=p;
+  o.textContent=p;
 
-  option.value=product;
-  option.textContent=product;
-
-  select.appendChild(option);
+  $("productFilter").appendChild(o);
 
  });
+
 }
 
 
 function getFilteredInventory(){
 
- const branch=
- document.getElementById("branchFilter").value;
-
- const product=
- document.getElementById("productFilter").value;
-
- const status=
- document.getElementById("stockFilter").value;
-
- const search=
- document.getElementById("inventorySearch")
- .value
- .trim()
- .toLowerCase();
+ const branch=$("branchFilter").value;
+ const product=$("productFilter").value;
+ const status=$("stockFilter").value;
+ const search=$("inventorySearch").value
+ .trim().toLowerCase();
 
 
  return inventory.filter(item=>{
 
-  if(
-   branch &&
-   item.branch_id!==branch
-  )
+  if(branch && item.branch_id!==branch)
    return false;
 
-  if(
-   product &&
-   item.product_name!==product
-  )
+  if(product && item.product_name!==product)
    return false;
 
+  const qty=Number(item.current_qty||0);
 
-  const qty=
-   Number(item.current_qty||0);
-
-  if(
-   status==="in" &&
-   qty<=0
-  )
+  if(status==="in" && qty<=0)
    return false;
 
-  if(
-   status==="low" &&
-   qty>Number(item.reorder_level||0)
-  )
+  if(status==="out" && qty!==0)
    return false;
 
-  if(
-   status==="out" &&
-   qty!==0
-  )
+  if(status==="low" &&
+     qty>Number(item.reorder_level||0))
    return false;
 
 
@@ -1543,423 +1346,261 @@ function getFilteredInventory(){
     item.batch_no,
     item.supplier,
     item.description
-   ]
-   .join(" ")
-   .toLowerCase();
+   ].join(" ").toLowerCase();
 
    if(!text.includes(search))
     return false;
+
   }
 
-
   return true;
+
  });
+
 }
 
 
 function renderInventory(){
 
- const list=
- getFilteredInventory();
+ const list=getFilteredInventory();
 
- const body=
- document.getElementById("inventoryBody");
-
- body.innerHTML="";
+ $("inventoryBody").innerHTML="";
 
 
  list.forEach(item=>{
 
   const branch=
-   branches.find(
-    b=>b.id===item.branch_id
-   );
+  branches.find(x=>x.id===item.branch_id);
 
 
-  let status="green";
+  let actions="";
 
-  if(
-   Number(item.current_qty||0)<=0
-  )
-   status="red";
-
-  else if(
-   Number(item.current_qty||0)
-   <=
-   Number(item.reorder_level||0)
-  )
-   status="yellow";
+  actions+=
+  `<button class="action-btn" onclick="stockMovement('${item.id}')">
+  IN / OUT
+  </button>`;
 
 
-  const row=
-  document.createElement("tr");
+  if(isAdmin() || currentRole==="manager"){
+
+   actions+=
+   `<button class="action-btn gray"
+   onclick="editInventory('${item.id}')">
+   Edit
+   </button>`;
+
+  }
 
 
-  row.innerHTML=`
+  if(isAdmin()){
+
+   actions+=
+   `<button class="action-btn red"
+   onclick="deleteInventory('${item.id}')">
+   Delete
+   </button>`;
+
+  }
+
+
+  const tr=document.createElement("tr");
+
+  tr.innerHTML=`
 
   <td>
-   <strong>
-   ${escapeHtml(item.product_name)}
-   </strong>
-
+   <strong>${escapeHtml(item.product_name)}</strong>
    <br>
-
-   <small>
-   ${escapeHtml(item.description||"")}
-   </small>
+   <small>${escapeHtml(item.description||"")}</small>
   </td>
 
-  <td>
-   ${escapeHtml(item.batch_no||"-")}
-  </td>
+  <td>${escapeHtml(item.batch_no||"-")}</td>
 
-  <td>
-   ${escapeHtml(branch?.branch_name||"-")}
-  </td>
+  <td>${escapeHtml(branch?.branch_name||"-")}</td>
 
-  <td>
-   ${escapeHtml(item.entry_date||"")}
-  </td>
+  <td>${escapeHtml(item.expiry_date||"-")}</td>
 
-  <td>
-   ${escapeHtml(item.expiry_date||"-")}
-  </td>
+  <td><strong>${escapeHtml(item.current_qty)}</strong></td>
 
-  <td>
-   <span class="badge ${status}">
-   ${escapeHtml(item.current_qty||0)}
-   </span>
-  </td>
+  <td>${escapeHtml(item.unit||"")}</td>
 
-  <td>
-   ${escapeHtml(item.unit||"")}
-  </td>
+  <td>${money(item.rate)}</td>
 
-  <td>
-   ${money(item.rate)}
-  </td>
+  <td>${escapeHtml(item.supplier||"-")}</td>
 
-  <td>
-   ${escapeHtml(item.gst_percent||0)}%
-  </td>
-
-  <td>
-   ${escapeHtml(item.supplier||"-")}
-  </td>
-
-  <td>
-
-   <button
-    class="action-btn"
-    onclick="openStock('${item.id}')">
-    IN / OUT
-   </button>
-
-   ${
-    currentRole!=="operator"
-    ?
-    `<button
-      class="action-btn gray"
-      onclick="editProduct('${item.id}')">
-      Edit
-     </button>`
-    :""
-   }
-
-   ${
-    currentRole==="admin"
-    ?
-    `<button
-      class="action-btn red"
-      onclick="deleteProduct('${item.id}')">
-      Delete
-     </button>`
-    :""
-   }
-
-  </td>
+  <td>${actions}</td>
 
   `;
 
-  body.appendChild(row);
+  $("inventoryBody").appendChild(tr);
 
  });
 
 
- document.getElementById(
-  "inventoryEmpty"
- ).style.display=
- list.length?"none":"block";
+ $("inventoryEmpty").style.display=
+ list.length ? "none":"block";
 
 
  updateInventoryStats(list);
+
 }
 
 
 function updateInventoryStats(list){
 
- document.getElementById(
-  "totalProducts"
- ).innerText=
- new Set(
-  list.map(x=>x.product_name)
- ).size;
+ $("totalProducts").innerText=
+ new Set(list.map(x=>x.product_name)).size;
 
 
- let stock=0;
- let low=0;
- let expiring=0;
-
-
- const now=
- new Date();
-
- now.setHours(0,0,0,0);
-
-
- const future=
- new Date(now);
-
- future.setDate(
-  future.getDate()+30
+ $("totalStock").innerText=
+ list.reduce(
+  (sum,x)=>sum+Number(x.current_qty||0),0
  );
 
 
- list.forEach(item=>{
-
-  const qty=
-   Number(item.current_qty||0);
-
-  stock+=qty;
-
-  if(
-   qty<=Number(item.reorder_level||0)
-  )
-   low++;
+ $("lowStock").innerText=
+ list.filter(x=>
+  Number(x.current_qty||0)
+  <=
+  Number(x.reorder_level||0)
+ ).length;
 
 
-  if(item.expiry_date){
+ const now=new Date();
+ const future=new Date();
 
-   const expiry=
-    new Date(item.expiry_date);
-
-   if(
-    expiry>=now &&
-    expiry<=future
-   )
-    expiring++;
-  }
-
- });
+ future.setDate(future.getDate()+30);
 
 
- document.getElementById(
-  "totalStock"
- ).innerText=stock;
+ $("expiring").innerText=
+ list.filter(x=>{
 
- document.getElementById(
-  "lowStock"
- ).innerText=low;
+  if(!x.expiry_date)return false;
 
- document.getElementById(
-  "expiring"
- ).innerText=expiring;
+  const d=new Date(x.expiry_date);
+
+  return d>=now && d<=future;
+
+ }).length;
+
 }
 
 
 /* =========================================================
-   ADD / EDIT INVENTORY
+   INVENTORY MODAL
 ========================================================= */
 
-function openProduct(item=null){
+function openInventoryModal(item=null){
 
- document.getElementById(
-  "productModal"
- ).classList.remove("hidden");
+ $("inventoryModal").classList.remove("hidden");
 
-
- document.getElementById(
-  "productModalTitle"
- ).innerText=
- item?"Edit Product":"Add Product";
+ $("inventoryModalTitle").innerText=
+ item ? "Edit Product":"Add Product";
 
 
- document.getElementById("productId")
- .value=item?.id||"";
+ $("inventoryId").value=item?.id||"";
+ $("invProductName").value=item?.product_name||"";
+ $("invDescription").value=item?.description||"";
+ $("invBatch").value=item?.batch_no||"";
+ $("invEntryDate").value=item?.entry_date||today();
+ $("invExpiry").value=item?.expiry_date||"";
+ $("invQty").value=item?.current_qty??0;
+ $("invUnit").value=item?.unit||"Kit";
+ $("invPack").value=item?.units_per_pack??"";
+ $("invRate").value=item?.rate??0;
+ $("invGST").value=item?.gst_percent??0;
+ $("invSupplier").value=item?.supplier||"";
+ $("invReorder").value=item?.reorder_level??0;
 
- document.getElementById("productName")
- .value=item?.product_name||"";
 
- document.getElementById("productDescription")
- .value=item?.description||"";
-
- document.getElementById("batchNo")
- .value=item?.batch_no||"";
-
- document.getElementById("entryDate")
- .value=item?.entry_date||today();
-
- document.getElementById("expiryDate")
- .value=item?.expiry_date||"";
-
- document.getElementById("currentQty")
- .value=item?.current_qty??0;
-
- document.getElementById("unit")
- .value=item?.unit||"Kit";
-
- document.getElementById("unitsPerPack")
- .value=item?.units_per_pack??"";
-
- document.getElementById("rate")
- .value=item?.rate??0;
-
- document.getElementById("gstPercent")
- .value=item?.gst_percent??0;
-
- document.getElementById("supplier")
- .value=item?.supplier||"";
-
- document.getElementById("reorderLevel")
- .value=item?.reorder_level??0;
-
- document.getElementById(
-  "productBranch"
- ).value=
- item?.branch_id||
- currentBranchId||
- branches[0]?.id||
+ $("invBranch").value=
+ item?.branch_id ||
+ currentBranchId ||
+ branches[0]?.id ||
  "";
 
 
- document.getElementById(
-  "productBranch"
- ).disabled=!isAdmin();
+ if(!isAdmin())
+  $("invBranch").disabled=true;
+ else
+  $("invBranch").disabled=false;
 
- document.getElementById(
-  "productMessage"
- ).innerText="";
 }
 
 
-window.editProduct=function(id){
+function closeInventoryModal(){
 
- if(
-  currentRole!=="admin" &&
-  currentRole!=="manager"
- )
-  return;
+ $("inventoryModal").classList.add("hidden");
 
- const item=
- inventory.find(x=>x.id===id);
+}
 
- if(item)
-  openProduct(item);
+
+$("addInventoryBtn").onclick=()=>{
+
+ openInventoryModal();
+
 };
 
 
-document.getElementById(
- "addProductBtn"
-).onclick=()=>openProduct();
+$("closeInventoryModal").onclick=
+$("cancelInventory").onclick=
+closeInventoryModal;
 
 
-async function saveProduct(e){
+$("inventoryForm").onsubmit=async function(e){
 
  e.preventDefault();
 
+ const id=$("inventoryId").value;
 
- const id=
- document.getElementById("productId").value;
+ const branchId=$("invBranch").value;
 
 
- if(
-  id &&
-  currentRole!=="admin" &&
-  currentRole!=="manager"
- ){
-  alert("Edit permission nahi hai.");
+ if(!branchId){
+
+  $("inventoryMessage").innerText=
+  "Branch select karo.";
+
   return;
+
  }
 
 
- const product={
+ const data={
 
-  product_name:
-   document.getElementById(
-    "productName"
-   ).value.trim(),
+  product_name:$("invProductName").value.trim(),
 
   description:
-   document.getElementById(
-    "productDescription"
-   ).value.trim()||null,
+  $("invDescription").value.trim()||null,
 
-  branch_id:
-   document.getElementById(
-    "productBranch"
-   ).value,
+  branch_id:branchId,
 
-  batch_no:
-   document.getElementById(
-    "batchNo"
-   ).value.trim(),
+  batch_no:$("invBatch").value.trim(),
 
-  entry_date:
-   document.getElementById(
-    "entryDate"
-   ).value,
+  entry_date:$("invEntryDate").value,
 
-  expiry_date:
-   document.getElementById(
-    "expiryDate"
-   ).value||null,
+  expiry_date:$("invExpiry").value||null,
 
   current_qty:
-   Number(
-    document.getElementById(
-     "currentQty"
-    ).value||0
-   ),
+  Number($("invQty").value||0),
 
-  unit:
-   document.getElementById(
-    "unit"
-   ).value.trim(),
+  unit:$("invUnit").value.trim(),
 
   units_per_pack:
-   Number(
-    document.getElementById(
-     "unitsPerPack"
-    ).value||0
-   ),
+  Number($("invPack").value||0),
 
-  rate:
-   Number(
-    document.getElementById(
-     "rate"
-    ).value||0
-   ),
+  rate:Number($("invRate").value||0),
 
   gst_percent:
-   Number(
-    document.getElementById(
-     "gstPercent"
-    ).value||0
-   ),
+  Number($("invGST").value||0),
 
   supplier:
-   document.getElementById(
-    "supplier"
-   ).value.trim(),
+  $("invSupplier").value.trim()||null,
 
   reorder_level:
-   Number(
-    document.getElementById(
-     "reorderLevel"
-    ).value||0
-   ),
+  Number($("invReorder").value||0),
 
   is_active:true
+
  };
 
 
@@ -1969,59 +1610,54 @@ async function saveProduct(e){
  if(id){
 
   result=
-   await supabaseClient
-   .from("inventory_stock")
-   .update(product)
-   .eq("id",id);
+  await supabaseClient
+  .from("inventory_stock")
+  .update(data)
+  .eq("id",id);
 
  }else{
 
   result=
-   await supabaseClient
-   .from("inventory_stock")
-   .insert(product);
+  await supabaseClient
+  .from("inventory_stock")
+  .insert(data);
+
  }
 
 
  if(result.error){
 
-  document.getElementById(
-   "productMessage"
-  ).innerText=
-   result.error.message;
+  $("inventoryMessage").innerText=
+  result.error.message;
 
   return;
+
  }
 
 
- document.getElementById(
-  "productModal"
- ).classList.add("hidden");
-
+ closeInventoryModal();
 
  await loadInventory();
-}
+
+};
 
 
-document.getElementById(
- "productForm"
-).addEventListener(
- "submit",
- saveProduct
-);
+window.editInventory=function(id){
+
+ const item=
+ inventory.find(x=>x.id===id);
+
+ if(item)
+  openInventoryModal(item);
+
+};
 
 
-window.deleteProduct=async function(id){
+window.deleteInventory=async function(id){
 
- if(currentRole!=="admin")
-  return;
+ if(!isAdmin())return;
 
-
- if(
-  !confirm(
-   "Product delete karna hai?"
-  )
- )
+ if(!confirm("Delete this product?"))
   return;
 
 
@@ -2033,12 +1669,15 @@ window.deleteProduct=async function(id){
 
 
  if(result.error){
+
   alert(result.error.message);
   return;
+
  }
 
 
  loadInventory();
+
 };
 
 
@@ -2046,127 +1685,70 @@ window.deleteProduct=async function(id){
    STOCK IN / OUT
 ========================================================= */
 
-window.openStock=function(id){
+window.stockMovement=async function(id){
 
- selectedStock=
+ const item=
  inventory.find(x=>x.id===id);
 
- if(!selectedStock)
-  return;
+ if(!item)return;
 
 
- document.getElementById(
-  "stockModal"
- ).classList.remove("hidden");
-
-
- document.getElementById(
-  "stockProduct"
- ).innerText=
- selectedStock.product_name;
-
-
- document.getElementById(
-  "stockBatch"
- ).innerText=
- selectedStock.batch_no||"-";
-
-
- document.getElementById(
-  "stockCurrent"
- ).innerText=
- selectedStock.current_qty;
-
-
- document.getElementById(
-  "movementQty"
- ).value="";
-
-
- document.getElementById(
-  "stockMessage"
- ).innerText="";
-};
-
-
-async function stockMovement(type){
-
- if(!selectedStock)
-  return;
-
-
- const qty=
- Number(
-  document.getElementById(
-   "movementQty"
-  ).value
+ const value=
+ prompt(
+  `Current Stock: ${item.current_qty}\n\nEnter quantity to ADD.\nFor OUT use negative value.`,
+  ""
  );
 
 
- if(!qty||qty<=0){
+ if(value===null)return;
 
-  document.getElementById(
-   "stockMessage"
-  ).innerText=
-   "Valid quantity enter karo.";
 
+ const qty=Number(value);
+
+ if(!qty){
+
+  alert("Valid quantity enter karo.");
   return;
+
  }
 
 
- const rpc=
- type==="IN"
- ?"stock_in"
- :"stock_out";
+ let functionName=
+ qty>0 ? "stock_in":"stock_out";
+
+
+ const amount=Math.abs(qty);
 
 
  const result=
- await supabaseClient.rpc(
-  rpc,
-  {
-   p_stock_id:selectedStock.id,
-   p_quantity:qty
-  }
- );
+ await supabaseClient
+ .rpc(functionName,{
+  p_stock_id:item.id,
+  p_quantity:amount
+ });
 
 
  if(result.error){
 
-  document.getElementById(
-   "stockMessage"
-  ).innerText=
-   result.error.message;
-
+  alert(result.error.message);
   return;
+
  }
 
 
- document.getElementById(
-  "stockModal"
- ).classList.add("hidden");
+ loadInventory();
 
-
- await loadInventory();
-}
-
-
-document.getElementById(
- "inBtn"
-).onclick=
- ()=>stockMovement("IN");
-
-
-document.getElementById(
- "outBtn"
-).onclick=
- ()=>stockMovement("OUT");
+};
 
 
 /* =========================================================
-   PO LOAD
+   ADMIN DATA
 ========================================================= */
 
 async function loadVendors(){
+
+ if(!isAdmin())return;
+
 
  const result=
  await supabaseClient
@@ -2176,37 +1758,51 @@ async function loadVendors(){
  .order("name");
 
 
- if(result.error)
-  throw result.error;
+ if(result.error){
+
+  console.error(result.error);
+
+  alert(
+   "Vendors load nahi ho rahe: "+
+   result.error.message
+  );
+
+  return;
+
+ }
 
 
  vendors=result.data||[];
 
 
- const select=
- document.getElementById("poVendor");
-
- select.innerHTML=
- `<option value="">Select Vendor</option>`;
+ $("poVendor").innerHTML=
+ '<option value="">Select Vendor</option>';
 
 
  vendors.forEach(v=>{
 
-  const option=
-  document.createElement("option");
+  const o=document.createElement("option");
 
-  option.value=v.id;
+  o.value=v.id;
 
-  option.textContent=
-   v.company_name||
-   v.name;
+  o.textContent=
+  v.company_name
+  ?
+  `${v.name} - ${v.company_name}`
+  :
+  v.name;
 
-  select.appendChild(option);
+  $("poVendor").appendChild(o);
+
  });
+
 }
 
 
 async function loadClients(){
+
+ if(!isAdmin())return;
+
 
  const result=
  await supabaseClient
@@ -2216,241 +1812,364 @@ async function loadClients(){
  .order("name");
 
 
- if(result.error)
-  throw result.error;
+ if(result.error){
+
+  console.error(result.error);
+
+  alert(
+   "Clients load nahi ho rahe: "+
+   result.error.message
+  );
+
+  return;
+
+ }
 
 
  clients=result.data||[];
 
 
- const select=
- document.getElementById(
-  "quotationClient"
- );
-
-
- select.innerHTML=
- `<option value="">Select Client</option>`;
+ $("quotationClient").innerHTML=
+ '<option value="">Select Client</option>';
 
 
  clients.forEach(c=>{
 
-  const option=
-  document.createElement("option");
+  const o=document.createElement("option");
 
-  option.value=c.id;
+  o.value=c.id;
 
-  option.textContent=
-   c.company_name||
-   c.name;
+  o.textContent=
+  c.company_name
+  ?
+  `${c.name} - ${c.company_name}`
+  :
+  c.name;
 
-  select.appendChild(option);
+  $("quotationClient").appendChild(o);
+
  });
+
 }
 
 
 /* =========================================================
-   PO LIST
+   NAVIGATION
 ========================================================= */
 
-async function loadPOs(){
+function showSection(name){
 
- if(!isAdmin())
-  return;
+ $("inventorySection").classList.add("hidden");
+ $("poSection").classList.add("hidden");
+ $("quotationSection").classList.add("hidden");
+
+ $("navInventory").classList.remove("active");
+ $("navPO").classList.remove("active");
+ $("navQuotation").classList.remove("active");
+
+
+ if(name==="inventory"){
+
+  $("inventorySection").classList.remove("hidden");
+  $("navInventory").classList.add("active");
+
+ }
+
+
+ if(name==="po"){
+
+  if(!isAdmin())return;
+
+  $("poSection").classList.remove("hidden");
+  $("navPO").classList.add("active");
+
+  loadPurchaseOrders();
+
+ }
+
+
+ if(name==="quotation"){
+
+  if(!isAdmin())return;
+
+  $("quotationSection").classList.remove("hidden");
+  $("navQuotation").classList.add("active");
+
+  loadQuotations();
+
+ }
+
+}
+
+
+$("navInventory").onclick=
+()=>showSection("inventory");
+
+
+$("navPO").onclick=
+()=>showSection("po");
+
+
+$("navQuotation").onclick=
+()=>showSection("quotation");
+
+
+/* =========================================================
+   PURCHASE ORDERS
+========================================================= */
+
+async function loadPurchaseOrders(){
+
+ if(!isAdmin())return;
 
 
  const result=
  await supabaseClient
  .from("purchase_orders")
  .select("*")
- .order("po_date",{
-  ascending:false
- });
+ .order("po_date",{ascending:false});
 
 
  if(result.error){
 
-  console.error(result.error);
+  alert(result.error.message);
   return;
+
  }
 
 
- const body=
- document.getElementById("poBody");
-
- body.innerHTML="";
+ let list=result.data||[];
 
 
- (result.data||[]).forEach(po=>{
+ const status=$("poStatusFilter").value;
+
+ const search=
+ $("poSearch").value.trim().toLowerCase();
+
+
+ if(status)
+  list=list.filter(x=>x.status===status);
+
+
+ if(search)
+  list=list.filter(x=>
+   String(x.po_number)
+   .toLowerCase()
+   .includes(search)
+  );
+
+
+ $("poBody").innerHTML="";
+
+
+ for(const po of list){
 
   const vendor=
-   vendors.find(
-    v=>v.id===po.vendor_id
-   );
+  vendors.find(v=>v.id===po.vendor_id);
 
 
-  const row=
-  document.createElement("tr");
+  const tr=document.createElement("tr");
 
 
-  row.innerHTML=`
+  tr.innerHTML=`
 
-  <td>
-   <strong>PO-${escapeHtml(po.po_number)}</strong>
-  </td>
+  <td><strong>PO-${po.po_number}</strong></td>
 
-  <td>
-   ${escapeHtml(po.po_date||"")}
-  </td>
+  <td>${escapeHtml(po.po_date||"")}</td>
 
-  <td>
-   ${escapeHtml(
-    vendor?.company_name||
-    vendor?.name||
-    "-"
-   )}
-  </td>
+  <td>${escapeHtml(
+   vendor?.company_name||
+   vendor?.name||
+   "-"
+  )}</td>
 
-  <td>
-   <span class="badge">
-   ${escapeHtml(po.status||"draft")}
-   </span>
-  </td>
+  <td>${escapeHtml(po.status||"")}</td>
 
   <td>${money(po.subtotal)}</td>
 
   <td>${money(po.gst_amount)}</td>
 
-  <td>
-   <strong>${money(po.grand_total)}</strong>
-  </td>
+  <td><strong>${money(po.grand_total)}</strong></td>
 
   <td>
-   <button
-    class="action-btn gray"
-    onclick="viewPO('${po.id}')">
-    View
+   <button class="action-btn red"
+   onclick="deletePO('${po.id}')">
+   Delete
    </button>
   </td>
 
   `;
 
-  body.appendChild(row);
 
- });
+  $("poBody").appendChild(tr);
+
+ }
 
 
- document.getElementById(
-  "poEmpty"
- ).style.display=
- result.data?.length?"none":"block";
+ $("poEmpty").style.display=
+ list.length?"none":"block";
+
 }
 
 
+window.deletePO=async function(id){
+
+ if(!isAdmin())return;
+
+ if(!confirm("Delete this Purchase Order?"))
+  return;
+
+
+ const itemResult=
+ await supabaseClient
+ .from("purchase_order_items")
+ .delete()
+ .eq("purchase_order_id",id);
+
+
+ if(itemResult.error){
+
+  alert(itemResult.error.message);
+  return;
+
+ }
+
+
+ const result=
+ await supabaseClient
+ .from("purchase_orders")
+ .delete()
+ .eq("id",id);
+
+
+ if(result.error){
+
+  alert(result.error.message);
+  return;
+
+ }
+
+
+ loadPurchaseOrders();
+
+};
+
+
 /* =========================================================
-   PO ITEM
+   PO ITEMS
 ========================================================= */
 
 function addPOItem(){
 
- const box=
- document.getElementById("poItems");
+ const tr=document.createElement("tr");
 
 
- const row=
- document.createElement("div");
+ tr.innerHTML=`
 
- row.className="item-row";
+ <td>
+ <input class="po-product">
+ </td>
 
+ <td>
+ <input class="po-description">
+ </td>
 
- row.innerHTML=`
+ <td>
+ <input class="po-qty"
+ type="number"
+ min="0"
+ step="0.01"
+ value="1">
+ </td>
 
- <input
-  class="po-product"
-  placeholder="Product name">
+ <td>
+ <input class="po-unit"
+ value="Kit">
+ </td>
 
- <input
-  class="po-description"
-  placeholder="Description">
+ <td>
+ <input class="po-rate"
+ type="number"
+ min="0"
+ step="0.01"
+ value="0">
+ </td>
 
- <input
-  class="po-qty"
-  type="number"
-  min="0"
-  step="0.01"
-  value="1">
+ <td>
+ <input class="po-gst"
+ type="number"
+ min="0"
+ step="0.01"
+ value="0">
+ </td>
 
- <input
-  class="po-rate"
-  type="number"
-  min="0"
-  step="0.01"
-  value="0">
+ <td class="po-total">₹0.00</td>
 
- <input
-  class="po-gst"
-  type="number"
-  min="0"
-  step="0.01"
-  value="18">
-
- <button
-  type="button"
-  class="red"
-  onclick="this.parentElement.remove();calculatePO()">
-  ×
+ <td>
+ <button type="button"
+ class="action-btn red po-remove">
+ ×
  </button>
+ </td>
 
  `;
 
 
- box.appendChild(row);
+ $("poItemsBody").appendChild(tr);
 
 
- row.querySelectorAll("input")
+ tr.querySelectorAll("input")
  .forEach(input=>{
   input.addEventListener(
    "input",
-   calculatePO
+   calculatePOTotal
   );
  });
 
 
- calculatePO();
+ tr.querySelector(".po-remove")
+ .onclick=()=>{
+  tr.remove();
+  calculatePOTotal();
+ };
+
+
+ calculatePOTotal();
+
 }
 
 
-function calculatePO(){
+function calculatePOTotal(){
 
  let subtotal=0;
  let gst=0;
 
 
  document
- .querySelectorAll("#poItems .item-row")
+ .querySelectorAll("#poItemsBody tr")
  .forEach(row=>{
 
   const qty=
-   Number(
-    row.querySelector(".po-qty").value||0
-   );
+  Number(row.querySelector(".po-qty").value||0);
 
   const rate=
-   Number(
-    row.querySelector(".po-rate").value||0
-   );
+  Number(row.querySelector(".po-rate").value||0);
 
   const gstPercent=
-   Number(
-    row.querySelector(".po-gst").value||0
-   );
+  Number(row.querySelector(".po-gst").value||0);
 
 
-  const taxable=
-   qty*rate;
+  const taxable=qty*rate;
 
   const gstAmount=
-   taxable*gstPercent/100;
+  taxable*gstPercent/100;
+
+  const total=
+  taxable+gstAmount;
+
+
+  row.querySelector(".po-total")
+  .innerText=money(total);
 
 
   subtotal+=taxable;
@@ -2459,50 +2178,73 @@ function calculatePO(){
  });
 
 
- document.getElementById(
-  "poSubtotal"
- ).innerText=money(subtotal);
-
-
- document.getElementById(
-  "poGST"
- ).innerText=money(gst);
-
-
- document.getElementById(
-  "poGrandTotal"
- ).innerText=
+ $("poSubtotal").innerText=money(subtotal);
+ $("poGST").innerText=money(gst);
+ $("poGrandTotal").innerText=
  money(subtotal+gst);
+
 }
 
 
+$("addPOItem").onclick=addPOItem;
+
+
 /* =========================================================
-   SAVE PO
+   PO MODAL
 ========================================================= */
 
-async function savePO(e){
+$("addPOBtn").onclick=async()=>{
+
+ if(!isAdmin())return;
+
+ await loadVendors();
+
+ $("poModal").classList.remove("hidden");
+
+ $("poDate").value=today();
+
+ $("poItemsBody").innerHTML="";
+
+ $("poMessage").innerText="";
+
+ addPOItem();
+
+};
+
+
+function closePOModal(){
+
+ $("poModal").classList.add("hidden");
+
+}
+
+
+$("closePOModal").onclick=
+$("cancelPO").onclick=
+closePOModal;
+
+
+$("poForm").onsubmit=async function(e){
 
  e.preventDefault();
 
 
- if(!isAdmin())
-  return;
+ if(!isAdmin())return;
 
 
  const rows=
  [...document.querySelectorAll(
-  "#poItems .item-row"
+  "#poItemsBody tr"
  )];
 
 
  if(!rows.length){
 
-  document.getElementById(
-   "poMessage"
-  ).innerText=
-   "Kam se kam ek item add karo.";
+  $("poMessage").innerText=
+  "Kam se kam 1 item add karo.";
 
   return;
+
  }
 
 
@@ -2510,46 +2252,24 @@ async function savePO(e){
  let gstAmount=0;
 
 
- const items=
- rows.map(row=>{
-
-  const product=
-   row.querySelector(
-    ".po-product"
-   ).value.trim();
-
-  const description=
-   row.querySelector(
-    ".po-description"
-   ).value.trim();
+ const items=rows.map(row=>{
 
   const quantity=
-   Number(
-    row.querySelector(
-     ".po-qty"
-    ).value||0
-   );
+  Number(row.querySelector(".po-qty").value||0);
 
   const rate=
-   Number(
-    row.querySelector(
-     ".po-rate"
-    ).value||0
-   );
+  Number(row.querySelector(".po-rate").value||0);
 
   const gstPercent=
-   Number(
-    row.querySelector(
-     ".po-gst"
-    ).value||0
-   );
+  Number(row.querySelector(".po-gst").value||0);
 
-
-  const taxable=
-   quantity*rate;
+  const taxable=quantity*rate;
 
   const gst=
-   taxable*gstPercent/100;
+  taxable*gstPercent/100;
+
+  const total=
+  taxable+gst;
 
 
   subtotal+=taxable;
@@ -2557,53 +2277,61 @@ async function savePO(e){
 
 
   return{
-   product_name:product,
-   description:description||null,
-   quantity:quantity,
-   unit:"Unit",
-   rate:rate,
+
+   product_name:
+   row.querySelector(".po-product").value.trim(),
+
+   description:
+   row.querySelector(".po-description").value.trim()||null,
+
+   quantity,
+
+   unit:
+   row.querySelector(".po-unit").value.trim(),
+
+   rate,
+
    gst_percent:gstPercent,
+
    taxable_amount:taxable,
+
    gst_amount:gst,
-   total_amount:taxable+gst
+
+   total_amount:total
+
   };
 
  });
 
+
+ const grandTotal=
+ subtotal+gstAmount;
+
+
+ /* CREATE PO */
 
  const poResult=
  await supabaseClient
  .from("purchase_orders")
  .insert({
 
-  po_date:
-   document.getElementById(
-    "poDate"
-   ).value,
+  po_date:$("poDate").value,
 
-  vendor_id:
-   document.getElementById(
-    "poVendor"
-   ).value,
+  vendor_id:$("poVendor").value,
 
-  status:"draft",
+  status:$("poStatus").value,
 
-  subtotal:subtotal,
+  subtotal,
 
   gst_amount:gstAmount,
 
-  grand_total:
-   subtotal+gstAmount,
+  grand_total:grandTotal,
 
   terms_conditions:
-   document.getElementById(
-    "poTerms"
-   ).value||null,
+  $("poTerms").value.trim()||null,
 
   notes:
-   document.getElementById(
-    "poNotes"
-   ).value||null
+  $("poNotes").value.trim()||null
 
  })
  .select()
@@ -2612,58 +2340,48 @@ async function savePO(e){
 
  if(poResult.error){
 
-  document.getElementById(
-   "poMessage"
-  ).innerText=
-   poResult.error.message;
+  $("poMessage").innerText=
+  poResult.error.message;
 
   return;
+
  }
 
 
- const orderId=
-  poResult.data.id;
+ const poId=poResult.data.id;
+
+
+ const itemRows=
+ items.map(item=>({
+
+  purchase_order_id:poId,
+
+  ...item
+
+ }));
 
 
  const itemResult=
  await supabaseClient
  .from("purchase_order_items")
- .insert(
-  items.map(item=>({
-   ...item,
-   purchase_order_id:orderId
-  }))
- );
+ .insert(itemRows);
 
 
  if(itemResult.error){
 
-  document.getElementById(
-   "poMessage"
-  ).innerText=
-   itemResult.error.message;
+  $("poMessage").innerText=
+  itemResult.error.message;
 
   return;
+
  }
 
 
- document.getElementById(
-  "poModal"
- ).classList.add("hidden");
+ closePOModal();
 
+ await loadPurchaseOrders();
 
- document.getElementById(
-  "poForm"
- ).reset();
-
-
- document.getElementById(
-  "poItems"
- ).innerHTML="";
-
-
- await loadPOs();
-}
+};
 
 
 /* =========================================================
@@ -2672,53 +2390,64 @@ async function savePO(e){
 
 async function loadQuotations(){
 
- if(!isAdmin())
-  return;
+ if(!isAdmin())return;
 
 
  const result=
  await supabaseClient
  .from("quotations")
  .select("*")
- .order("quotation_date",{
-  ascending:false
- });
+ .order("quotation_date",{ascending:false});
 
 
  if(result.error){
 
-  console.error(result.error);
+  alert(result.error.message);
   return;
+
  }
 
 
- const body=
- document.getElementById(
-  "quotationBody"
- );
+ let list=result.data||[];
 
 
- body.innerHTML="";
+ const status=
+ $("quotationStatusFilter").value;
 
 
- (result.data||[]).forEach(q=>{
+ const search=
+ $("quotationSearch")
+ .value.trim().toLowerCase();
+
+
+ if(status)
+  list=list.filter(x=>x.status===status);
+
+
+ if(search)
+  list=list.filter(x=>
+   String(x.quotation_number)
+   .toLowerCase()
+   .includes(search)
+  );
+
+
+ $("quotationBody").innerHTML="";
+
+
+ list.forEach(q=>{
 
   const client=
-   clients.find(
-    c=>c.id===q.client_id
-   );
+  clients.find(c=>c.id===q.client_id);
 
 
-  const row=
-  document.createElement("tr");
+  const tr=document.createElement("tr");
 
 
-  row.innerHTML=`
+  tr.innerHTML=`
 
   <td>
-   <strong>
-   QT-${escapeHtml(q.quotation_number)}
-   </strong>
+   <strong>QT-${q.quotation_number}</strong>
   </td>
 
   <td>
@@ -2738,14 +2467,16 @@ async function loadQuotations(){
   </td>
 
   <td>
-   <span class="badge">
-   ${escapeHtml(q.status||"draft")}
-   </span>
+   ${escapeHtml(q.status||"")}
   </td>
 
-  <td>${money(q.subtotal)}</td>
+  <td>
+   ${money(q.subtotal)}
+  </td>
 
-  <td>${money(q.gst_amount)}</td>
+  <td>
+   ${money(q.gst_amount)}
+  </td>
 
   <td>
    <strong>${money(q.grand_total)}</strong>
@@ -2754,9 +2485,9 @@ async function loadQuotations(){
   <td>
 
    <button
-    class="action-btn gray"
-    onclick="viewQuotation('${q.id}')">
-    View
+   class="action-btn red"
+   onclick="deleteQuotation('${q.id}')">
+   Delete
    </button>
 
   </td>
@@ -2764,94 +2495,160 @@ async function loadQuotations(){
   `;
 
 
-  body.appendChild(row);
+  $("quotationBody").appendChild(tr);
 
  });
 
 
- document.getElementById(
-  "quotationEmpty"
- ).style.display=
- result.data?.length?"none":"block";
+ $("quotationEmpty").style.display=
+ list.length?"none":"block";
+
 }
 
 
+window.deleteQuotation=async function(id){
+
+ if(!isAdmin())return;
+
+
+ if(!confirm("Delete this quotation?"))
+  return;
+
+
+ const itemResult=
+ await supabaseClient
+ .from("quotation_items")
+ .delete()
+ .eq("quotation_id",id);
+
+
+ if(itemResult.error){
+
+  alert(itemResult.error.message);
+  return;
+
+ }
+
+
+ const result=
+ await supabaseClient
+ .from("quotations")
+ .delete()
+ .eq("id",id);
+
+
+ if(result.error){
+
+  alert(result.error.message);
+  return;
+
+ }
+
+
+ loadQuotations();
+
+};
+
+
 /* =========================================================
-   QUOTATION ITEM
+   QUOTATION ITEMS
 ========================================================= */
 
 function addQuotationItem(){
 
- const box=
- document.getElementById(
-  "quotationItems"
- );
+ const tr=document.createElement("tr");
 
 
- const row=
- document.createElement("div");
+ tr.innerHTML=`
 
- row.className="item-row";
+ <td>
+ <input class="qt-name">
+ </td>
 
+ <td>
+ <input class="qt-description">
+ </td>
 
- row.innerHTML=`
+ <td>
+ <input class="qt-qty"
+ type="number"
+ min="0"
+ step="0.01"
+ value="1">
+ </td>
 
- <input
-  class="quotation-name"
-  placeholder="Test / Item name">
+ <td>
+ <input class="qt-unit"
+ value="Test">
+ </td>
 
- <input
-  class="quotation-description"
-  placeholder="Description">
+ <td>
+ <input class="qt-rate"
+ type="number"
+ min="0"
+ step="0.01"
+ value="0">
+ </td>
 
- <input
-  class="quotation-qty"
-  type="number"
-  min="0"
-  step="0.01"
-  value="1">
+ <td>
+ <input class="qt-discount"
+ type="number"
+ min="0"
+ step="0.01"
+ value="0">
+ </td>
 
- <input
-  class="quotation-rate"
-  type="number"
-  min="0"
-  step="0.01"
-  value="0">
+ <td>
+ <input class="qt-gst"
+ type="number"
+ min="0"
+ step="0.01"
+ value="0">
+ </td>
 
- <input
-  class="quotation-gst"
-  type="number"
-  min="0"
-  step="0.01"
-  value="18">
+ <td class="qt-total">
+ ₹0.00
+ </td>
+
+ <td>
 
  <button
-  type="button"
-  class="red"
-  onclick="this.parentElement.remove();calculateQuotation()">
-  ×
+ type="button"
+ class="action-btn red qt-remove">
+ ×
  </button>
+
+ </td>
 
  `;
 
 
- box.appendChild(row);
+ $("quotationItemsBody")
+ .appendChild(tr);
 
 
- row.querySelectorAll("input")
+ tr.querySelectorAll("input")
  .forEach(input=>{
   input.addEventListener(
    "input",
-   calculateQuotation
+   calculateQuotationTotal
   );
  });
 
 
- calculateQuotation();
+ tr.querySelector(".qt-remove")
+ .onclick=()=>{
+  tr.remove();
+  calculateQuotationTotal();
+ };
+
+
+ calculateQuotationTotal();
+
 }
 
 
-function calculateQuotation(){
+function calculateQuotationTotal(){
 
  let subtotal=0;
  let discount=0;
@@ -2859,176 +2656,232 @@ function calculateQuotation(){
 
 
  document
- .querySelectorAll(
-  "#quotationItems .item-row"
- )
+ .querySelectorAll("#quotationItemsBody tr")
  .forEach(row=>{
 
   const qty=
-   Number(
-    row.querySelector(
-     ".quotation-qty"
-    ).value||0
-   );
+  Number(row.querySelector(".qt-qty").value||0);
 
   const rate=
-   Number(
-    row.querySelector(
-     ".quotation-rate"
-    ).value||0
-   );
+  Number(row.querySelector(".qt-rate").value||0);
+
+  const discountPercent=
+  Number(
+   row.querySelector(".qt-discount").value||0
+  );
 
   const gstPercent=
-   Number(
-    row.querySelector(
-     ".quotation-gst"
-    ).value||0
-   );
+  Number(
+   row.querySelector(".qt-gst").value||0
+  );
 
+
+  const gross=qty*rate;
+
+  const discountAmount=
+  gross*discountPercent/100;
 
   const taxable=
-   qty*rate;
+  gross-discountAmount;
 
-  const gstValue=
-   taxable*gstPercent/100;
+  const gstAmount=
+  taxable*gstPercent/100;
+
+  const total=
+  taxable+gstAmount;
 
 
-  subtotal+=taxable;
-  gst+=gstValue;
+  subtotal+=gross;
+
+  discount+=discountAmount;
+
+  gst+=gstAmount;
+
+
+  row.querySelector(".qt-total")
+  .innerText=money(total);
 
  });
 
 
- document.getElementById(
-  "quotationSubtotal"
- ).innerText=money(subtotal);
+ $("quotationSubtotal").innerText=
+ money(subtotal);
 
+ $("quotationDiscount").innerText=
+ money(discount);
 
- document.getElementById(
-  "quotationDiscount"
- ).innerText=money(discount);
+ $("quotationGST").innerText=
+ money(gst);
 
-
- document.getElementById(
-  "quotationGST"
- ).innerText=money(gst);
-
-
- document.getElementById(
-  "quotationGrandTotal"
- ).innerText=
+ $("quotationGrandTotal").innerText=
  money(subtotal-discount+gst);
+
 }
 
 
+$("addQuotationItem").onclick=
+addQuotationItem;
+
+
 /* =========================================================
-   SAVE QUOTATION
+   QUOTATION MODAL
 ========================================================= */
 
-async function saveQuotation(e){
+$("addQuotationBtn").onclick=async()=>{
+
+ if(!isAdmin())return;
+
+
+ await loadClients();
+
+
+ $("quotationModal")
+ .classList.remove("hidden");
+
+
+ $("quotationDate").value=today();
+
+
+ $("quotationValid").value="";
+
+
+ $("quotationItemsBody")
+ .innerHTML="";
+
+
+ $("quotationMessage").innerText="";
+
+
+ addQuotationItem();
+
+};
+
+
+function closeQuotationModal(){
+
+ $("quotationModal")
+ .classList.add("hidden");
+
+}
+
+
+$("closeQuotationModal").onclick=
+$("cancelQuotation").onclick=
+closeQuotationModal;
+
+
+$("quotationForm").onsubmit=
+async function(e){
 
  e.preventDefault();
 
 
- if(!isAdmin())
-  return;
+ if(!isAdmin())return;
 
 
  const rows=
  [...document.querySelectorAll(
-  "#quotationItems .item-row"
+  "#quotationItemsBody tr"
  )];
 
 
  if(!rows.length){
 
-  document.getElementById(
-   "quotationMessage"
-  ).innerText=
-   "Kam se kam ek item add karo.";
+  $("quotationMessage").innerText=
+  "Kam se kam 1 item add karo.";
 
   return;
+
  }
 
 
  let subtotal=0;
- let gstAmount=0;
+ let discount=0;
+ let gst=0;
 
 
- const items=
- rows.map(row=>{
-
-  const name=
-   row.querySelector(
-    ".quotation-name"
-   ).value.trim();
-
-  const description=
-   row.querySelector(
-    ".quotation-description"
-   ).value.trim();
+ const items=rows.map(row=>{
 
   const quantity=
-   Number(
-    row.querySelector(
-     ".quotation-qty"
-    ).value||0
-   );
+  Number(row.querySelector(".qt-qty").value||0);
 
   const rate=
-   Number(
-    row.querySelector(
-     ".quotation-rate"
-    ).value||0
-   );
+  Number(row.querySelector(".qt-rate").value||0);
+
+  const discountPercent=
+  Number(
+   row.querySelector(".qt-discount").value||0
+  );
 
   const gstPercent=
-   Number(
-    row.querySelector(
-     ".quotation-gst"
-    ).value||0
-   );
+  Number(
+   row.querySelector(".qt-gst").value||0
+  );
 
+
+  const gross=quantity*rate;
+
+  const discountAmount=
+  gross*discountPercent/100;
 
   const taxable=
-   quantity*rate;
+  gross-discountAmount;
 
-  const gst=
-   taxable*gstPercent/100;
+  const gstAmount=
+  taxable*gstPercent/100;
+
+  const total=
+  taxable+gstAmount;
 
 
-  subtotal+=taxable;
-  gstAmount+=gst;
+  subtotal+=gross;
+
+  discount+=discountAmount;
+
+  gst+=gstAmount;
 
 
   return{
 
-   item_name:name,
+   item_name:
+   row.querySelector(".qt-name").value.trim(),
 
    description:
-    description||null,
+   row.querySelector(".qt-description")
+   .value.trim()||null,
 
    quantity,
 
-   unit:"Unit",
+   unit:
+   row.querySelector(".qt-unit").value.trim(),
 
    rate,
 
-   discount_percent:0,
+   discount_percent:
+   discountPercent,
 
-   taxable_amount:taxable,
+   gst_percent:
+   gstPercent,
 
-   discount_amount:0,
+   taxable_amount:
+   taxable,
 
-   gst_percent:gstPercent,
+   discount_amount:
+   discountAmount,
 
-   gst_amount:gst,
+   gst_amount:
+   gstAmount,
 
    total_amount:
-    taxable+gst
+   total
+
   };
 
  });
+
+
+ const grandTotal=
+ subtotal-discount+gst;
 
 
  const result=
@@ -3037,43 +2890,33 @@ async function saveQuotation(e){
  .insert({
 
   quotation_date:
-   document.getElementById(
-    "quotationDate"
-   ).value,
+  $("quotationDate").value,
 
   valid_until:
-   document.getElementById(
-    "validUntil"
-   ).value||null,
+  $("quotationValid").value||null,
 
   client_id:
-   document.getElementById(
-    "quotationClient"
-   ).value,
+  $("quotationClient").value,
 
   status:
-   document.getElementById(
-    "quotationStatus"
-   ).value,
+  $("quotationStatus").value,
 
-  subtotal:subtotal,
+  subtotal,
 
-  discount_amount:0,
+  discount_amount:
+  discount,
 
-  gst_amount:gstAmount,
+  gst_amount:
+  gst,
 
   grand_total:
-   subtotal+gstAmount,
+  grandTotal,
 
   terms_conditions:
-   document.getElementById(
-    "quotationTerms"
-   ).value||null,
+  $("quotationTerms").value.trim()||null,
 
   notes:
-   document.getElementById(
-    "quotationNotes"
-   ).value||null
+  $("quotationNotes").value.trim()||null
 
  })
  .select()
@@ -3082,367 +2925,85 @@ async function saveQuotation(e){
 
  if(result.error){
 
-  document.getElementById(
-   "quotationMessage"
-  ).innerText=
-   result.error.message;
+  $("quotationMessage").innerText=
+  result.error.message;
 
   return;
+
  }
 
 
- const quotationId=
-  result.data.id;
+ const quotationId=result.data.id;
+
+
+ const itemRows=
+ items.map(item=>({
+
+  quotation_id:quotationId,
+
+  ...item
+
+ }));
 
 
  const itemResult=
  await supabaseClient
  .from("quotation_items")
- .insert(
-  items.map(item=>({
-   ...item,
-   quotation_id:quotationId
-  }))
- );
+ .insert(itemRows);
 
 
  if(itemResult.error){
 
-  document.getElementById(
-   "quotationMessage"
-  ).innerText=
-   itemResult.error.message;
+  $("quotationMessage").innerText=
+  itemResult.error.message;
 
   return;
+
  }
 
 
- document.getElementById(
-  "quotationModal"
- ).classList.add("hidden");
-
-
- document.getElementById(
-  "quotationForm"
- ).reset();
-
-
- document.getElementById(
-  "quotationItems"
- ).innerHTML="";
-
+ closeQuotationModal();
 
  await loadQuotations();
-}
 
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-function showSection(section){
-
- document.getElementById(
-  "inventorySection"
- ).classList.add("hidden");
-
- document.getElementById(
-  "poSection"
- ).classList.add("hidden");
-
- document.getElementById(
-  "quotationSection"
- ).classList.add("hidden");
-
-
- document.querySelectorAll(
-  ".nav-btn"
- ).forEach(btn=>{
-  btn.classList.remove("active");
- });
-
-
- if(section==="inventory"){
-
-  document.getElementById(
-   "inventorySection"
-  ).classList.remove("hidden");
-
-  document.getElementById(
-   "inventoryNav"
-  ).classList.add("active");
-
-  loadInventory();
-
- }
-
-
- if(section==="po"){
-
-  if(!isAdmin())
-   return;
-
-  document.getElementById(
-   "poSection"
-  ).classList.remove("hidden");
-
-  document.getElementById(
-   "poNav"
-  ).classList.add("active");
-
-  loadPOs();
-
- }
-
-
- if(section==="quotation"){
-
-  if(!isAdmin())
-   return;
-
-  document.getElementById(
-   "quotationSection"
-  ).classList.remove("hidden");
-
-  document.getElementById(
-   "quotationNav"
-  ).classList.add("active");
-
-  loadQuotations();
- }
-}
-
-
-document.getElementById(
- "inventoryNav"
-).onclick=
- ()=>showSection("inventory");
-
-
-document.getElementById(
- "poNav"
-).onclick=
- ()=>showSection("po");
-
-
-document.getElementById(
- "quotationNav"
-).onclick=
- ()=>showSection("quotation");
-
-
-/* =========================================================
-   OPEN MODALS
-========================================================= */
-
-document.getElementById(
- "newPOBtn"
-).onclick=()=>{
-
- if(!isAdmin())
-  return;
-
- document.getElementById(
-  "poModal"
- ).classList.remove("hidden");
-
- document.getElementById(
-  "poDate"
- ).value=today();
-
- document.getElementById(
-  "poItems"
- ).innerHTML="";
-
- document.getElementById(
-  "poMessage"
- ).innerText="";
-
- addPOItem();
-};
-
-
-document.getElementById(
- "newQuotationBtn"
-).onclick=()=>{
-
- if(!isAdmin())
-  return;
-
- document.getElementById(
-  "quotationModal"
- ).classList.remove("hidden");
-
- document.getElementById(
-  "quotationDate"
- ).value=today();
-
- document.getElementById(
-  "quotationItems"
- ).innerHTML="";
-
- document.getElementById(
-  "quotationMessage"
- ).innerText="";
-
- addQuotationItem();
 };
 
 
 /* =========================================================
-   CLOSE MODALS
+   FILTER EVENTS
 ========================================================= */
 
-document.getElementById(
- "closeProduct"
-).onclick=
-document.getElementById(
- "cancelProduct"
-).onclick=
-()=>{
- document.getElementById(
-  "productModal"
- ).classList.add("hidden");
-};
+$("branchFilter").onchange=
+$("productFilter").onchange=
+$("stockFilter").onchange=
+$("inventorySearch").oninput=
+renderInventory;
 
 
-document.getElementById(
- "closeStock"
-).onclick=
-()=>{
- document.getElementById(
-  "stockModal"
- ).classList.add("hidden");
-};
+$("poStatusFilter").onchange=
+$("poSearch").oninput=
+()=>loadPurchaseOrders();
 
 
-document.getElementById(
- "closePO"
-).onclick=
-document.getElementById(
- "cancelPO"
-).onclick=
-()=>{
- document.getElementById(
-  "poModal"
- ).classList.add("hidden");
-};
-
-
-document.getElementById(
- "closeQuotation"
-).onclick=
-document.getElementById(
- "cancelQuotation"
-).onclick=
-()=>{
- document.getElementById(
-  "quotationModal"
- ).classList.add("hidden");
-};
+$("quotationStatusFilter").onchange=
+$("quotationSearch").oninput=
+()=>loadQuotations();
 
 
 /* =========================================================
-   BUTTON EVENTS
+   LOGIN
 ========================================================= */
 
-document.getElementById(
- "addPOItem"
-).onclick=addPOItem;
-
-
-document.getElementById(
- "addQuotationItem"
-).onclick=addQuotationItem;
-
-
-document.getElementById(
- "poForm"
-).addEventListener(
- "submit",
- savePO
-);
-
-
-document.getElementById(
- "quotationForm"
-).addEventListener(
- "submit",
- saveQuotation
-);
-
-
-/* =========================================================
-   FILTERS
-========================================================= */
-
-[
- "branchFilter",
- "productFilter",
- "stockFilter"
-].forEach(id=>{
-
- document.getElementById(id)
- .addEventListener(
-  "change",
-  renderInventory
- );
-});
-
-
-document.getElementById(
- "inventorySearch"
-).addEventListener(
- "input",
- renderInventory
-);
-
-
-document.getElementById(
- "clearInventory"
-).onclick=()=>{
-
- document.getElementById(
-  "productFilter"
- ).value="";
-
- document.getElementById(
-  "stockFilter"
- ).value="";
-
- document.getElementById(
-  "inventorySearch"
- ).value="";
-
- document.getElementById(
-  "branchFilter"
- ).value=
-  isAdmin()
-  ?""
-  :(currentBranchId||"");
-
- renderInventory();
-};
-
-
-/* =========================================================
-   SHOW APP
-========================================================= */
-
-async function showApp(){
+async function showMain(){
 
  try{
 
-  document.getElementById(
-   "loginPage"
-  ).classList.add("hidden");
+  $("loginPage").classList.add("hidden");
 
-  document.getElementById(
-   "appPage"
-  ).classList.remove("hidden");
+  $("mainPage").classList.remove("hidden");
 
 
-  await loadUser();
+  await loadUserContext();
 
   await loadBranches();
 
@@ -3450,8 +3011,7 @@ async function showApp(){
 
 
   /*
-    PO & Quotation data
-    ONLY ADMIN
+   ADMIN ONLY DATA
   */
 
   if(isAdmin()){
@@ -3460,73 +3020,58 @@ async function showApp(){
 
    await loadClients();
 
-   await loadPOs();
-
-   await loadQuotations();
-
   }
+
+
+  showSection("inventory");
 
 
  }catch(error){
 
   console.error(error);
 
-  document.getElementById(
-   "loginMessage"
-  ).innerText=
-   error.message||
-   "Login/role loading error.";
+  $("loginMessage").innerText=
+  error.message ||
+  "Login / role loading error.";
 
   await supabaseClient.auth.signOut();
+
+  showLogin();
+
  }
+
 }
 
 
 function showLogin(){
 
- document.getElementById(
-  "loginPage"
- ).classList.remove("hidden");
+ $("loginPage").classList.remove("hidden");
 
- document.getElementById(
-  "appPage"
- ).classList.add("hidden");
+ $("mainPage").classList.add("hidden");
+
 }
 
 
-/* =========================================================
-   LOGIN
-========================================================= */
+/* LOGIN BUTTON */
 
-document.getElementById(
- "loginBtn"
-).onclick=async()=>{
+$("loginBtn").onclick=async()=>{
 
  const email=
- document.getElementById(
-  "loginEmail"
- ).value.trim();
+ $("loginEmail").value.trim();
 
  const password=
- document.getElementById(
-  "loginPassword"
- ).value;
+ $("loginPassword").value;
 
- const message=
- document.getElementById(
-  "loginMessage"
- );
+ $("loginMessage").innerText="";
 
 
- message.innerText="";
+ if(!email || !password){
 
-
- if(!email||!password){
-
-  message.innerText=
-   "Email aur password enter karo.";
+  $("loginMessage").innerText=
+  "Email aur password enter karo.";
 
   return;
+
  }
 
 
@@ -3540,45 +3085,43 @@ document.getElementById(
 
  if(result.error){
 
-  message.innerText=
-   result.error.message;
+  $("loginMessage").innerText=
+  result.error.message;
 
   return;
+
  }
 
 
- await showApp();
+ await showMain();
+
 };
 
 
-document.getElementById(
- "loginPassword"
-).addEventListener(
+$("loginPassword").addEventListener(
  "keydown",
  e=>{
   if(e.key==="Enter")
-   document.getElementById(
-    "loginBtn"
-   ).click();
+   $("loginBtn").click();
  }
 );
 
 
-/* =========================================================
-   LOGOUT
-========================================================= */
+/* LOGOUT */
 
-document.getElementById(
- "logoutBtn"
-).onclick=async()=>{
+$("logoutBtn").onclick=async()=>{
 
  await supabaseClient.auth.signOut();
 
  showLogin();
+
 };
 
 
-supabaseClient.auth.onAuthStateChange(
+/* AUTH STATE */
+
+supabaseClient.auth
+.onAuthStateChange(
  (event,session)=>{
 
   if(event==="SIGNED_OUT")
@@ -3592,38 +3135,18 @@ supabaseClient.auth.onAuthStateChange(
    START
 ========================================================= */
 
-(async()=>{
+(async function(){
 
  const result=
- await supabaseClient.auth
- .getSession();
+ await supabaseClient.auth.getSession();
+
 
  if(result.data.session)
-  await showApp();
+  await showMain();
  else
   showLogin();
 
 })();
-
-
-/* =========================================================
-   VIEW PLACEHOLDERS
-========================================================= */
-
-window.viewPO=function(id){
-
- alert(
-  "PO detail screen next step mein add kar sakte hain.\nPO ID: "+id
- );
-};
-
-
-window.viewQuotation=function(id){
-
- alert(
-  "Quotation detail screen next step mein add kar sakte hain.\nQuotation ID: "+id
- );
-};
 
 </script>
 
