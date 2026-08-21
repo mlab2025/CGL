@@ -3,190 +3,3659 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Micron Laboratory - Inventory Admin</title>
+<title>Micron Laboratory - Admin Panel</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}.hidden{display:none!important}
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 5px 20px rgba(0,0,0,.06)}
-.login-card{width:400px;padding:30px;text-align:center}.login-logo{width:230px;max-width:85%;height:auto;object-fit:contain;margin:0 auto 12px;display:block}.login-card h2{margin:8px 0 4px}.login-card p{color:#64748b;margin:0 0 22px}label{display:block;text-align:left;font-size:13px;font-weight:600;margin-top:8px}
-input,select{width:100%;padding:10px 11px;margin:5px 0 0;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;background:#fff;height:40px}button{border:0;border-radius:8px;padding:10px 15px;background:#2563eb;color:#fff;font-weight:bold;cursor:pointer}button:hover{opacity:.92}button.gray{background:#e2e8f0;color:#1e293b}button.red{background:#dc2626}
-header{min-height:72px;background:#fff;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;padding:8px 25px;gap:20px}.header-brand{display:flex;align-items:center;gap:14px}.header-logo{width:150px;height:auto;max-height:55px;object-fit:contain}.header-title{border-left:1px solid #e2e8f0;padding-left:14px}.header-title h2{margin:0;font-size:19px}.header-title span{color:#64748b;font-size:13px}.header-right{display:flex;align-items:center;gap:10px}.role-badge{padding:7px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700}
-.container{max-width:1450px;margin:auto;padding:25px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}.stat{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;cursor:pointer}.stat:hover{box-shadow:0 5px 18px rgba(0,0,0,.06)}.stat small{color:#64748b}.stat strong{display:block;font-size:28px;margin-top:8px}
-.inventory-toolbar{display:grid;grid-template-columns:1.05fr 1.15fr .95fr 1.05fr 1.55fr auto;gap:11px;align-items:end;margin:0 0 20px}.filter-field label{margin:0 0 5px}.filter-actions{display:flex;gap:8px;align-items:end;height:40px}.filter-actions button{height:40px;white-space:nowrap}.search-wrap{position:relative}.search-suggestions{position:absolute;z-index:60;top:44px;left:0;right:0;background:#fff;border:1px solid #dbe2ea;border-radius:10px;box-shadow:0 8px 24px rgba(15,23,42,.12);max-height:280px;overflow-y:auto}.search-suggestion{padding:10px 12px;border-bottom:1px solid #eef2f7;cursor:pointer}.search-suggestion:hover{background:#f8fafc}.search-suggestion small{display:block;color:#64748b;margin-top:3px}
-.table-card{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1180px}th,td{padding:12px;border-bottom:1px solid #edf2f7;text-align:left;font-size:13px}th{background:#f8fafc;position:sticky;top:0;z-index:1}.action-btn{padding:6px 9px;font-size:12px;margin:2px}.branch-pill{display:inline-block;padding:4px 7px;border-radius:999px;background:#f1f5f9;font-size:11px;font-weight:700}
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:15px;z-index:100}.modal-box{width:760px;max-width:100%;max-height:92vh;overflow:auto;padding:25px}.modal-header{display:flex;justify-content:space-between;align-items:center}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}.message{margin-top:10px;color:#dc2626;font-size:13px}.success{color:#15803d}.section-note{font-size:12px;color:#64748b;margin:4px 0 12px}.expiry-list{margin-top:8px}.expiry-list div{padding:8px 0;border-bottom:1px solid #eef2f7;display:flex;justify-content:space-between;gap:10px}.clickable{cursor:pointer}
-@media(max-width:1200px){.inventory-toolbar{grid-template-columns:repeat(3,1fr)}.filter-actions{grid-column:1/-1}}@media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.header-logo{width:120px}.header-title{display:none}.header-right{gap:6px}.role-badge{display:none}.inventory-toolbar{grid-template-columns:1fr}.filter-actions{grid-column:auto}.filter-actions button{flex:1}}
+*{
+  box-sizing:border-box
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f4f7fb;
+  color:#172033
+}
+
+.hidden{
+  display:none!important
+}
+
+.card{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  box-shadow:0 5px 20px rgba(0,0,0,.06)
+}
+
+/* ================= LOGIN ================= */
+
+.login-page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px
+}
+
+.login-card{
+  width:400px;
+  padding:30px;
+  text-align:center
+}
+
+.login-logo{
+  width:230px;
+  max-width:85%;
+  height:auto;
+  object-fit:contain;
+  margin:0 auto 12px;
+  display:block
+}
+
+.login-card h2{
+  margin:8px 0 4px
+}
+
+.login-card p{
+  color:#64748b;
+  margin:0 0 22px
+}
+
+/* ================= FORM ================= */
+
+label{
+  display:block;
+  text-align:left;
+  font-size:13px;
+  font-weight:600;
+  margin-top:8px
+}
+
+input,
+select{
+  width:100%;
+  padding:10px 11px;
+  margin:5px 0 0;
+  border:1px solid #cbd5e1;
+  border-radius:8px;
+  font-size:14px;
+  background:#fff;
+  height:40px
+}
+
+button{
+  border:0;
+  border-radius:8px;
+  padding:10px 15px;
+  background:#2563eb;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer
+}
+
+button:hover{
+  opacity:.92
+}
+
+button.gray{
+  background:#e2e8f0;
+  color:#1e293b
+}
+
+button.red{
+  background:#dc2626
+}
+
+/* ================= HEADER ================= */
+
+header{
+  min-height:72px;
+  background:#fff;
+  border-bottom:1px solid #ddd;
+  display:flex;
+  align-items:center;
+  padding:8px 25px;
+  gap:20px;
+  flex-wrap:wrap
+}
+
+.header-brand{
+  display:flex;
+  align-items:center;
+  gap:14px
+}
+
+.header-logo{
+  width:150px;
+  height:auto;
+  max-height:55px;
+  object-fit:contain
+}
+
+.header-title{
+  border-left:1px solid #e2e8f0;
+  padding-left:14px
+}
+
+.header-title h2{
+  margin:0;
+  font-size:19px
+}
+
+.header-title span{
+  color:#64748b;
+  font-size:13px
+}
+
+/* ================= MAIN MENU ================= */
+
+.main-menu{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-left:auto
+}
+
+.menu-btn{
+  background:#f1f5f9;
+  color:#334155;
+  border:1px solid #e2e8f0;
+  padding:9px 14px;
+  border-radius:8px;
+  font-weight:700
+}
+
+.menu-btn:hover{
+  background:#e2e8f0
+}
+
+.menu-btn.active{
+  background:#2563eb;
+  color:#fff;
+  border-color:#2563eb
+}
+
+.header-right{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+
+.role-badge{
+  padding:7px 10px;
+  border-radius:999px;
+  background:#eef2ff;
+  color:#3730a3;
+  font-size:12px;
+  font-weight:700
+}
+
+/* ================= PAGE SECTIONS ================= */
+
+.page-section{
+  display:none
+}
+
+.page-section.active{
+  display:block
+}
+
+.container{
+  max-width:1450px;
+  margin:auto;
+  padding:25px
+}
+
+/* ================= STATS ================= */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:20px
+}
+
+.stat{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  padding:18px;
+  cursor:pointer
+}
+
+.stat:hover{
+  box-shadow:0 5px 18px rgba(0,0,0,.06)
+}
+
+.stat small{
+  color:#64748b
+}
+
+.stat strong{
+  display:block;
+  font-size:28px;
+  margin-top:8px
+}
+
+/* ================= INVENTORY TOOLBAR ================= */
+
+.inventory-toolbar{
+  display:grid;
+  grid-template-columns:1.05fr 1.15fr .95fr 1.05fr 1.55fr auto;
+  gap:11px;
+  align-items:end;
+  margin:0 0 20px
+}
+
+.filter-field label{
+  margin:0 0 5px
+}
+
+.filter-actions{
+  display:flex;
+  gap:8px;
+  align-items:end;
+  height:40px
+}
+
+.filter-actions button{
+  height:40px;
+  white-space:nowrap
+}
+
+.search-wrap{
+  position:relative
+}
+
+.search-suggestions{
+  position:absolute;
+  z-index:60;
+  top:44px;
+  left:0;
+  right:0;
+  background:#fff;
+  border:1px solid #dbe2ea;
+  border-radius:10px;
+  box-shadow:0 8px 24px rgba(15,23,42,.12);
+  max-height:280px;
+  overflow-y:auto
+}
+
+.search-suggestion{
+  padding:10px 12px;
+  border-bottom:1px solid #eef2f7;
+  cursor:pointer
+}
+
+.search-suggestion:hover{
+  background:#f8fafc
+}
+
+.search-suggestion small{
+  display:block;
+  color:#64748b;
+  margin-top:3px
+}
+
+/* ================= TABLE ================= */
+
+.table-card{
+  overflow:auto
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1180px
+}
+
+th,
+td{
+  padding:12px;
+  border-bottom:1px solid #edf2f7;
+  text-align:left;
+  font-size:13px
+}
+
+th{
+  background:#f8fafc;
+  position:sticky;
+  top:0;
+  z-index:1
+}
+
+.action-btn{
+  padding:6px 9px;
+  font-size:12px;
+  margin:2px
+}
+
+.branch-pill{
+  display:inline-block;
+  padding:4px 7px;
+  border-radius:999px;
+  background:#f1f5f9;
+  font-size:11px;
+  font-weight:700
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  z-index:100
+}
+
+.modal-box{
+  width:760px;
+  max-width:100%;
+  max-height:92vh;
+  overflow:auto;
+  padding:25px
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 15px
+}
+
+.message{
+  margin-top:10px;
+  color:#dc2626;
+  font-size:13px
+}
+
+.success{
+  color:#15803d
+}
+
+.section-note{
+  font-size:12px;
+  color:#64748b;
+  margin:4px 0 12px
+}
+
+.expiry-list{
+  margin-top:8px
+}
+
+.expiry-list div{
+  padding:8px 0;
+  border-bottom:1px solid #eef2f7;
+  display:flex;
+  justify-content:space-between;
+  gap:10px
+}
+
+/* ================= PO / QUOTATION ================= */
+
+.simple-page{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  padding:45px;
+  text-align:center
+}
+
+.simple-page-icon{
+  font-size:55px;
+  margin-bottom:10px
+}
+
+.simple-page h2{
+  margin:10px 0
+}
+
+.simple-page p{
+  color:#64748b;
+  margin-bottom:25px
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1200px){
+
+  .inventory-toolbar{
+    grid-template-columns:repeat(3,1fr)
+  }
+
+  .filter-actions{
+    grid-column:1/-1
+  }
+}
+
+@media(max-width:900px){
+
+  header{
+    padding:10px 15px
+  }
+
+  .main-menu{
+    order:3;
+    width:100%;
+    overflow-x:auto;
+    margin:0
+  }
+
+  .menu-btn{
+    white-space:nowrap
+  }
+}
+
+@media(max-width:800px){
+
+  .stats{
+    grid-template-columns:1fr 1fr
+  }
+
+  .grid{
+    grid-template-columns:1fr
+  }
+
+  .header-logo{
+    width:120px
+  }
+
+  .header-title{
+    display:none
+  }
+
+  .header-right{
+    margin-left:auto
+  }
+
+  .role-badge{
+    display:none
+  }
+
+  .inventory-toolbar{
+    grid-template-columns:1fr
+  }
+
+  .filter-actions{
+    grid-column:auto
+  }
+
+  .filter-actions button{
+    flex:1
+  }
+
+  .simple-page{
+    padding:30px 15px
+  }
+}
 </style>
 </head>
+
 <body>
-<div id="loginPage" class="login-page"><div class="card login-card">
-<img src="micron-logo.png" class="login-logo" alt="Micron Laboratory"><h2>Inventory Admin</h2><p>Micron Laboratory</p>
-<label>Email</label><input id="loginEmail" type="email" placeholder="Admin Email" autocomplete="username"><label>Password</label><input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password">
-<button id="loginBtn" style="width:100%;margin-top:10px">Login</button><div id="loginMessage" class="message"></div>
-</div></div>
 
-<div id="adminPage" class="hidden"><<header>
-  <div class="header-brand">
-    <img src="micron-logo.png" class="header-logo" alt="Micron Laboratory">
+<!-- =====================================================
+     LOGIN
+===================================================== -->
 
-    <div class="header-title">
-      <h2>Micron Laboratory</h2>
-      <span id="headerBranchText">Stock Management</span>
-    </div>
+<div id="loginPage" class="login-page">
+
+  <div class="card login-card">
+
+    <img
+      src="micron-logo.png"
+      class="login-logo"
+      alt="Micron Laboratory"
+    >
+
+    <h2>Micron Laboratory</h2>
+    <p>Admin Panel</p>
+
+    <label>Email</label>
+    <input
+      id="loginEmail"
+      type="email"
+      placeholder="Admin Email"
+      autocomplete="username"
+    >
+
+    <label>Password</label>
+    <input
+      id="loginPassword"
+      type="password"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
+
+    <button
+      id="loginBtn"
+      style="width:100%;margin-top:10px"
+    >
+      Login
+    </button>
+
+    <div id="loginMessage" class="message"></div>
+
   </div>
 
-  <div class="main-menu">
-    <button id="menuInventory" class="menu-btn active">📦 Inventory</button>
-    <button id="menuPO" class="menu-btn hidden">📄 PO</button>
-    <button id="menuQuotation" class="menu-btn hidden">🧾 Quotation</button>
-  </div>
-
-  <div class="header-right">
-    <span id="roleBadge" class="role-badge">Loading...</span>
-    <button id="logoutBtn" class="gray">Logout</button>
-  </div>
-</header>>
-<div class="container">
-<div class="stats"><div class="stat" id="statProducts"><small>Total Products</small><strong id="totalProducts">0</strong></div><div class="stat" id="statStock"><small>Total Stock</small><strong id="totalStock">0</strong></div><div class="stat" id="statLow"><small>Low Stock</small><strong id="lowStock">0</strong></div><div class="stat" id="statExpiring"><small>Expiring Soon</small><strong id="expiring">0</strong></div></div>
-
-<div class="inventory-toolbar">
-<div class="filter-field"><label>Branch</label><select id="branchFilter"><option value="">All Branches</option></select></div>
-<div class="filter-field"><label>Product</label><select id="productFilter"><option value="">All Products</option></select></div>
-<div class="filter-field"><label>Batch / Lot</label><select id="batchFilter"><option value="">All Batches</option></select></div>
-<div class="filter-field"><label>Stock Status</label><select id="stockFilter"><option value="">All Stock</option><option value="in">In Stock</option><option value="low">Low Stock</option><option value="out">Out of Stock</option></select></div>
-<div class="filter-field"><label>Search Product / Batch</label><div class="search-wrap"><input id="search" type="text" placeholder="Type TSH, E2, batch..." autocomplete="off"><div id="searchSuggestions" class="search-suggestions hidden"></div></div></div>
-<div class="filter-actions"><button id="clearFiltersBtn" class="gray">Clear</button><button id="addProductBtn">+ Add</button></div>
 </div>
-<div class="card table-card"><table><thead><tr><th>Product</th><th>Batch / Lot</th><th>Branch</th><th>Entry Date</th><th>Expiry</th><th>Current Qty</th><th>Unit</th><th id="rateHeader">Rate</th><th>GST</th><th id="supplierHeader">Supplier</th><th>Actions</th></tr></thead><tbody id="inventoryBody"></tbody></table><div id="noData" style="text-align:center;padding:30px;color:#64748b;">No inventory found.</div></div>
-</div></div>
 
-<div id="productModal" class="modal hidden"><div class="card modal-box"><div class="modal-header"><h2 id="modalTitle">Add Product</h2><button id="closeProductModal" class="gray">×</button></div>
-<form id="productForm"><input type="hidden" id="productId"><div class="grid">
-<div><label>Product Name *</label><input id="productName" required></div><div><label>Description</label><input id="description"></div>
-<div><label>Branch *</label><select id="productBranch" required></select><div id="branchNote" class="section-note"></div></div><div><label>Batch / Lot No. *</label><input id="batchNo" required></div>
-<div><label>Entry Date *</label><input id="entryDate" type="date" required></div><div><label>Expiry Date</label><input id="expiryDate" type="date"></div>
-<div><label>Current Qty *</label><input id="currentQty" type="number" min="0" step="0.01" required></div><div><label>Unit *</label><input id="unit" value="Kit" required></div>
-<div><label>Units per Pack</label><input id="unitsPerPack" type="number" min="0"></div><div id="rateField"><label>Rate</label><input id="rate" type="number" min="0" step="0.01"></div>
-<div><label>GST %</label><input id="gstPercent" type="number" min="0" max="100" step="0.01"></div><div id="supplierField"><label>Supplier *</label><input id="supplier" placeholder="Enter supplier"></div>
-<div><label>Reorder Level</label><input id="reorderLevel" type="number" min="0"></div>
-</div><div style="text-align:right;margin-top:15px"><button type="button" id="cancelProduct" class="gray">Cancel</button> <button type="submit">Save Product</button></div><div id="productMessage" class="message"></div></form></div></div>
 
-<div id="stockModal" class="modal hidden"><div class="card modal-box" style="max-width:420px"><div class="modal-header"><h2 id="stockProductName">Stock</h2><button id="closeStockModal" class="gray">×</button></div><p>Batch / Lot: <strong id="stockBatchName"></strong></p><p>Branch: <strong id="stockBranchName"></strong></p><p>Current Stock: <strong id="currentStock">0</strong></p><label>Quantity</label><input id="movementQty" type="number" min="0.01" step="0.01" placeholder="Enter quantity"><div style="display:flex;gap:10px;justify-content:flex-end"><button id="cancelStock" class="gray">Cancel</button><button id="outStock" class="red">OUT</button><button id="inStock">IN</button></div><div id="stockMessage" class="message"></div></div></div>
+<!-- =====================================================
+     ADMIN PANEL
+===================================================== -->
 
-<div id="expiryModal" class="modal hidden"><div class="card modal-box" style="max-width:620px"><div class="modal-header"><h2>Expiring Soon</h2><button id="closeExpiryModal" class="gray">×</button></div><div id="expiryList" class="expiry-list"></div></div></div>
+<div id="adminPage" class="hidden">
+
+  <!-- ================= HEADER ================= -->
+
+  <header>
+
+    <div class="header-brand">
+
+      <img
+        src="micron-logo.png"
+        class="header-logo"
+        alt="Micron Laboratory"
+      >
+
+      <div class="header-title">
+
+        <h2>Micron Laboratory</h2>
+
+        <span id="headerBranchText">
+          Stock Management
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- MAIN MENU -->
+
+    <div class="main-menu">
+
+      <button
+        id="menuInventory"
+        class="menu-btn active"
+      >
+        📦 Inventory
+      </button>
+
+      <button
+        id="menuPO"
+        class="menu-btn hidden"
+      >
+        📄 PO
+      </button>
+
+      <button
+        id="menuQuotation"
+        class="menu-btn hidden"
+      >
+        🧾 Quotation
+      </button>
+
+    </div>
+
+
+    <div class="header-right">
+
+      <span
+        id="roleBadge"
+        class="role-badge"
+      >
+        Loading...
+      </span>
+
+      <button
+        id="logoutBtn"
+        class="gray"
+      >
+        Logout
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- =================================================
+       INVENTORY SECTION
+  ================================================== -->
+
+  <div
+    id="inventorySection"
+    class="page-section active"
+  >
+
+    <div class="container">
+
+      <!-- STATS -->
+
+      <div class="stats">
+
+        <div
+          class="stat"
+          id="statProducts"
+        >
+          <small>Total Products</small>
+          <strong id="totalProducts">0</strong>
+        </div>
+
+
+        <div
+          class="stat"
+          id="statStock"
+        >
+          <small>Total Stock</small>
+          <strong id="totalStock">0</strong>
+        </div>
+
+
+        <div
+          class="stat"
+          id="statLow"
+        >
+          <small>Low Stock</small>
+          <strong id="lowStock">0</strong>
+        </div>
+
+
+        <div
+          class="stat"
+          id="statExpiring"
+        >
+          <small>Expiring Soon</small>
+          <strong id="expiring">0</strong>
+        </div>
+
+      </div>
+
+
+      <!-- INVENTORY FILTER -->
+
+      <div class="inventory-toolbar">
+
+        <div class="filter-field">
+
+          <label>Branch</label>
+
+          <select id="branchFilter">
+            <option value="">
+              All Branches
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="filter-field">
+
+          <label>Product</label>
+
+          <select id="productFilter">
+            <option value="">
+              All Products
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="filter-field">
+
+          <label>Batch / Lot</label>
+
+          <select id="batchFilter">
+            <option value="">
+              All Batches
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="filter-field">
+
+          <label>Stock Status</label>
+
+          <select id="stockFilter">
+
+            <option value="">
+              All Stock
+            </option>
+
+            <option value="in">
+              In Stock
+            </option>
+
+            <option value="low">
+              Low Stock
+            </option>
+
+            <option value="out">
+              Out of Stock
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="filter-field">
+
+          <label>
+            Search Product / Batch
+          </label>
+
+          <div class="search-wrap">
+
+            <input
+              id="search"
+              type="text"
+              placeholder="Type TSH, E2, batch..."
+              autocomplete="off"
+            >
+
+            <div
+              id="searchSuggestions"
+              class="search-suggestions hidden"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="filter-actions">
+
+          <button
+            id="clearFiltersBtn"
+            class="gray"
+          >
+            Clear
+          </button>
+
+          <button id="addProductBtn">
+            + Add
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- INVENTORY TABLE -->
+
+      <div class="card table-card">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Product</th>
+              <th>Batch / Lot</th>
+              <th>Branch</th>
+              <th>Entry Date</th>
+              <th>Expiry</th>
+              <th>Current Qty</th>
+              <th>Unit</th>
+              <th id="rateHeader">Rate</th>
+              <th>GST</th>
+              <th id="supplierHeader">Supplier</th>
+              <th>Actions</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="inventoryBody"></tbody>
+
+        </table>
+
+        <div
+          id="noData"
+          style="text-align:center;padding:30px;color:#64748b;"
+        >
+          No inventory found.
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =================================================
+       PO SECTION - ADMIN ONLY
+  ================================================== -->
+
+  <div
+    id="poSection"
+    class="page-section"
+  >
+
+    <div class="container">
+
+      <div class="simple-page">
+
+        <div class="simple-page-icon">
+          📄
+        </div>
+
+        <h2>
+          Purchase Orders
+        </h2>
+
+        <p>
+          Purchase Order Management
+        </p>
+
+        <button
+          onclick="alert('PO system yahan add hoga.')"
+        >
+          + Create Purchase Order
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =================================================
+       QUOTATION SECTION - ADMIN ONLY
+  ================================================== -->
+
+  <div
+    id="quotationSection"
+    class="page-section"
+  >
+
+    <div class="container">
+
+      <div class="simple-page">
+
+        <div class="simple-page-icon">
+          🧾
+        </div>
+
+        <h2>
+          Quotations
+        </h2>
+
+        <p>
+          Quotation Management
+        </p>
+
+        <button
+          onclick="alert('Quotation system yahan add hoga.')"
+        >
+          + Create Quotation
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     ADD / EDIT PRODUCT MODAL
+===================================================== -->
+
+<div
+  id="productModal"
+  class="modal hidden"
+>
+
+  <div class="card modal-box">
+
+    <div class="modal-header">
+
+      <h2 id="modalTitle">
+        Add Product
+      </h2>
+
+      <button
+        id="closeProductModal"
+        class="gray"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form id="productForm">
+
+      <input
+        type="hidden"
+        id="productId"
+      >
+
+
+      <div class="grid">
+
+        <div>
+
+          <label>
+            Product Name *
+          </label>
+
+          <input
+            id="productName"
+            required
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Description
+          </label>
+
+          <input id="description">
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Branch *
+          </label>
+
+          <select
+            id="productBranch"
+            required
+          ></select>
+
+          <div
+            id="branchNote"
+            class="section-note"
+          ></div>
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Batch / Lot No. *
+          </label>
+
+          <input
+            id="batchNo"
+            required
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Entry Date *
+          </label>
+
+          <input
+            id="entryDate"
+            type="date"
+            required
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Expiry Date
+          </label>
+
+          <input
+            id="expiryDate"
+            type="date"
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Current Qty *
+          </label>
+
+          <input
+            id="currentQty"
+            type="number"
+            min="0"
+            step="0.01"
+            required
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Unit *
+          </label>
+
+          <input
+            id="unit"
+            value="Kit"
+            required
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Units per Pack
+          </label>
+
+          <input
+            id="unitsPerPack"
+            type="number"
+            min="0"
+          >
+
+        </div>
+
+
+        <div id="rateField">
+
+          <label>
+            Rate
+          </label>
+
+          <input
+            id="rate"
+            type="number"
+            min="0"
+            step="0.01"
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>
+            GST %
+          </label>
+
+          <input
+            id="gstPercent"
+            type="number"
+            min="0"
+            max="100"
+            step="0.01"
+          >
+
+        </div>
+
+
+        <div id="supplierField">
+
+          <label>
+            Supplier *
+          </label>
+
+          <input
+            id="supplier"
+            placeholder="Enter supplier"
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Reorder Level
+          </label>
+
+          <input
+            id="reorderLevel"
+            type="number"
+            min="0"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div style="text-align:right;margin-top:15px">
+
+        <button
+          type="button"
+          id="cancelProduct"
+          class="gray"
+        >
+          Cancel
+        </button>
+
+        <button type="submit">
+          Save Product
+        </button>
+
+      </div>
+
+
+      <div
+        id="productMessage"
+        class="message"
+      ></div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     STOCK MODAL
+===================================================== -->
+
+<div
+  id="stockModal"
+  class="modal hidden"
+>
+
+  <div
+    class="card modal-box"
+    style="max-width:420px"
+  >
+
+    <div class="modal-header">
+
+      <h2 id="stockProductName">
+        Stock
+      </h2>
+
+      <button
+        id="closeStockModal"
+        class="gray"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <p>
+      Batch / Lot:
+      <strong id="stockBatchName"></strong>
+    </p>
+
+    <p>
+      Branch:
+      <strong id="stockBranchName"></strong>
+    </p>
+
+    <p>
+      Current Stock:
+      <strong id="currentStock">0</strong>
+    </p>
+
+
+    <label>
+      Quantity
+    </label>
+
+    <input
+      id="movementQty"
+      type="number"
+      min="0.01"
+      step="0.01"
+      placeholder="Enter quantity"
+    >
+
+
+    <div
+      style="display:flex;gap:10px;justify-content:flex-end;margin-top:15px"
+    >
+
+      <button
+        id="cancelStock"
+        class="gray"
+      >
+        Cancel
+      </button>
+
+      <button
+        id="outStock"
+        class="red"
+      >
+        OUT
+      </button>
+
+      <button id="inStock">
+        IN
+      </button>
+
+    </div>
+
+
+    <div
+      id="stockMessage"
+      class="message"
+    ></div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     EXPIRY MODAL
+===================================================== -->
+
+<div
+  id="expiryModal"
+  class="modal hidden"
+>
+
+  <div
+    class="card modal-box"
+    style="max-width:620px"
+  >
+
+    <div class="modal-header">
+
+      <h2>
+        Expiring Soon
+      </h2>
+
+      <button
+        id="closeExpiryModal"
+        class="gray"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div
+      id="expiryList"
+      class="expiry-list"
+    ></div>
+
+  </div>
+
+</div>
+
 
 <script>
-const SUPABASE_URL="https://xldnayhoquadguepedqm.supabase.co";
-const SUPABASE_KEY="sb_publishable_EPC6EEnO2EEvcIQFtozteA_XTKMyPx1";
-const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let inventory=[],branches=[],selectedProduct=null,currentRole="operator",currentBranchId=null,currentUser=null;
-const rolePermissions={admin:{canAdd:true,canEdit:true,canDelete:true,canUsers:true,viewSensitive:true},manager:{canAdd:true,canEdit:true,canDelete:false,canUsers:false,viewSensitive:false},operator:{canAdd:true,canEdit:false,canDelete:false,canUsers:false,viewSensitive:false}};
-const perms=()=>rolePermissions[currentRole]||rolePermissions.operator;
 
-function escapeHtml(value){return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;")}
-function todayString(){return new Date().toISOString().split("T")[0]}
-function roleName(){return currentRole==="admin"?"Full Admin":currentRole==="manager"?"Stock Manager":"Stock Operator"}
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+"https://xldnayhoquadguepedqm.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_EPC6EEnO2EEvcIQFtozteA_XTKMyPx1";
+
+const supabaseClient =
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
+
+let inventory = [];
+let branches = [];
+let selectedProduct = null;
+
+let currentRole = "operator";
+let currentBranchId = null;
+let currentUser = null;
+
+
+/* =====================================================
+   ROLE PERMISSIONS
+===================================================== */
+
+const rolePermissions = {
+
+  admin:{
+    canAdd:true,
+    canEdit:true,
+    canDelete:true,
+    canUsers:true,
+    viewSensitive:true,
+    canPO:true,
+    canQuotation:true
+  },
+
+  manager:{
+    canAdd:true,
+    canEdit:true,
+    canDelete:false,
+    canUsers:false,
+    viewSensitive:false,
+    canPO:false,
+    canQuotation:false
+  },
+
+  operator:{
+    canAdd:true,
+    canEdit:false,
+    canDelete:false,
+    canUsers:false,
+    viewSensitive:false,
+    canPO:false,
+    canQuotation:false
+  }
+
+};
+
+
+const perms = () =>
+rolePermissions[currentRole] ||
+rolePermissions.operator;
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function todayString(){
+
+  return new Date()
+    .toISOString()
+    .split("T")[0];
+
+}
+
+
+function roleName(){
+
+  if(currentRole === "admin")
+    return "Full Admin";
+
+  if(currentRole === "manager")
+    return "Stock Manager";
+
+  return "Stock Operator";
+
+}
+
+
+/* =====================================================
+   MENU
+===================================================== */
+
+function setupMainMenu(){
+
+  const inventoryBtn =
+    document.getElementById("menuInventory");
+
+  const poBtn =
+    document.getElementById("menuPO");
+
+  const quotationBtn =
+    document.getElementById("menuQuotation");
+
+
+  const isAdmin =
+    currentRole === "admin";
+
+
+  /*
+    PO + Quotation ONLY ADMIN
+  */
+
+  poBtn.classList.toggle(
+    "hidden",
+    !isAdmin
+  );
+
+  quotationBtn.classList.toggle(
+    "hidden",
+    !isAdmin
+  );
+
+
+  inventoryBtn.onclick = () => {
+
+    showSection("inventory");
+
+  };
+
+
+  poBtn.onclick = () => {
+
+    if(currentRole !== "admin")
+      return;
+
+    showSection("po");
+
+  };
+
+
+  quotationBtn.onclick = () => {
+
+    if(currentRole !== "admin")
+      return;
+
+    showSection("quotation");
+
+  };
+
+}
+
+
+/* =====================================================
+   SHOW SECTION
+===================================================== */
+
+function showSection(section){
+
+  const inventorySection =
+    document.getElementById("inventorySection");
+
+  const poSection =
+    document.getElementById("poSection");
+
+  const quotationSection =
+    document.getElementById("quotationSection");
+
+
+  const inventoryBtn =
+    document.getElementById("menuInventory");
+
+  const poBtn =
+    document.getElementById("menuPO");
+
+  const quotationBtn =
+    document.getElementById("menuQuotation");
+
+
+  inventorySection.classList.remove("active");
+  poSection.classList.remove("active");
+  quotationSection.classList.remove("active");
+
+
+  inventoryBtn.classList.remove("active");
+  poBtn.classList.remove("active");
+  quotationBtn.classList.remove("active");
+
+
+  if(section === "inventory"){
+
+    inventorySection.classList.add("active");
+    inventoryBtn.classList.add("active");
+
+  }
+
+
+  if(section === "po"){
+
+    if(currentRole !== "admin")
+      return;
+
+    poSection.classList.add("active");
+    poBtn.classList.add("active");
+
+  }
+
+
+  if(section === "quotation"){
+
+    if(currentRole !== "admin")
+      return;
+
+    quotationSection.classList.add("active");
+    quotationBtn.classList.add("active");
+
+  }
+
+}
+
+
+/* =====================================================
+   USER CONTEXT
+===================================================== */
 
 async function loadUserContext(){
- const u=(await supabaseClient.auth.getUser()).data.user; currentUser=u;
- const roleRes=await supabaseClient.from("inventory_user_roles").select("role").eq("user_id",u.id).maybeSingle();
- if(roleRes.error)throw roleRes.error;
- currentRole=roleRes.data?.role||"operator";
- const branchRes=await supabaseClient.from("inventory_user_branches").select("branch_id").eq("user_id",u.id).maybeSingle();
- if(branchRes.error)throw branchRes.error;
- currentBranchId=branchRes.data?.branch_id||null;
- document.getElementById("roleBadge").innerText=roleName();
- document.getElementById("rateHeader").classList.toggle("hidden",!perms().viewSensitive);
- document.getElementById("supplierHeader").classList.toggle("hidden",!perms().viewSensitive);
- document.getElementById("rateField").classList.toggle("hidden",!perms().viewSensitive);
- document.getElementById("supplierField").classList.toggle("hidden",!perms().viewSensitive);
- document.getElementById("supplier").required=perms().viewSensitive;
- document.getElementById("addProductBtn").classList.toggle("hidden",!perms().canAdd);
- const headerText=currentRole==="admin"?"Stock Management • All Branches":`Stock Management • ${currentBranchId?"Assigned Branch":"Assigned Branch"}`;
- document.getElementById("headerBranchText").innerText=headerText;
+
+  const userResult =
+    await supabaseClient.auth.getUser();
+
+  const u =
+    userResult.data.user;
+
+  if(!u){
+
+    throw new Error(
+      "User session not found."
+    );
+
+  }
+
+
+  currentUser = u;
+
+
+  /*
+    LOAD ROLE
+  */
+
+  const roleRes =
+    await supabaseClient
+      .from("inventory_user_roles")
+      .select("role")
+      .eq("user_id",u.id)
+      .maybeSingle();
+
+
+  if(roleRes.error)
+    throw roleRes.error;
+
+
+  currentRole =
+    roleRes.data?.role || "operator";
+
+
+  /*
+    LOAD BRANCH
+  */
+
+  const branchRes =
+    await supabaseClient
+      .from("inventory_user_branches")
+      .select("branch_id")
+      .eq("user_id",u.id)
+      .maybeSingle();
+
+
+  if(branchRes.error)
+    throw branchRes.error;
+
+
+  currentBranchId =
+    branchRes.data?.branch_id || null;
+
+
+  /*
+    ROLE BADGE
+  */
+
+  document.getElementById(
+    "roleBadge"
+  ).innerText =
+    roleName();
+
+
+  /*
+    SENSITIVE INVENTORY FIELDS
+  */
+
+  document.getElementById(
+    "rateHeader"
+  ).classList.toggle(
+    "hidden",
+    !perms().viewSensitive
+  );
+
+
+  document.getElementById(
+    "supplierHeader"
+  ).classList.toggle(
+    "hidden",
+    !perms().viewSensitive
+  );
+
+
+  document.getElementById(
+    "rateField"
+  ).classList.toggle(
+    "hidden",
+    !perms().viewSensitive
+  );
+
+
+  document.getElementById(
+    "supplierField"
+  ).classList.toggle(
+    "hidden",
+    !perms().viewSensitive
+  );
+
+
+  document.getElementById(
+    "supplier"
+  ).required =
+    perms().viewSensitive;
+
+
+  /*
+    ADD BUTTON
+  */
+
+  document.getElementById(
+    "addProductBtn"
+  ).classList.toggle(
+    "hidden",
+    !perms().canAdd
+  );
+
+
+  /*
+    MENU
+  */
+
+  setupMainMenu();
+
+  showSection("inventory");
+
+
+  /*
+    HEADER
+  */
+
+  const headerText =
+    currentRole === "admin"
+      ? "Stock Management • All Branches"
+      : "Stock Management • Assigned Branch";
+
+
+  document.getElementById(
+    "headerBranchText"
+  ).innerText =
+    headerText;
+
 }
+
+
+/* =====================================================
+   LOAD BRANCHES
+===================================================== */
 
 async function loadBranches(){
- const {data,error}=await supabaseClient.from("inventory_branches").select("id,branch_name,is_active").eq("is_active",true).order("branch_name");
- if(error)throw error;branches=data||[];
- const bf=document.getElementById("branchFilter"),pb=document.getElementById("productBranch");
- bf.innerHTML=currentRole==="admin"?'<option value="">All Branches</option>':'';
- pb.innerHTML='';
- branches.forEach(b=>{
-   if(currentRole==="admin"||b.id===currentBranchId){const o=document.createElement("option");o.value=b.id;o.textContent=b.branch_name;bf.appendChild(o)}
-   if(currentRole==="admin"||b.id===currentBranchId){const o2=document.createElement("option");o2.value=b.id;o2.textContent=b.branch_name;pb.appendChild(o2)}
- });
- if(currentRole!=="admin")bf.value=currentBranchId||"";
- if(currentRole!=="admin")pb.value=currentBranchId||"";
- document.getElementById("branchNote").innerText=currentRole==="admin"?"Admin can manage both branches.":"This user is restricted to the assigned branch.";
+
+  const {data,error} =
+    await supabaseClient
+      .from("inventory_branches")
+      .select(
+        "id,branch_name,is_active"
+      )
+      .eq("is_active",true)
+      .order("branch_name");
+
+
+  if(error)
+    throw error;
+
+
+  branches = data || [];
+
+
+  const bf =
+    document.getElementById(
+      "branchFilter"
+    );
+
+  const pb =
+    document.getElementById(
+      "productBranch"
+    );
+
+
+  bf.innerHTML =
+    currentRole === "admin"
+      ? '<option value="">All Branches</option>'
+      : '';
+
+
+  pb.innerHTML = '';
+
+
+  branches.forEach(b => {
+
+    if(
+      currentRole === "admin" ||
+      b.id === currentBranchId
+    ){
+
+      const o =
+        document.createElement("option");
+
+      o.value = b.id;
+      o.textContent = b.branch_name;
+
+      bf.appendChild(o);
+
+    }
+
+
+    if(
+      currentRole === "admin" ||
+      b.id === currentBranchId
+    ){
+
+      const o2 =
+        document.createElement("option");
+
+      o2.value = b.id;
+      o2.textContent = b.branch_name;
+
+      pb.appendChild(o2);
+
+    }
+
+  });
+
+
+  if(currentRole !== "admin")
+    bf.value =
+      currentBranchId || "";
+
+
+  if(currentRole !== "admin")
+    pb.value =
+      currentBranchId || "";
+
+
+  document.getElementById(
+    "branchNote"
+  ).innerText =
+    currentRole === "admin"
+      ? "Admin can manage both branches."
+      : "This user is restricted to the assigned branch.";
+
 }
+
+
+/* =====================================================
+   LOAD INVENTORY
+===================================================== */
 
 async function loadInventory(){
- let q=supabaseClient.from("inventory_stock").select("*").eq("is_active",true).order("product_name",{ascending:true}).order("batch_no",{ascending:true});
- if(currentRole!=="admin"&&currentBranchId)q=q.eq("branch_id",currentBranchId);
- const {data,error}=await q;if(error){alert(error.message);return}inventory=data||[];populateFilters();renderInventory();
+
+  let q =
+    supabaseClient
+      .from("inventory_stock")
+      .select("*")
+      .eq("is_active",true)
+      .order(
+        "product_name",
+        {ascending:true}
+      )
+      .order(
+        "batch_no",
+        {ascending:true}
+      );
+
+
+  if(
+    currentRole !== "admin" &&
+    currentBranchId
+  ){
+
+    q =
+      q.eq(
+        "branch_id",
+        currentBranchId
+      );
+
+  }
+
+
+  const {data,error} =
+    await q;
+
+
+  if(error){
+
+    alert(error.message);
+    return;
+
+  }
+
+
+  inventory =
+    data || [];
+
+
+  populateFilters();
+
+  renderInventory();
+
 }
+
+
+/* =====================================================
+   FILTERS
+===================================================== */
+
 function populateFilters(){
- const pf=document.getElementById("productFilter"),bf=document.getElementById("batchFilter"),selectedP=pf.value,selectedB=bf.value;
- const products=[...new Set(inventory.map(x=>x.product_name).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
- pf.innerHTML='<option value="">All Products</option>'+products.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");pf.value=products.includes(selectedP)?selectedP:"";
- const batches=[...new Set(inventory.filter(x=>!pf.value||x.product_name===pf.value).map(x=>x.batch_no).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
- bf.innerHTML='<option value="">All Batches</option>'+batches.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");bf.value=batches.includes(selectedB)?selectedB:"";
+
+  const pf =
+    document.getElementById(
+      "productFilter"
+    );
+
+  const bf =
+    document.getElementById(
+      "batchFilter"
+    );
+
+
+  const selectedP =
+    pf.value;
+
+  const selectedB =
+    bf.value;
+
+
+  const products =
+    [
+      ...new Set(
+        inventory
+          .map(x => x.product_name)
+          .filter(Boolean)
+      )
+    ]
+    .sort(
+      (a,b) =>
+        a.localeCompare(b)
+    );
+
+
+  pf.innerHTML =
+    '<option value="">All Products</option>' +
+
+    products
+      .map(x =>
+        `<option value="${escapeHtml(x)}">
+          ${escapeHtml(x)}
+        </option>`
+      )
+      .join("");
+
+
+  pf.value =
+    products.includes(selectedP)
+      ? selectedP
+      : "";
+
+
+  const batches =
+    [
+      ...new Set(
+        inventory
+          .filter(
+            x =>
+              !pf.value ||
+              x.product_name === pf.value
+          )
+          .map(x => x.batch_no)
+          .filter(Boolean)
+      )
+    ]
+    .sort(
+      (a,b) =>
+        a.localeCompare(b)
+    );
+
+
+  bf.innerHTML =
+    '<option value="">All Batches</option>' +
+
+    batches
+      .map(x =>
+        `<option value="${escapeHtml(x)}">
+          ${escapeHtml(x)}
+        </option>`
+      )
+      .join("");
+
+
+  bf.value =
+    batches.includes(selectedB)
+      ? selectedB
+      : "";
+
 }
+
+
+/* =====================================================
+   FILTERED INVENTORY
+===================================================== */
+
 function filteredInventory(){
- const search=document.getElementById("search").value.trim().toLowerCase(),branch=document.getElementById("branchFilter").value,product=document.getElementById("productFilter").value,batch=document.getElementById("batchFilter").value,status=document.getElementById("stockFilter").value;
- return inventory.filter(item=>{
-  if(branch&&item.branch_id!==branch)return false;if(product&&item.product_name!==product)return false;if(batch&&item.batch_no!==batch)return false;
-  const qty=Number(item.current_qty||0);if(status==="in"&&qty<=0)return false;if(status==="low"&&qty>Number(item.reorder_level||0))return false;if(status==="out"&&qty!==0)return false;
-  if(search&&!([item.product_name,item.batch_no,item.supplier,item.description].join(" ").toLowerCase().includes(search)))return false;return true;
- });
+
+  const search =
+    document
+      .getElementById("search")
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  const branch =
+    document.getElementById(
+      "branchFilter"
+    ).value;
+
+
+  const product =
+    document.getElementById(
+      "productFilter"
+    ).value;
+
+
+  const batch =
+    document.getElementById(
+      "batchFilter"
+    ).value;
+
+
+  const status =
+    document.getElementById(
+      "stockFilter"
+    ).value;
+
+
+  return inventory.filter(item => {
+
+    if(
+      branch &&
+      item.branch_id !== branch
+    )
+      return false;
+
+
+    if(
+      product &&
+      item.product_name !== product
+    )
+      return false;
+
+
+    if(
+      batch &&
+      item.batch_no !== batch
+    )
+      return false;
+
+
+    const qty =
+      Number(item.current_qty || 0);
+
+
+    if(
+      status === "in" &&
+      qty <= 0
+    )
+      return false;
+
+
+    if(
+      status === "low" &&
+      qty >
+      Number(item.reorder_level || 0)
+    )
+      return false;
+
+
+    if(
+      status === "out" &&
+      qty !== 0
+    )
+      return false;
+
+
+    if(
+      search &&
+      ![
+        item.product_name,
+        item.batch_no,
+        item.supplier,
+        item.description
+      ]
+      .join(" ")
+      .toLowerCase()
+      .includes(search)
+    )
+      return false;
+
+
+    return true;
+
+  });
+
 }
+
+
+/* =====================================================
+   RENDER INVENTORY
+===================================================== */
+
 function renderInventory(){
- const filtered=filteredInventory(),body=document.getElementById("inventoryBody");body.innerHTML="";
- filtered.forEach(item=>{const row=document.createElement("tr");const branch=branches.find(b=>b.id===item.branch_id);let actions=`<button class="action-btn" onclick="openStock('${item.id}')">IN / OUT</button>`;if(perms().canEdit)actions+=`<button class="action-btn gray" onclick="editProduct('${item.id}')">Edit</button>`;if(perms().canDelete)actions+=`<button class="action-btn red" onclick="deleteProduct('${item.id}')">Delete</button>`;
- row.innerHTML=`<td><strong>${escapeHtml(item.product_name)}</strong><br><small>${escapeHtml(item.description||"")}</small></td><td>${escapeHtml(item.batch_no||"-")}</td><td><span class="branch-pill">${escapeHtml(branch?.branch_name||"-")}</span></td><td>${escapeHtml(item.entry_date||"")}</td><td>${escapeHtml(item.expiry_date||"-")}</td><td><strong>${escapeHtml(item.current_qty)}</strong></td><td>${escapeHtml(item.unit||"")}</td><td class="sensitive-rate">${perms().viewSensitive?"₹"+Number(item.rate||0).toLocaleString("en-IN"):"—"}</td><td>${escapeHtml(item.gst_percent||0)}%</td><td class="sensitive-supplier">${perms().viewSensitive?escapeHtml(item.supplier||"Not specified"):"—"}</td><td>${actions}</td>`;body.appendChild(row)});
- document.getElementById("noData").style.display=filtered.length?"none":"block";updateDashboard(filtered);
+
+  const filtered =
+    filteredInventory();
+
+
+  const body =
+    document.getElementById(
+      "inventoryBody"
+    );
+
+
+  body.innerHTML = "";
+
+
+  filtered.forEach(item => {
+
+    const row =
+      document.createElement("tr");
+
+
+    const branch =
+      branches.find(
+        b =>
+          b.id === item.branch_id
+      );
+
+
+    let actions =
+      `<button
+        class="action-btn"
+        onclick="openStock('${item.id}')"
+      >
+        IN / OUT
+      </button>`;
+
+
+    if(perms().canEdit){
+
+      actions +=
+        `<button
+          class="action-btn gray"
+          onclick="editProduct('${item.id}')"
+        >
+          Edit
+        </button>`;
+
+    }
+
+
+    if(perms().canDelete){
+
+      actions +=
+        `<button
+          class="action-btn red"
+          onclick="deleteProduct('${item.id}')"
+        >
+          Delete
+        </button>`;
+
+    }
+
+
+    row.innerHTML = `
+
+      <td>
+        <strong>
+          ${escapeHtml(item.product_name)}
+        </strong>
+        <br>
+        <small>
+          ${escapeHtml(item.description || "")}
+        </small>
+      </td>
+
+      <td>
+        ${escapeHtml(item.batch_no || "-")}
+      </td>
+
+      <td>
+        <span class="branch-pill">
+          ${escapeHtml(
+            branch?.branch_name || "-"
+          )}
+        </span>
+      </td>
+
+      <td>
+        ${escapeHtml(item.entry_date || "")}
+      </td>
+
+      <td>
+        ${escapeHtml(item.expiry_date || "-")}
+      </td>
+
+      <td>
+        <strong>
+          ${escapeHtml(item.current_qty)}
+        </strong>
+      </td>
+
+      <td>
+        ${escapeHtml(item.unit || "")}
+      </td>
+
+      <td>
+        ${
+          perms().viewSensitive
+            ? "₹" +
+              Number(item.rate || 0)
+                .toLocaleString("en-IN")
+            : "—"
+        }
+      </td>
+
+      <td>
+        ${escapeHtml(item.gst_percent || 0)}%
+      </td>
+
+      <td>
+        ${
+          perms().viewSensitive
+            ? escapeHtml(
+                item.supplier ||
+                "Not specified"
+              )
+            : "—"
+        }
+      </td>
+
+      <td>
+        ${actions}
+      </td>
+
+    `;
+
+
+    body.appendChild(row);
+
+  });
+
+
+  document.getElementById(
+    "noData"
+  ).style.display =
+    filtered.length
+      ? "none"
+      : "block";
+
+
+  updateDashboard(filtered);
+
 }
-function updateDashboard(list=inventory){
- document.getElementById("totalProducts").innerText=new Set(list.map(x=>x.product_name)).size;let total=0,low=0,expiring=0,today=new Date();today.setHours(0,0,0,0);let future=new Date(today);future.setDate(future.getDate()+30);
- list.forEach(item=>{total+=Number(item.current_qty||0);if(Number(item.current_qty||0)<=Number(item.reorder_level||0))low++;if(item.expiry_date){const e=new Date(item.expiry_date);if(e>=today&&e<=future)expiring++}});document.getElementById("totalStock").innerText=total;document.getElementById("lowStock").innerText=low;document.getElementById("expiring").innerText=expiring;
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+function updateDashboard(
+  list = inventory
+){
+
+  document.getElementById(
+    "totalProducts"
+  ).innerText =
+    new Set(
+      list.map(x =>
+        x.product_name
+      )
+    ).size;
+
+
+  let total = 0;
+  let low = 0;
+  let expiring = 0;
+
+
+  let today =
+    new Date();
+
+  today.setHours(
+    0,0,0,0
+  );
+
+
+  let future =
+    new Date(today);
+
+  future.setDate(
+    future.getDate() + 30
+  );
+
+
+  list.forEach(item => {
+
+    const qty =
+      Number(
+        item.current_qty || 0
+      );
+
+
+    total += qty;
+
+
+    if(
+      qty <=
+      Number(
+        item.reorder_level || 0
+      )
+    ){
+
+      low++;
+
+    }
+
+
+    if(item.expiry_date){
+
+      const e =
+        new Date(
+          item.expiry_date
+        );
+
+
+      if(
+        e >= today &&
+        e <= future
+      ){
+
+        expiring++;
+
+      }
+
+    }
+
+  });
+
+
+  document.getElementById(
+    "totalStock"
+  ).innerText =
+    total;
+
+
+  document.getElementById(
+    "lowStock"
+  ).innerText =
+    low;
+
+
+  document.getElementById(
+    "expiring"
+  ).innerText =
+    expiring;
+
 }
 
-function openProductModal(item=null){
- document.getElementById("productModal").classList.remove("hidden");document.getElementById("productMessage").innerText="";document.getElementById("modalTitle").innerText=item?"Edit Product":"Add Product";
- document.getElementById("productId").value=item?.id||"";document.getElementById("productName").value=item?.product_name||"";document.getElementById("description").value=item?.description||"";document.getElementById("batchNo").value=item?.batch_no||"";document.getElementById("entryDate").value=item?.entry_date||todayString();document.getElementById("expiryDate").value=item?.expiry_date||"";document.getElementById("currentQty").value=item?.current_qty??0;document.getElementById("unit").value=item?.unit||"Kit";document.getElementById("unitsPerPack").value=item?.units_per_pack??"";document.getElementById("rate").value=item?.rate??0;document.getElementById("gstPercent").value=item?.gst_percent??0;document.getElementById("supplier").value=item?.supplier||"";document.getElementById("reorderLevel").value=item?.reorder_level??0;
- document.getElementById("productBranch").value=item?.branch_id||currentBranchId||branches[0]?.id||"";
- if(currentRole!=="admin")document.getElementById("productBranch").disabled=true;else document.getElementById("productBranch").disabled=false;
+
+/* =====================================================
+   PRODUCT MODAL
+===================================================== */
+
+function openProductModal(
+  item = null
+){
+
+  document.getElementById(
+    "productModal"
+  ).classList.remove("hidden");
+
+
+  document.getElementById(
+    "productMessage"
+  ).innerText = "";
+
+
+  document.getElementById(
+    "modalTitle"
+  ).innerText =
+    item
+      ? "Edit Product"
+      : "Add Product";
+
+
+  document.getElementById(
+    "productId"
+  ).value =
+    item?.id || "";
+
+
+  document.getElementById(
+    "productName"
+  ).value =
+    item?.product_name || "";
+
+
+  document.getElementById(
+    "description"
+  ).value =
+    item?.description || "";
+
+
+  document.getElementById(
+    "batchNo"
+  ).value =
+    item?.batch_no || "";
+
+
+  document.getElementById(
+    "entryDate"
+  ).value =
+    item?.entry_date ||
+    todayString();
+
+
+  document.getElementById(
+    "expiryDate"
+  ).value =
+    item?.expiry_date || "";
+
+
+  document.getElementById(
+    "currentQty"
+  ).value =
+    item?.current_qty ?? 0;
+
+
+  document.getElementById(
+    "unit"
+  ).value =
+    item?.unit || "Kit";
+
+
+  document.getElementById(
+    "unitsPerPack"
+  ).value =
+    item?.units_per_pack ?? "";
+
+
+  document.getElementById(
+    "rate"
+  ).value =
+    item?.rate ?? 0;
+
+
+  document.getElementById(
+    "gstPercent"
+  ).value =
+    item?.gst_percent ?? 0;
+
+
+  document.getElementById(
+    "supplier"
+  ).value =
+    item?.supplier || "";
+
+
+  document.getElementById(
+    "reorderLevel"
+  ).value =
+    item?.reorder_level ?? 0;
+
+
+  document.getElementById(
+    "productBranch"
+  ).value =
+    item?.branch_id ||
+    currentBranchId ||
+    branches[0]?.id ||
+    "";
+
+
+  document.getElementById(
+    "productBranch"
+  ).disabled =
+    currentRole !== "admin";
+
 }
-document.getElementById("addProductBtn").addEventListener("click",()=>openProductModal());
-window.editProduct=id=>{const item=inventory.find(x=>x.id===id);if(item&&perms().canEdit)openProductModal(item)};
-document.getElementById("closeProductModal").onclick=document.getElementById("cancelProduct").onclick=()=>document.getElementById("productModal").classList.add("hidden");
 
-document.getElementById("productForm").addEventListener("submit",async e=>{e.preventDefault();const id=document.getElementById("productId").value;const branchId=document.getElementById("productBranch").value;const supplierInput=document.getElementById("supplier").value.trim();if(!branchId){document.getElementById("productMessage").innerText="Branch select karo.";return}if(perms().viewSensitive&&!supplierInput){document.getElementById("productMessage").innerText="Supplier mandatory hai.";return}
- const product={product_name:document.getElementById("productName").value.trim(),description:document.getElementById("description").value.trim()||null,branch_id:branchId,batch_no:document.getElementById("batchNo").value.trim(),entry_date:document.getElementById("entryDate").value,expiry_date:document.getElementById("expiryDate").value||null,current_qty:Number(document.getElementById("currentQty").value),unit:document.getElementById("unit").value.trim(),units_per_pack:Number(document.getElementById("unitsPerPack").value||0),rate:perms().viewSensitive?Number(document.getElementById("rate").value||0):0,gst_percent:Number(document.getElementById("gstPercent").value||0),supplier:perms().viewSensitive?supplierInput:"Not specified",reorder_level:Number(document.getElementById("reorderLevel").value||0),is_active:true};
- let result;if(id){if(!perms().canEdit){document.getElementById("productMessage").innerText="Edit permission nahi hai.";return}result=await supabaseClient.from("inventory_stock").update(product).eq("id",id)}else result=await supabaseClient.from("inventory_stock").insert(product);if(result.error){document.getElementById("productMessage").innerText=result.error.message;return}document.getElementById("productModal").classList.add("hidden");loadInventory();});
-window.deleteProduct=async id=>{if(!perms().canDelete)return;if(!confirm("Is product ko permanently delete karna hai?"))return;const {error}=await supabaseClient.from("inventory_stock").delete().eq("id",id);if(error){alert(error.message);return}loadInventory()};
 
-window.openStock=id=>{selectedProduct=inventory.find(x=>x.id===id);if(!selectedProduct)return;document.getElementById("stockModal").classList.remove("hidden");document.getElementById("stockProductName").innerText=selectedProduct.product_name;document.getElementById("stockBatchName").innerText=selectedProduct.batch_no||"-";document.getElementById("stockBranchName").innerText=branches.find(b=>b.id===selectedProduct.branch_id)?.branch_name||"-";document.getElementById("currentStock").innerText=selectedProduct.current_qty;document.getElementById("movementQty").value="";document.getElementById("stockMessage").innerText=""};
-async function stockMovement(type){if(!selectedProduct)return;const qty=Number(document.getElementById("movementQty").value),message=document.getElementById("stockMessage");if(!qty||qty<=0){message.innerText="Valid quantity enter karo.";return}const fn=type==="IN"?"stock_in":"stock_out";const {error}=await supabaseClient.rpc(fn,{p_stock_id:selectedProduct.id,p_quantity:qty});if(error){message.innerText=error.message;return}message.classList.add("success");message.innerText="Stock updated successfully.";setTimeout(()=>{document.getElementById("stockModal").classList.add("hidden");message.classList.remove("success");loadInventory()},500)}
-document.getElementById("inStock").onclick=()=>stockMovement("IN");document.getElementById("outStock").onclick=()=>stockMovement("OUT");document.getElementById("closeStockModal").onclick=document.getElementById("cancelStock").onclick=()=>document.getElementById("stockModal").classList.add("hidden");
+/* =====================================================
+   ADD PRODUCT
+===================================================== */
 
-function refreshBatchFilter(){const pf=document.getElementById("productFilter"),bf=document.getElementById("batchFilter"),old=bf.value;const arr=[...new Set(inventory.filter(x=>!pf.value||x.product_name===pf.value).map(x=>x.batch_no).filter(Boolean))].sort((a,b)=>a.localeCompare(b));bf.innerHTML='<option value="">All Batches</option>'+arr.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");if(arr.includes(old))bf.value=old}
-["branchFilter","productFilter","batchFilter","stockFilter"].forEach(id=>document.getElementById(id).addEventListener("change",()=>{if(id==="productFilter")refreshBatchFilter();renderInventory()}));
-document.getElementById("clearFiltersBtn").onclick=()=>{if(currentRole==="admin")document.getElementById("branchFilter").value="";else document.getElementById("branchFilter").value=currentBranchId||"";document.getElementById("productFilter").value="";refreshBatchFilter();document.getElementById("batchFilter").value="";document.getElementById("stockFilter").value="";document.getElementById("search").value="";document.getElementById("searchSuggestions").classList.add("hidden");renderInventory()};
+document.getElementById(
+  "addProductBtn"
+).addEventListener(
+  "click",
+  () =>
+    openProductModal()
+);
 
-const searchInput=document.getElementById("search"),suggestionsBox=document.getElementById("searchSuggestions");
-function updateSearchSuggestions(){const q=searchInput.value.trim().toLowerCase();if(!q){suggestionsBox.classList.add("hidden");suggestionsBox.innerHTML="";return}const matches=inventory.filter(i=>[i.product_name,i.batch_no,i.description].join(" ").toLowerCase().includes(q)).slice(0,80);suggestionsBox.innerHTML="";if(!matches.length){suggestionsBox.innerHTML='<div class="search-suggestion">No matching product / batch</div>'}else matches.forEach(item=>{const d=document.createElement("div");d.className="search-suggestion";d.innerHTML=`<strong>${escapeHtml(item.product_name||"")}</strong><small>${escapeHtml(branches.find(b=>b.id===item.branch_id)?.branch_name||"-")} • Batch/Lot: ${escapeHtml(item.batch_no||"-")} • Qty: ${escapeHtml(item.current_qty||0)}</small>`;d.onclick=()=>{document.getElementById("branchFilter").value=item.branch_id||"";document.getElementById("productFilter").value=item.product_name||"";refreshBatchFilter();document.getElementById("batchFilter").value=item.batch_no||"";searchInput.value="";suggestionsBox.classList.add("hidden");renderInventory()};suggestionsBox.appendChild(d)});suggestionsBox.classList.remove("hidden")}
-searchInput.addEventListener("input",()=>{updateSearchSuggestions();renderInventory()});document.addEventListener("click",e=>{if(!e.target.closest(".search-wrap"))suggestionsBox.classList.add("hidden")});
 
-function openExpiryModal(){const list=filteredInventory().filter(item=>{if(!item.expiry_date)return false;const t=new Date();t.setHours(0,0,0,0);const f=new Date(t);f.setDate(f.getDate()+30);const e=new Date(item.expiry_date);return e>=t&&e<=f}).sort((a,b)=>String(a.expiry_date).localeCompare(String(b.expiry_date)));const box=document.getElementById("expiryList");box.innerHTML=list.length?list.map(x=>`<div><span><strong>${escapeHtml(x.product_name)}</strong><br><small>Batch ${escapeHtml(x.batch_no||"-")} • ${escapeHtml(branches.find(b=>b.id===x.branch_id)?.branch_name||"-")}</small></span><strong>${escapeHtml(x.expiry_date)}</strong></div>`).join(""):'<div>No products expiring in the next 30 days.</div>';document.getElementById("expiryModal").classList.remove("hidden")}
-document.getElementById("statExpiring").onclick=openExpiryModal;document.getElementById("closeExpiryModal").onclick=()=>document.getElementById("expiryModal").classList.add("hidden");
+/* =====================================================
+   EDIT PRODUCT
+===================================================== */
 
-async function showAdmin(){try{document.getElementById("loginPage").classList.add("hidden");document.getElementById("adminPage").classList.remove("hidden");await loadUserContext();await loadBranches();await loadInventory()}catch(e){console.error(e);document.getElementById("loginMessage").innerText=e.message||"Role/branch load error";await supabaseClient.auth.signOut()}}
-function showLogin(){document.getElementById("loginPage").classList.remove("hidden");document.getElementById("adminPage").classList.add("hidden")}
-document.getElementById("loginBtn").addEventListener("click",async()=>{const email=document.getElementById("loginEmail").value.trim(),password=document.getElementById("loginPassword").value,message=document.getElementById("loginMessage");message.innerText="";if(!email||!password){message.innerText="Email aur password enter karo.";return}const {error}=await supabaseClient.auth.signInWithPassword({email,password});if(error){message.innerText=error.message;return}await showAdmin()});
-document.getElementById("loginPassword").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("loginBtn").click()});
-document.getElementById("logoutBtn").addEventListener("click",async()=>{await supabaseClient.auth.signOut()});supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_OUT")showLogin()});
-(async()=>{const {data}=await supabaseClient.auth.getSession();if(data.session)await showAdmin();else showLogin()})();
+window.editProduct =
+id => {
+
+  const item =
+    inventory.find(
+      x => x.id === id
+    );
+
+
+  if(
+    item &&
+    perms().canEdit
+  ){
+
+    openProductModal(item);
+
+  }
+
+};
+
+
+/* =====================================================
+   CLOSE PRODUCT
+===================================================== */
+
+document.getElementById(
+  "closeProductModal"
+).onclick =
+
+document.getElementById(
+  "cancelProduct"
+).onclick = () => {
+
+  document.getElementById(
+    "productModal"
+  ).classList.add("hidden");
+
+};
+
+
+/* =====================================================
+   SAVE PRODUCT
+===================================================== */
+
+document.getElementById(
+  "productForm"
+).addEventListener(
+  "submit",
+  async e => {
+
+    e.preventDefault();
+
+
+    const id =
+      document.getElementById(
+        "productId"
+      ).value;
+
+
+    const branchId =
+      document.getElementById(
+        "productBranch"
+      ).value;
+
+
+    const supplierInput =
+      document.getElementById(
+        "supplier"
+      ).value.trim();
+
+
+    const message =
+      document.getElementById(
+        "productMessage"
+      );
+
+
+    if(!branchId){
+
+      message.innerText =
+        "Branch select karo.";
+
+      return;
+
+    }
+
+
+    if(
+      perms().viewSensitive &&
+      !supplierInput
+    ){
+
+      message.innerText =
+        "Supplier mandatory hai.";
+
+      return;
+
+    }
+
+
+    const product = {
+
+      product_name:
+        document
+          .getElementById("productName")
+          .value
+          .trim(),
+
+      description:
+        document
+          .getElementById("description")
+          .value
+          .trim() || null,
+
+      branch_id:
+        branchId,
+
+      batch_no:
+        document
+          .getElementById("batchNo")
+          .value
+          .trim(),
+
+      entry_date:
+        document
+          .getElementById("entryDate")
+          .value,
+
+      expiry_date:
+        document
+          .getElementById("expiryDate")
+          .value || null,
+
+      current_qty:
+        Number(
+          document
+            .getElementById("currentQty")
+            .value
+        ),
+
+      unit:
+        document
+          .getElementById("unit")
+          .value
+          .trim(),
+
+      units_per_pack:
+        Number(
+          document
+            .getElementById("unitsPerPack")
+            .value || 0
+        ),
+
+      rate:
+        perms().viewSensitive
+          ? Number(
+              document
+                .getElementById("rate")
+                .value || 0
+            )
+          : 0,
+
+      gst_percent:
+        Number(
+          document
+            .getElementById("gstPercent")
+            .value || 0
+        ),
+
+      supplier:
+        perms().viewSensitive
+          ? supplierInput
+          : "Not specified",
+
+      reorder_level:
+        Number(
+          document
+            .getElementById("reorderLevel")
+            .value || 0
+        ),
+
+      is_active:true
+
+    };
+
+
+    let result;
+
+
+    if(id){
+
+      if(!perms().canEdit){
+
+        message.innerText =
+          "Edit permission nahi hai.";
+
+        return;
+
+      }
+
+
+      result =
+        await supabaseClient
+          .from("inventory_stock")
+          .update(product)
+          .eq("id",id);
+
+    }else{
+
+      result =
+        await supabaseClient
+          .from("inventory_stock")
+          .insert(product);
+
+    }
+
+
+    if(result.error){
+
+      message.innerText =
+        result.error.message;
+
+      return;
+
+    }
+
+
+    document.getElementById(
+      "productModal"
+    ).classList.add("hidden");
+
+
+    await loadInventory();
+
+  }
+);
+
+
+/* =====================================================
+   DELETE PRODUCT
+===================================================== */
+
+window.deleteProduct =
+async id => {
+
+  if(!perms().canDelete)
+    return;
+
+
+  if(
+    !confirm(
+      "Is product ko permanently delete karna hai?"
+    )
+  )
+    return;
+
+
+  const {error} =
+    await supabaseClient
+      .from("inventory_stock")
+      .delete()
+      .eq("id",id);
+
+
+  if(error){
+
+    alert(error.message);
+    return;
+
+  }
+
+
+  loadInventory();
+
+};
+
+
+/* =====================================================
+   STOCK MODAL
+===================================================== */
+
+window.openStock =
+id => {
+
+  selectedProduct =
+    inventory.find(
+      x => x.id === id
+    );
+
+
+  if(!selectedProduct)
+    return;
+
+
+  document.getElementById(
+    "stockModal"
+  ).classList.remove("hidden");
+
+
+  document.getElementById(
+    "stockProductName"
+  ).innerText =
+    selectedProduct.product_name;
+
+
+  document.getElementById(
+    "stockBatchName"
+  ).innerText =
+    selectedProduct.batch_no || "-";
+
+
+  document.getElementById(
+    "stockBranchName"
+  ).innerText =
+    branches.find(
+      b =>
+        b.id ===
+        selectedProduct.branch_id
+    )?.branch_name || "-";
+
+
+  document.getElementById(
+    "currentStock"
+  ).innerText =
+    selectedProduct.current_qty;
+
+
+  document.getElementById(
+    "movementQty"
+  ).value = "";
+
+
+  document.getElementById(
+    "stockMessage"
+  ).innerText = "";
+
+};
+
+
+/* =====================================================
+   STOCK MOVEMENT
+===================================================== */
+
+async function stockMovement(type){
+
+  if(!selectedProduct)
+    return;
+
+
+  const qty =
+    Number(
+      document.getElementById(
+        "movementQty"
+      ).value
+    );
+
+
+  const message =
+    document.getElementById(
+      "stockMessage"
+    );
+
+
+  if(!qty || qty <= 0){
+
+    message.innerText =
+      "Valid quantity enter karo.";
+
+    return;
+
+  }
+
+
+  const fn =
+    type === "IN"
+      ? "stock_in"
+      : "stock_out";
+
+
+  const {error} =
+    await supabaseClient
+      .rpc(
+        fn,
+        {
+          p_stock_id:
+            selectedProduct.id,
+
+          p_quantity:
+            qty
+        }
+      );
+
+
+  if(error){
+
+    message.innerText =
+      error.message;
+
+    return;
+
+  }
+
+
+  message.classList.add(
+    "success"
+  );
+
+
+  message.innerText =
+    "Stock updated successfully.";
+
+
+  setTimeout(
+    () => {
+
+      document.getElementById(
+        "stockModal"
+      ).classList.add("hidden");
+
+
+      message.classList.remove(
+        "success"
+      );
+
+
+      loadInventory();
+
+    },
+    500
+  );
+
+}
+
+
+document.getElementById(
+  "inStock"
+).onclick =
+() =>
+  stockMovement("IN");
+
+
+document.getElementById(
+  "outStock"
+).onclick =
+() =>
+  stockMovement("OUT");
+
+
+document.getElementById(
+  "closeStockModal"
+).onclick =
+
+document.getElementById(
+  "cancelStock"
+).onclick = () => {
+
+  document.getElementById(
+    "stockModal"
+  ).classList.add("hidden");
+
+};
+
+
+/* =====================================================
+   BATCH FILTER
+===================================================== */
+
+function refreshBatchFilter(){
+
+  const pf =
+    document.getElementById(
+      "productFilter"
+    );
+
+  const bf =
+    document.getElementById(
+      "batchFilter"
+    );
+
+
+  const old =
+    bf.value;
+
+
+  const arr =
+    [
+      ...new Set(
+        inventory
+          .filter(
+            x =>
+              !pf.value ||
+              x.product_name ===
+              pf.value
+          )
+          .map(x => x.batch_no)
+          .filter(Boolean)
+      )
+    ]
+    .sort(
+      (a,b) =>
+        a.localeCompare(b)
+    );
+
+
+  bf.innerHTML =
+    '<option value="">All Batches</option>' +
+
+    arr
+      .map(
+        x =>
+          `<option value="${escapeHtml(x)}">
+            ${escapeHtml(x)}
+          </option>`
+      )
+      .join("");
+
+
+  if(arr.includes(old))
+    bf.value = old;
+
+}
+
+
+/* =====================================================
+   FILTER EVENTS
+===================================================== */
+
+[
+  "branchFilter",
+  "productFilter",
+  "batchFilter",
+  "stockFilter"
+]
+.forEach(id => {
+
+  document
+    .getElementById(id)
+    .addEventListener(
+      "change",
+      () => {
+
+        if(
+          id ===
+          "productFilter"
+        ){
+
+          refreshBatchFilter();
+
+        }
+
+
+        renderInventory();
+
+      }
+    );
+
+});
+
+
+/* =====================================================
+   CLEAR FILTERS
+===================================================== */
+
+document.getElementById(
+  "clearFiltersBtn"
+).onclick = () => {
+
+  if(currentRole === "admin"){
+
+    document.getElementById(
+      "branchFilter"
+    ).value = "";
+
+  }else{
+
+    document.getElementById(
+      "branchFilter"
+    ).value =
+      currentBranchId || "";
+
+  }
+
+
+  document.getElementById(
+    "productFilter"
+  ).value = "";
+
+
+  refreshBatchFilter();
+
+
+  document.getElementById(
+    "batchFilter"
+  ).value = "";
+
+
+  document.getElementById(
+    "stockFilter"
+  ).value = "";
+
+
+  document.getElementById(
+    "search"
+  ).value = "";
+
+
+  document.getElementById(
+    "searchSuggestions"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  renderInventory();
+
+};
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+const searchInput =
+  document.getElementById(
+    "search"
+  );
+
+
+const suggestionsBox =
+  document.getElementById(
+    "searchSuggestions"
+  );
+
+
+function updateSearchSuggestions(){
+
+  const q =
+    searchInput.value
+      .trim()
+      .toLowerCase();
+
+
+  if(!q){
+
+    suggestionsBox.classList.add(
+      "hidden"
+    );
+
+    suggestionsBox.innerHTML = "";
+
+    return;
+
+  }
+
+
+  const matches =
+    inventory
+      .filter(
+        i =>
+          [
+            i.product_name,
+            i.batch_no,
+            i.description
+          ]
+          .join(" ")
+          .toLowerCase()
+          .includes(q)
+      )
+      .slice(0,80);
+
+
+  suggestionsBox.innerHTML = "";
+
+
+  if(!matches.length){
+
+    suggestionsBox.innerHTML =
+      '<div class="search-suggestion">No matching product / batch</div>';
+
+  }else{
+
+    matches.forEach(item => {
+
+      const d =
+        document.createElement(
+          "div"
+        );
+
+
+      d.className =
+        "search-suggestion";
+
+
+      d.innerHTML = `
+
+        <strong>
+          ${escapeHtml(
+            item.product_name || ""
+          )}
+        </strong>
+
+        <small>
+
+          ${escapeHtml(
+            branches.find(
+              b =>
+                b.id ===
+                item.branch_id
+            )?.branch_name || "-"
+          )}
+
+          • Batch/Lot:
+          ${escapeHtml(
+            item.batch_no || "-"
+          )}
+
+          • Qty:
+          ${escapeHtml(
+            item.current_qty || 0
+          )}
+
+        </small>
+
+      `;
+
+
+      d.onclick = () => {
+
+        document.getElementById(
+          "branchFilter"
+        ).value =
+          item.branch_id || "";
+
+
+        document.getElementById(
+          "productFilter"
+        ).value =
+          item.product_name || "";
+
+
+        refreshBatchFilter();
+
+
+        document.getElementById(
+          "batchFilter"
+        ).value =
+          item.batch_no || "";
+
+
+        searchInput.value = "";
+
+
+        suggestionsBox.classList.add(
+          "hidden"
+        );
+
+
+        renderInventory();
+
+      };
+
+
+      suggestionsBox.appendChild(d);
+
+    });
+
+  }
+
+
+  suggestionsBox.classList.remove(
+    "hidden"
+  );
+
+}
+
+
+searchInput.addEventListener(
+  "input",
+  () => {
+
+    updateSearchSuggestions();
+
+    renderInventory();
+
+  }
+);
+
+
+document.addEventListener(
+  "click",
+  e => {
+
+    if(
+      !e.target.closest(
+        ".search-wrap"
+      )
+    ){
+
+      suggestionsBox.classList.add(
+        "hidden"
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   EXPIRY
+===================================================== */
+
+function openExpiryModal(){
+
+  const list =
+    filteredInventory()
+      .filter(item => {
+
+        if(!item.expiry_date)
+          return false;
+
+
+        const t =
+          new Date();
+
+
+        t.setHours(
+          0,0,0,0
+        );
+
+
+        const f =
+          new Date(t);
+
+
+        f.setDate(
+          f.getDate() + 30
+        );
+
+
+        const e =
+          new Date(
+            item.expiry_date
+          );
+
+
+        return (
+          e >= t &&
+          e <= f
+        );
+
+      })
+      .sort(
+        (a,b) =>
+          String(
+            a.expiry_date
+          )
+          .localeCompare(
+            String(
+              b.expiry_date
+            )
+          )
+      );
+
+
+  const box =
+    document.getElementById(
+      "expiryList"
+    );
+
+
+  box.innerHTML =
+    list.length
+
+      ? list
+          .map(
+            x =>
+              `
+              <div>
+
+                <span>
+
+                  <strong>
+                    ${escapeHtml(
+                      x.product_name
+                    )}
+                  </strong>
+
+                  <br>
+
+                  <small>
+                    Batch
+                    ${escapeHtml(
+                      x.batch_no || "-"
+                    )}
+
+                    •
+                    ${escapeHtml(
+                      branches.find(
+                        b =>
+                          b.id ===
+                          x.branch_id
+                      )?.branch_name || "-"
+                    )}
+                  </small>
+
+                </span>
+
+                <strong>
+                  ${escapeHtml(
+                    x.expiry_date
+                  )}
+                </strong>
+
+              </div>
+              `
+          )
+          .join("")
+
+      : "<div>No products expiring in the next 30 days.</div>";
+
+
+  document.getElementById(
+    "expiryModal"
+  ).classList.remove(
+    "hidden"
+  );
+
+}
+
+
+document.getElementById(
+  "statExpiring"
+).onclick =
+  openExpiryModal;
+
+
+document.getElementById(
+  "closeExpiryModal"
+).onclick =
+() =>
+  document.getElementById(
+    "expiryModal"
+  ).classList.add(
+    "hidden"
+  );
+
+
+/* =====================================================
+   SHOW ADMIN
+===================================================== */
+
+async function showAdmin(){
+
+  try{
+
+    document.getElementById(
+      "loginPage"
+    ).classList.add(
+      "hidden"
+    );
+
+
+    document.getElementById(
+      "adminPage"
+    ).classList.remove(
+      "hidden"
+    );
+
+
+    await loadUserContext();
+
+    await loadBranches();
+
+    await loadInventory();
+
+
+  }catch(e){
+
+    console.error(e);
+
+
+    document.getElementById(
+      "loginMessage"
+    ).innerText =
+      e.message ||
+      "Role/branch load error";
+
+
+    await supabaseClient
+      .auth
+      .signOut();
+
+  }
+
+}
+
+
+/* =====================================================
+   SHOW LOGIN
+===================================================== */
+
+function showLogin(){
+
+  document.getElementById(
+    "loginPage"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "adminPage"
+  ).classList.add(
+    "hidden"
+  );
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+document.getElementById(
+  "loginBtn"
+).addEventListener(
+  "click",
+  async () => {
+
+    const email =
+      document.getElementById(
+        "loginEmail"
+      ).value.trim();
+
+
+    const password =
+      document.getElementById(
+        "loginPassword"
+      ).value;
+
+
+    const message =
+      document.getElementById(
+        "loginMessage"
+      );
+
+
+    message.innerText = "";
+
+
+    if(!email || !password){
+
+      message.innerText =
+        "Email aur password enter karo.";
+
+      return;
+
+    }
+
+
+    const {error} =
+      await supabaseClient
+        .auth
+        .signInWithPassword({
+          email,
+          password
+        });
+
+
+    if(error){
+
+      message.innerText =
+        error.message;
+
+      return;
+
+    }
+
+
+    await showAdmin();
+
+  }
+);
+
+
+/* =====================================================
+   ENTER LOGIN
+===================================================== */
+
+document.getElementById(
+  "loginPassword"
+).addEventListener(
+  "keydown",
+  e => {
+
+    if(e.key === "Enter"){
+
+      document
+        .getElementById(
+          "loginBtn"
+        )
+        .click();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+document.getElementById(
+  "logoutBtn"
+).addEventListener(
+  "click",
+  async () => {
+
+    await supabaseClient
+      .auth
+      .signOut();
+
+  }
+);
+
+
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+supabaseClient
+  .auth
+  .onAuthStateChange(
+    (event,session) => {
+
+      if(
+        event ===
+        "SIGNED_OUT"
+      ){
+
+        showLogin();
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   INITIAL SESSION
+===================================================== */
+
+(async () => {
+
+  const {data} =
+    await supabaseClient
+      .auth
+      .getSession();
+
+
+  if(data.session){
+
+    await showAdmin();
+
+  }else{
+
+    showLogin();
+
+  }
+
+})();
+
 </script>
-</body></html>
+
+</body>
+</html>
