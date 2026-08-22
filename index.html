@@ -4,534 +4,5564 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Micron Laboratory - Management Panel</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
-.hidden{display:none!important}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 5px 20px rgba(0,0,0,.05)}
-button{border:0;border-radius:8px;padding:10px 14px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer}
-button.gray{background:#e2e8f0;color:#1e293b}button.red{background:#dc2626}
-input,select,textarea{width:100%;padding:10px 11px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;background:#fff}
-textarea{min-height:75px;resize:vertical}label{display:block;font-size:13px;font-weight:700;margin:9px 0 4px}
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.login-card{width:400px;padding:30px;text-align:center}
-.login-logo{width:230px;max-width:85%;margin:auto auto 12px;display:block}.login-card p{color:#64748b}
-.message{margin-top:10px;color:#dc2626;font-size:13px}.success{color:#15803d}
-header{min-height:72px;background:#fff;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;padding:8px 25px;gap:20px}
-.header-brand{display:flex;align-items:center;gap:14px}.header-logo{width:150px;max-height:55px;object-fit:contain}.header-title{border-left:1px solid #e2e8f0;padding-left:14px}.header-title h2{margin:0;font-size:19px}.header-title span{color:#64748b;font-size:13px}
-.header-right{display:flex;align-items:center;gap:10px}.role-badge{padding:7px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700}
-.container{max-width:1450px;margin:auto;padding:25px}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.nav button.active{background:#111827}.section{display:none}.section.active{display:block}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}.stat{padding:18px;cursor:pointer}.stat small{color:#64748b}.stat strong{display:block;font-size:28px;margin-top:8px}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:15px}.toolbar .field{min-width:180px;flex:1}
-.table-card{overflow:auto}table{width:100%;border-collapse:collapse;min-width:800px}th,td{padding:11px;border-bottom:1px solid #edf2f7;text-align:left;font-size:13px}th{background:#f8fafc}
-.action-btn{padding:6px 9px;font-size:12px;margin:2px}.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:15px;z-index:100}.modal-box{width:850px;max-width:100%;max-height:92vh;overflow:auto;padding:25px}
-.modal-header{display:flex;justify-content:space-between;align-items:center}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}.full{grid-column:1/-1}.items-table{overflow:auto}.items-table table{min-width:900px}
-.summary{max-width:400px;margin-left:auto;margin-top:15px}.summary div{display:flex;justify-content:space-between;padding:5px 0}.summary .grand{font-size:18px;font-weight:700;border-top:1px solid #ddd;margin-top:5px;padding-top:10px}
-@media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.header-title{display:none}.header-logo{width:120px}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
 .hidden{display:none!important}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 5px 20px rgba(0,0,0,.05)}
+
+button{
+ border:0;border-radius:8px;padding:10px 14px;background:#2563eb;
+ color:#fff;font-weight:700;cursor:pointer
+}
+button.gray{background:#e2e8f0;color:#1e293b}
+button.red{background:#dc2626}
+
+input,select,textarea{
+ width:100%;padding:10px 11px;border:1px solid #cbd5e1;
+ border-radius:8px;font-size:14px;background:#fff
+}
+textarea{min-height:75px;resize:vertical}
+
+label{
+ display:block;font-size:13px;font-weight:700;margin:9px 0 4px
+}
+
+.login-page{
+ min-height:100vh;display:flex;align-items:center;
+ justify-content:center;padding:20px
+}
+.login-card{width:400px;padding:30px;text-align:center}
+.login-logo{width:230px;max-width:85%;margin:auto auto 12px;display:block}
+.login-card p{color:#64748b}
+
+.message{margin-top:10px;color:#dc2626;font-size:13px}
+.success{color:#15803d}
+
+header{
+ min-height:72px;background:#fff;border-bottom:1px solid #ddd;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:8px 25px;gap:20px
+}
+
+.header-brand{display:flex;align-items:center;gap:14px}
+.header-logo{width:150px;max-height:55px;object-fit:contain}
+.header-title{border-left:1px solid #e2e8f0;padding-left:14px}
+.header-title h2{margin:0;font-size:19px}
+.header-title span{color:#64748b;font-size:13px}
+
+.header-right{display:flex;align-items:center;gap:10px}
+.role-badge{
+ padding:7px 10px;border-radius:999px;background:#eef2ff;
+ color:#3730a3;font-size:12px;font-weight:700
+}
+
+.container{max-width:1450px;margin:auto;padding:25px}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.nav button.active{background:#111827}
+
+.section{display:none}
+.section.active{display:block}
+
+.stats{
+ display:grid;grid-template-columns:repeat(4,1fr);
+ gap:15px;margin-bottom:20px
+}
+.stat{padding:18px;cursor:pointer}
+.stat small{color:#64748b}
+.stat strong{display:block;font-size:28px;margin-top:8px}
+
+.toolbar{
+ display:flex;gap:10px;flex-wrap:wrap;
+ align-items:end;margin-bottom:15px
+}
+.toolbar .field{min-width:180px;flex:1}
+
+.table-card{overflow:auto}
+
+table{
+ width:100%;border-collapse:collapse;min-width:800px
+}
+th,td{
+ padding:11px;border-bottom:1px solid #edf2f7;
+ text-align:left;font-size:13px
+}
+th{background:#f8fafc}
+
+.action-btn{
+ padding:6px 9px;font-size:12px;margin:2px
+}
+
+.modal{
+ position:fixed;inset:0;background:rgba(15,23,42,.55);
+ display:flex;align-items:center;justify-content:center;
+ padding:15px;z-index:100
+}
+.modal-box{
+ width:850px;max-width:100%;max-height:92vh;
+ overflow:auto;padding:25px
+}
+.modal-header{
+ display:flex;justify-content:space-between;
+ align-items:center
+}
+
+.grid{
+ display:grid;grid-template-columns:1fr 1fr;gap:0 15px
+}
+.full{grid-column:1/-1}
+
+.items-table{overflow:auto}
+.items-table table{min-width:1150px}
+
+.summary{
+ max-width:400px;margin-left:auto;margin-top:15px
+}
+.summary div{
+ display:flex;justify-content:space-between;padding:5px 0
+}
+.summary .grand{
+ font-size:18px;font-weight:700;
+ border-top:1px solid #ddd;margin-top:5px;padding-top:10px
+}
+
+/* ===== MATERIAL MASTER SEARCH ===== */
+
+.material-wrap{
+ position:relative;
+ width:100%;
+}
+
+.material-search{
+ width:100%;
+}
+
+.material-results{
+ position:absolute;
+ left:0;
+ right:0;
+ top:100%;
+ background:#fff;
+ border:1px solid #cbd5e1;
+ border-radius:8px;
+ box-shadow:0 8px 25px rgba(0,0,0,.15);
+ z-index:1000;
+ max-height:280px;
+ overflow:auto;
+}
+
+.material-option{
+ padding:10px 12px;
+ cursor:pointer;
+ border-bottom:1px solid #edf2f7;
+ background:#fff;
+}
+
+.material-option:hover{
+ background:#eff6ff;
+}
+
+.material-option:last-child{
+ border-bottom:0;
+}
+
+.material-option .m-code{
+ display:block;
+ font-weight:700;
+ color:#2563eb;
+ font-size:13px;
+}
+
+.material-option .m-desc{
+ display:block;
+ color:#172033;
+ font-size:13px;
+ margin-top:3px;
+}
+
+.material-option .m-extra{
+ display:block;
+ color:#64748b;
+ font-size:11px;
+ margin-top:4px;
+}
+
+.material-no-result{
+ padding:12px;
+ color:#64748b;
+ font-size:13px;
+}
+
+.material-readonly{
+ background:#f8fafc!important;
+}
+
+.po-code{
+ font-weight:700;
+ color:#2563eb;
+}
+
+.po-pack{
+ color:#475569;
+ font-size:12px;
+}
+
+/* ===== PO TABLE ===== */
+
+.po-items-table table{
+ min-width:1250px;
+}
+
+.po-items-table th,
+.po-items-table td{
+ vertical-align:top;
+}
+
+.po-items-table .material-col{min-width:250px}
+.po-items-table .code-col{min-width:120px}
+.po-items-table .desc-col{min-width:220px}
+.po-items-table .pack-col{min-width:110px}
+.po-items-table .qty-col{min-width:85px}
+.po-items-table .unit-col{min-width:100px}
+.po-items-table .rate-col{min-width:120px}
+.po-items-table .gst-col{min-width:100px}
+.po-items-table .total-col{min-width:130px}
+
+/* ===== PRINT VIEW ===== */
+
+@media(max-width:800px){
+ .stats{grid-template-columns:1fr 1fr}
+ .grid{grid-template-columns:1fr}
+ .full{grid-column:auto}
+ .header-title{display:none}
+ .header-logo{width:120px}
+}
+
+@media(max-width:600px){
+ .stats{grid-template-columns:1fr}
+ header{padding:8px 12px}
+ .container{padding:12px}
+}
 </style>
 </head>
+
 <body>
+
+<!-- ================= LOGIN ================= -->
 
 <div id="loginPage" class="login-page">
 <div class="card login-card">
+
 <img src="micron-logo.png" class="login-logo" alt="Micron Laboratory">
-<h2>Micron Laboratory</h2><p>Management Panel</p>
-<label>Email</label><input id="loginEmail" type="email" autocomplete="username">
-<label>Password</label><input id="loginPassword" type="password" autocomplete="current-password">
-<button id="loginBtn" style="width:100%;margin-top:12px">Login</button>
+
+<h2>Micron Laboratory</h2>
+<p>Management Panel</p>
+
+<label>Email</label>
+<input id="loginEmail" type="email" autocomplete="username">
+
+<label>Password</label>
+<input id="loginPassword" type="password" autocomplete="current-password">
+
+<button id="loginBtn" style="width:100%;margin-top:12px">
+Login
+</button>
+
 <div id="loginMessage" class="message"></div>
-</div></div>
+
+</div>
+</div>
+
+
+<!-- ================= APP ================= -->
 
 <div id="app" class="hidden">
+
 <header>
-<div class="header-brand"><img src="micron-logo.png" class="header-logo"><div class="header-title"><h2>Micron Laboratory</h2><span>Management Panel</span></div></div>
-<div class="header-right"><span id="roleBadge" class="role-badge"></span><button id="logoutBtn" class="gray">Logout</button></div>
+
+<div class="header-brand">
+
+<img src="micron-logo.png" class="header-logo">
+
+<div class="header-title">
+<h2>Micron Laboratory</h2>
+<span>Management Panel</span>
+</div>
+
+</div>
+
+<div class="header-right">
+
+<span id="roleBadge" class="role-badge"></span>
+
+<button id="logoutBtn" class="gray">
+Logout
+</button>
+
+</div>
+
 </header>
 
+
 <div class="container">
+
+<!-- ================= NAV ================= -->
+
 <div class="nav">
-<button data-section="inventory" class="navBtn active">📦 Inventory</button>
-<button data-section="vendors" class="navBtn adminOnly">🏢 Vendors</button>
-<button data-section="clients" class="navBtn adminOnly">👤 Clients</button>
-<button data-section="po" class="navBtn adminOnly">🧾 Purchase Orders</button>
-<button data-section="quotation" class="navBtn adminOnly">📄 Quotations</button>
+
+<button data-section="inventory" class="navBtn active">
+📦 Inventory
+</button>
+
+<button data-section="vendors" class="navBtn adminOnly">
+🏢 Vendors
+</button>
+
+<button data-section="clients" class="navBtn adminOnly">
+👤 Clients
+</button>
+
+<button data-section="po" class="navBtn adminOnly">
+🧾 Purchase Orders
+</button>
+
+<button data-section="quotation" class="navBtn adminOnly">
+📄 Quotations
+</button>
+
 </div>
+
+
+<!-- ================= INVENTORY ================= -->
 
 <section id="inventory" class="section active">
+
 <div class="stats">
-<div class="card stat"><small>Total Products</small><strong id="totalProducts">0</strong></div>
-<div class="card stat"><small>Total Stock</small><strong id="totalStock">0</strong></div>
-<div class="card stat"><small>Low Stock</small><strong id="lowStock">0</strong></div>
-<div class="card stat"><small>Expiring Soon</small><strong id="expiring">0</strong></div>
+
+<div class="card stat">
+<small>Total Products</small>
+<strong id="totalProducts">0</strong>
 </div>
-<div class="card table-card"><div style="padding:15px">
+
+<div class="card stat">
+<small>Total Stock</small>
+<strong id="totalStock">0</strong>
+</div>
+
+<div class="card stat">
+<small>Low Stock</small>
+<strong id="lowStock">0</strong>
+</div>
+
+<div class="card stat">
+<small>Expiring Soon</small>
+<strong id="expiring">0</strong>
+</div>
+
+</div>
+
+
+<div class="card table-card">
+
+<div style="padding:15px">
+
 <div class="toolbar">
-<div class="field"><label>Branch</label><select id="invBranchFilter"><option value="">All Branches</option></select></div>
-<div class="field"><label>Product</label><select id="invProductFilter"><option value="">All Products</option></select></div>
-<div class="field"><label>Batch / Lot</label><select id="invBatchFilter"><option value="">All Batches</option></select></div>
-<div class="field"><label>Stock Status</label><select id="invStockFilter"><option value="">All Stock</option><option value="in">In Stock</option><option value="low">Low Stock</option><option value="out">Out of Stock</option></select></div>
-<div class="field"><label>Search Product / Batch</label><input id="invSearch" placeholder="Type TSH, E2, batch..."></div>
-<button id="clearInvFilters" class="gray">Clear</button><button id="addInventoryBtn">+ Add Product</button>
-</div></div>
-<table><thead><tr><th>Product</th><th>Batch</th><th>Branch</th><th>Entry Date</th><th>Expiry</th><th>Qty</th><th>Unit</th><th id="invRateHead">Rate</th><th id="invGSTHead">GST</th><th id="invSupplierHead">Supplier</th><th>Actions</th></tr></thead>
-<tbody id="inventoryBody"></tbody></table></div>
+
+<div class="field">
+<label>Branch</label>
+<select id="invBranchFilter">
+<option value="">All Branches</option>
+</select>
+</div>
+
+<div class="field">
+<label>Product</label>
+<select id="invProductFilter">
+<option value="">All Products</option>
+</select>
+</div>
+
+<div class="field">
+<label>Batch / Lot</label>
+<select id="invBatchFilter">
+<option value="">All Batches</option>
+</select>
+</div>
+
+<div class="field">
+<label>Stock Status</label>
+<select id="invStockFilter">
+<option value="">All Stock</option>
+<option value="in">In Stock</option>
+<option value="low">Low Stock</option>
+<option value="out">Out of Stock</option>
+</select>
+</div>
+
+<div class="field">
+<label>Search Product / Batch</label>
+<input id="invSearch" placeholder="Type TSH, E2, batch...">
+</div>
+
+<button id="clearInvFilters" class="gray">
+Clear
+</button>
+
+<button id="addInventoryBtn">
++ Add Product
+</button>
+
+</div>
+
+</div>
+
+
+<table>
+
+<thead>
+
+<tr>
+<th>Product</th>
+<th>Batch</th>
+<th>Branch</th>
+<th>Entry Date</th>
+<th>Expiry</th>
+<th>Qty</th>
+<th>Unit</th>
+<th id="invRateHead">Rate</th>
+<th id="invGSTHead">GST</th>
+<th id="invSupplierHead">Supplier</th>
+<th>Actions</th>
+</tr>
+
+</thead>
+
+<tbody id="inventoryBody"></tbody>
+
+</table>
+
+</div>
+
 </section>
+
+
+<!-- ================= VENDORS ================= -->
 
 <section id="vendors" class="section">
-<div class="card" style="padding:15px"><div class="toolbar"><div class="field"><label>Search Vendor</label><input id="vendorSearch" placeholder="Name / Company"></div><button onclick="openVendor()">+ Add Vendor</button></div>
-<div class="table-card"><table><thead><tr><th>Name</th><th>Company</th><th>Phone</th><th>Email</th><th>GSTIN</th><th>Actions</th></tr></thead><tbody id="vendorsBody"></tbody></table></div></div>
+
+<div class="card" style="padding:15px">
+
+<div class="toolbar">
+
+<div class="field">
+<label>Search Vendor</label>
+<input id="vendorSearch" placeholder="Name / Company">
+</div>
+
+<button onclick="openVendor()">
++ Add Vendor
+</button>
+
+</div>
+
+<div class="table-card">
+
+<table>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Company</th>
+<th>Phone</th>
+<th>Email</th>
+<th>GSTIN</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="vendorsBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
 </section>
+
+
+<!-- ================= CLIENTS ================= -->
 
 <section id="clients" class="section">
-<div class="card" style="padding:15px"><div class="toolbar"><div class="field"><label>Search Client</label><input id="clientSearch" placeholder="Name / Company"></div><button onclick="openClient()">+ Add Client</button></div>
-<div class="table-card"><table><thead><tr><th>Name</th><th>Company</th><th>Phone</th><th>Email</th><th>GSTIN</th><th>Actions</th></tr></thead><tbody id="clientsBody"></tbody></table></div></div>
+
+<div class="card" style="padding:15px">
+
+<div class="toolbar">
+
+<div class="field">
+<label>Search Client</label>
+<input id="clientSearch" placeholder="Name / Company">
+</div>
+
+<button onclick="openClient()">
++ Add Client
+</button>
+
+</div>
+
+<div class="table-card">
+
+<table>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Company</th>
+<th>Phone</th>
+<th>Email</th>
+<th>GSTIN</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="clientsBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
 </section>
+
+
+<!-- ================= PURCHASE ORDERS ================= -->
 
 <section id="po" class="section">
-<div class="card" style="padding:15px"><div class="toolbar"><button onclick="openPO()">+ New Purchase Order</button></div>
-<div class="table-card"><table><thead><tr><th>PO No.</th><th>Date</th><th>Vendor</th><th>Status</th><th>Subtotal</th><th>GST</th><th>Grand Total</th><th>Actions</th></tr></thead><tbody id="poBody"></tbody></table></div></div>
+
+<div class="card" style="padding:15px">
+
+<div class="toolbar">
+
+<button onclick="openPO()">
++ New Purchase Order
+</button>
+
+</div>
+
+<div class="table-card">
+
+<table>
+
+<thead>
+
+<tr>
+<th>PO No.</th>
+<th>Date</th>
+<th>Vendor</th>
+<th>Status</th>
+<th>Subtotal</th>
+<th>GST</th>
+<th>Grand Total</th>
+<th>Actions</th>
+</tr>
+
+</thead>
+
+<tbody id="poBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
 </section>
+
+
+<!-- ================= QUOTATION ================= -->
 
 <section id="quotation" class="section">
-<div class="card" style="padding:15px"><div class="toolbar"><button onclick="openQuotation()">+ New Quotation</button></div>
-<div class="table-card"><table><thead><tr><th>Quotation No.</th><th>Date</th><th>Valid Until</th><th>Client</th><th>Status</th><th>Subtotal</th><th>GST</th><th>Grand Total</th><th>Actions</th></tr></thead><tbody id="quotationBody"></tbody></table></div></div>
+
+<div class="card" style="padding:15px">
+
+<div class="toolbar">
+
+<button onclick="openQuotation()">
++ New Quotation
+</button>
+
+</div>
+
+<div class="table-card">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Quotation No.</th>
+<th>Date</th>
+<th>Valid Until</th>
+<th>Client</th>
+<th>Status</th>
+<th>Subtotal</th>
+<th>GST</th>
+<th>Grand Total</th>
+<th>Actions</th>
+</tr>
+
+</thead>
+
+<tbody id="quotationBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
 </section>
-</div></div>
 
-<!-- Generic CRUD modal -->
-<div id="partyModal" class="modal hidden"><div class="card modal-box" style="max-width:650px">
-<div class="modal-header"><h2 id="partyTitle">Vendor</h2><button class="gray" onclick="closeModal('partyModal')">×</button></div>
-<form id="partyForm"><input type="hidden" id="partyId"><input type="hidden" id="partyType">
-<div class="grid">
-<div><label>Name *</label><input id="partyName" required></div><div><label>Company</label><input id="partyCompany"></div>
-<div><label>Phone</label><input id="partyPhone"></div><div><label>Email</label><input id="partyEmail" type="email"></div>
-<div><label>GSTIN</label><input id="partyGSTIN"></div><div><label>Contact Person</label><input id="partyContact"></div>
-<div class="full"><label>Address</label><textarea id="partyAddress"></textarea></div><div class="full"><label>Notes</label><textarea id="partyNotes"></textarea></div>
-</div><div style="text-align:right;margin-top:15px"><button type="button" class="gray" onclick="closeModal('partyModal')">Cancel</button> <button>Save</button></div>
-<div id="partyMessage" class="message"></div></form></div></div>
-
-<!-- Inventory modal -->
-<div id="inventoryModal" class="modal hidden"><div class="card modal-box">
-<div class="modal-header"><h2 id="invTitle">Add Product</h2><button class="gray" onclick="closeModal('inventoryModal')">×</button></div>
-<form id="inventoryForm"><input type="hidden" id="invId"><div class="grid">
-<div><label>Product Name *</label><input id="invProduct" required></div><div><label>Description</label><input id="invDescription"></div>
-<div><label>Branch *</label><select id="invBranch" required></select></div><div><label>Batch / Lot *</label><input id="invBatch" required></div>
-<div><label>Entry Date *</label><input id="invEntry" type="date" required></div><div><label>Expiry Date</label><input id="invExpiry" type="date"></div>
-<div><label>Current Qty *</label><input id="invQty" type="number" min="0" step=".01" required></div><div><label>Unit *</label><input id="invUnit" value="Kit" required></div>
-<div><label>Units per Pack</label><input id="invPack" type="number" min="0"></div><div><label>Rate</label><input id="invRate" type="number" min="0" step=".01"></div>
-<div><label>GST %</label><input id="invGST" type="number" min="0" max="100" step=".01"></div><div><label>Supplier</label><input id="invSupplier"></div>
-<div><label>Reorder Level</label><input id="invReorder" type="number" min="0"></div>
-</div><div style="text-align:right;margin-top:15px"><button type="button" class="gray" onclick="closeModal('inventoryModal')">Cancel</button> <button>Save Product</button></div>
-<div id="invMessage" class="message"></div></form></div></div>
-
-<!-- Document modal -->
-<div id="docModal" class="modal hidden"><div class="card modal-box">
-<div class="modal-header"><h2 id="docTitle">Document</h2><button class="gray" onclick="closeModal('docModal')">×</button></div>
-<form id="docForm"><input type="hidden" id="docType"><input type="hidden" id="docId">
-<div class="card" style="padding:12px;margin-bottom:12px;background:#f8fafc">
-<button type="button" class="gray" style="float:right" onclick="editCompanyDetails()">Edit Company Details</button>
-<strong id="docCompanyName">Micron Laboratory</strong>
-<div id="docCompanyInfo">D-10, Lower Ground Floor, Green Park Main, New Delhi-110016<br>E-mail: micronlaboratory.12@gmail.com<br>Tel: <span id="docCompanyTel">—</span></div>
 </div>
-<div class="grid">
-<div><label id="partyLabel">Vendor</label><select id="docParty" required></select></div>
-<div><label>Date</label><input id="docDate" type="date" required></div>
-<div id="validBox"><label>Valid Until</label><input id="docValid" type="date"></div>
-<div><label>Status</label><select id="docStatus"></select></div>
-<div class="full"><label>Terms & Conditions</label><textarea id="docTerms"></textarea></div>
-<div class="full"><label>Notes</label><textarea id="docNotes"></textarea></div>
 </div>
-<h3>Items</h3>
-<div class="items-table"><table><thead><tr><th>Item</th><th>Description</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Discount %</th><th>GST %</th><th>Total</th><th></th></tr></thead><tbody id="docItems"></tbody></table></div>
-<button type="button" class="gray" style="margin-top:10px" onclick="addDocItem()">+ Add Item</button>
-<div class="summary"><div><span>Subtotal</span><strong id="docSubtotal">₹0.00</strong></div><div><span>Discount</span><strong id="docDiscount">₹0.00</strong></div><div><span>GST</span><strong id="docGST">₹0.00</strong></div><div class="grand"><span>Grand Total</span><strong id="docGrand">₹0.00</strong></div></div>
-<div style="text-align:right;margin-top:15px"><button type="button" class="gray" onclick="closeModal('docModal')">Cancel</button> <button>Save Document</button></div>
-<div id="docMessage" class="message"></div></form></div></div>
+
+
+<!-- ================= PARTY MODAL ================= -->
+
+<div id="partyModal" class="modal hidden">
+
+<div class="card modal-box" style="max-width:650px">
+
+<div class="modal-header">
+
+<h2 id="partyTitle">
+Vendor
+</h2>
+
+<button class="gray" onclick="closeModal('partyModal')">
+×
+</button>
+
+</div>
+
+
+<form id="partyForm">
+
+<input type="hidden" id="partyId">
+<input type="hidden" id="partyType">
+
+
+<div class="grid">
+
+<div>
+<label>Name *</label>
+<input id="partyName" required>
+</div>
+
+<div>
+<label>Company</label>
+<input id="partyCompany">
+</div>
+
+<div>
+<label>Phone</label>
+<input id="partyPhone">
+</div>
+
+<div>
+<label>Email</label>
+<input id="partyEmail" type="email">
+</div>
+
+<div>
+<label>GSTIN</label>
+<input id="partyGSTIN">
+</div>
+
+<div>
+<label>Contact Person</label>
+<input id="partyContact">
+</div>
+
+<div class="full">
+<label>Address</label>
+<textarea id="partyAddress"></textarea>
+</div>
+
+<div class="full">
+<label>Notes</label>
+<textarea id="partyNotes"></textarea>
+</div>
+
+</div>
+
+
+<div style="text-align:right;margin-top:15px">
+
+<button type="button" class="gray"
+onclick="closeModal('partyModal')">
+Cancel
+</button>
+
+<button>
+Save
+</button>
+
+</div>
+
+<div id="partyMessage" class="message"></div>
+
+</form>
+
+</div>
+</div>
+
+
+<!-- ================= INVENTORY MODAL ================= -->
+
+<div id="inventoryModal" class="modal hidden">
+
+<div class="card modal-box">
+
+<div class="modal-header">
+
+<h2 id="invTitle">
+Add Product
+</h2>
+
+<button class="gray"
+onclick="closeModal('inventoryModal')">
+×
+</button>
+
+</div>
+
+
+<form id="inventoryForm">
+
+<input type="hidden" id="invId">
+
+
+<div class="grid">
+
+<div>
+<label>Product Name *</label>
+<input id="invProduct" required>
+</div>
+
+<div>
+<label>Description</label>
+<input id="invDescription">
+</div>
+
+<div>
+<label>Branch *</label>
+<select id="invBranch" required></select>
+</div>
+
+<div>
+<label>Batch / Lot *</label>
+<input id="invBatch" required>
+</div>
+
+<div>
+<label>Entry Date *</label>
+<input id="invEntry" type="date" required>
+</div>
+
+<div>
+<label>Expiry Date</label>
+<input id="invExpiry" type="date">
+</div>
+
+<div>
+<label>Current Qty *</label>
+<input id="invQty" type="number" min="0" step=".01" required>
+</div>
+
+<div>
+<label>Unit *</label>
+<input id="invUnit" value="Kit" required>
+</div>
+
+<div>
+<label>Units per Pack</label>
+<input id="invPack" type="number" min="0">
+</div>
+
+<div>
+<label>Rate</label>
+<input id="invRate" type="number" min="0" step=".01">
+</div>
+
+<div>
+<label>GST %</label>
+<input id="invGST" type="number" min="0" max="100" step=".01">
+</div>
+
+<div>
+<label>Supplier</label>
+<input id="invSupplier">
+</div>
+
+<div>
+<label>Reorder Level</label>
+<input id="invReorder" type="number" min="0">
+</div>
+
+</div>
+
+
+<div style="text-align:right;margin-top:15px">
+
+<button type="button"
+class="gray"
+onclick="closeModal('inventoryModal')">
+Cancel
+</button>
+
+<button>
+Save Product
+</button>
+
+</div>
+
+<div id="invMessage" class="message"></div>
+
+</form>
+
+</div>
+</div>
+
+
+<!-- ================= DOCUMENT MODAL ================= -->
+
+<div id="docModal" class="modal hidden">
+
+<div class="card modal-box">
+
+<div class="modal-header">
+
+<h2 id="docTitle">
+Document
+</h2>
+
+<button class="gray"
+onclick="closeModal('docModal')">
+×
+</button>
+
+</div>
+
+
+<form id="docForm">
+
+<input type="hidden" id="docType">
+<input type="hidden" id="docId">
+
+
+<div class="card"
+style="padding:12px;margin-bottom:12px;background:#f8fafc">
+
+<button
+type="button"
+class="gray"
+style="float:right"
+onclick="editCompanyDetails()">
+Edit Company Details
+</button>
+
+<strong id="docCompanyName">
+Micron Laboratory
+</strong>
+
+<div id="docCompanyInfo">
+D-10, Lower Ground Floor, Green Park Main, New Delhi-110016<br>
+E-mail: micronlaboratory.12@gmail.com<br>
+Tel: <span id="docCompanyTel">—</span>
+</div>
+
+</div>
+
+
+<div class="grid">
+
+<div>
+<label id="partyLabel">
+Vendor
+</label>
+
+<select id="docParty" required></select>
+</div>
+
+
+<div>
+<label>Date</label>
+<input id="docDate" type="date" required>
+</div>
+
+
+<div id="validBox">
+
+<label>
+Valid Until
+</label>
+
+<input id="docValid" type="date">
+
+</div>
+
+
+<div>
+
+<label>
+Status
+</label>
+
+<select id="docStatus"></select>
+
+</div>
+
+
+<div class="full">
+
+<label>
+Terms & Conditions
+</label>
+
+<textarea id="docTerms"></textarea>
+
+</div>
+
+
+<div class="full">
+
+<label>
+Notes
+</label>
+
+<textarea id="docNotes"></textarea>
+
+</div>
+
+</div>
+
+
+<h3>
+Items
+</h3>
+
+
+<!-- PO ITEMS -->
+
+<div id="poItemsWrapper" class="items-table po-items-table hidden">
+
+<table>
+
+<thead>
+
+<tr>
+<th class="material-col">Material Search</th>
+<th class="code-col">Code</th>
+<th class="desc-col">Description</th>
+<th class="pack-col">Pack Size</th>
+<th class="qty-col">Qty</th>
+<th class="unit-col">Unit</th>
+<th class="rate-col">Price</th>
+<th class="gst-col">GST %</th>
+<th class="total-col">Total</th>
+<th></th>
+</tr>
+
+</thead>
+
+<tbody id="poItems"></tbody>
+
+</table>
+
+</div>
+
+
+<!-- QUOTATION ITEMS -->
+
+<div id="quotationItemsWrapper" class="items-table hidden">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Item</th>
+<th>Description</th>
+<th>Qty</th>
+<th>Unit</th>
+<th>Rate</th>
+<th>Discount %</th>
+<th>GST %</th>
+<th>Total</th>
+<th></th>
+</tr>
+
+</thead>
+
+<tbody id="quotationItems"></tbody>
+
+</table>
+
+</div>
+
+
+<button
+type="button"
+class="gray"
+style="margin-top:10px"
+onclick="addDocItem()">
++ Add Item
+</button>
+
+
+<div class="summary">
+
+<div>
+<span>Subtotal</span>
+<strong id="docSubtotal">₹0.00</strong>
+</div>
+
+<div id="docDiscountRow">
+<span>Discount</span>
+<strong id="docDiscount">₹0.00</strong>
+</div>
+
+<div>
+<span>GST</span>
+<strong id="docGST">₹0.00</strong>
+</div>
+
+<div class="grand">
+<span>Grand Total</span>
+<strong id="docGrand">₹0.00</strong>
+</div>
+
+</div>
+
+
+<div style="text-align:right;margin-top:15px">
+
+<button
+type="button"
+class="gray"
+onclick="closeModal('docModal')">
+Cancel
+</button>
+
+<button>
+Save Document
+</button>
+
+</div>
+
+
+<div id="docMessage" class="message"></div>
+
+</form>
+
+</div>
+</div>
+
 
 <script>
-const SUPABASE_URL="https://xldnayhoquadguepedqm.supabase.co";
-const SUPABASE_KEY="sb_publishable_EPC6EEnO2EEvcIQFtozteA_XTKMyPx1";
-const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let role="operator",branchId=null,inventory=[],vendors=[],clients=[],branches=[],editingParty=null,docItems=[];
+const SUPABASE_URL="https://xldnayhoquadguepedqm.supabase.co";
+
+const SUPABASE_KEY="sb_publishable_EPC6EEnO2EEvcIQFtozteA_XTKMyPx1";
+
+const db=supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY
+);
+
+
+let role="operator";
+let branchId=null;
+
+let inventory=[];
+let vendors=[];
+let clients=[];
+let branches=[];
+
+let materialMaster=[];
+
+let editingParty=null;
+let docItems=[];
+
+
 const $=id=>document.getElementById(id);
-const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+const esc=v=>
+ String(v??"").replace(
+  /[&<>"']/g,
+  m=>({
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#039;"
+  }[m])
+ );
+
+const money=n=>
+ "₹"+Number(n||0).toLocaleString(
+  "en-IN",
+  {
+   minimumFractionDigits:2,
+   maximumFractionDigits:2
+  }
+ );
+
 const today=()=>new Date().toISOString().slice(0,10);
+
 const admin=()=>role==="admin";
 
+
+/* =========================================================
+   CONTEXT
+========================================================= */
+
 async function context(){
- const u=(await db.auth.getUser()).data.user;if(!u)throw Error("Login session nahi mila.");
- const r=await db.from("inventory_user_roles").select("role").eq("user_id",u.id).maybeSingle();if(r.error)throw r.error;
+
+ const u=(await db.auth.getUser()).data.user;
+
+ if(!u)
+  throw Error("Login session nahi mila.");
+
+ const r=await db
+  .from("inventory_user_roles")
+  .select("role")
+  .eq("user_id",u.id)
+  .maybeSingle();
+
+ if(r.error)throw r.error;
+
  role=r.data?.role||"operator";
- const b=await db.from("inventory_user_branches").select("branch_id").eq("user_id",u.id).maybeSingle();if(b.error)throw b.error;
- branchId=b.data?.branch_id||null;$("roleBadge").textContent=role==="admin"?"Full Admin":role==="manager"?"Stock Manager":"Stock Operator";
- document.querySelectorAll(".adminOnly").forEach(x=>x.classList.toggle("hidden",!admin()));
+
+
+ const b=await db
+  .from("inventory_user_branches")
+  .select("branch_id")
+  .eq("user_id",u.id)
+  .maybeSingle();
+
+ if(b.error)throw b.error;
+
+ branchId=b.data?.branch_id||null;
+
+
+ $("roleBadge").textContent=
+ role==="admin"
+ ?"Full Admin"
+ :role==="manager"
+ ?"Stock Manager"
+ :"Stock Operator";
+
+
+ document
+  .querySelectorAll(".adminOnly")
+  .forEach(x=>
+   x.classList.toggle("hidden",!admin())
+  );
 }
+
+
+/* =========================================================
+   BRANCHES
+========================================================= */
 
 async function loadBranches(){
- const r=await db.from("inventory_branches").select("id,branch_name,is_active").eq("is_active",true).order("branch_name");
- if(r.error)throw r.error;branches=r.data||[];
- $("invBranch").innerHTML=branches.filter(b=>admin()||b.id===branchId).map(b=>`<option value="${b.id}">${esc(b.branch_name)}</option>`).join("");
- if(branchId&&!admin())$("invBranch").value=branchId;
+
+ const r=await db
+  .from("inventory_branches")
+  .select("id,branch_name,is_active")
+  .eq("is_active",true)
+  .order("branch_name");
+
+ if(r.error)throw r.error;
+
+ branches=r.data||[];
+
+
+ $("invBranch").innerHTML=
+  branches
+   .filter(b=>admin()||b.id===branchId)
+   .map(b=>
+    `<option value="${b.id}">
+      ${esc(b.branch_name)}
+     </option>`
+   )
+   .join("");
+
+
+ if(branchId&&!admin())
+  $("invBranch").value=branchId;
 }
+
+
+/* =========================================================
+   MATERIAL MASTER
+========================================================= */
+
+async function loadMaterialMaster(){
+
+ const r=await db
+  .from("material_master")
+  .select("*")
+  .order("material_code");
+
+ if(r.error){
+
+  console.error(
+   "Material Master load error:",
+   r.error
+  );
+
+  materialMaster=[];
+
+  return;
+ }
+
+ materialMaster=r.data||[];
+
+ console.log(
+  "Material Master loaded:",
+  materialMaster.length
+ );
+}
+
+
+function materialCode(m){
+
+ return String(
+  m.material_code ??
+  m.code ??
+  m.materialCode ??
+  ""
+ );
+}
+
+
+function materialDescription(m){
+
+ return String(
+  m.material_description ??
+  m.description ??
+  m.material_name ??
+  m.name ??
+  ""
+ );
+}
+
+
+function materialPack(m){
+
+ return String(
+  m.pack_size ??
+  m.packSize ??
+  m.units_per_pack ??
+  ""
+ );
+}
+
+
+function materialPrice(m){
+
+ return Number(
+  m.price ??
+  m.rate ??
+  m.unit_price ??
+  0
+ );
+}
+
+
+function findMaterialByCode(code){
+
+ const c=String(code||"").trim().toLowerCase();
+
+ return materialMaster.find(m=>
+  materialCode(m).trim().toLowerCase()===c
+ );
+}
+
+
+/* =========================================================
+   INVENTORY
+========================================================= */
 
 async function loadInventory(){
- let q=db.from("inventory_stock").select("*").eq("is_active",true).order("product_name");
- if(!admin()&&branchId)q=q.eq("branch_id",branchId);
- const r=await q;if(r.error)throw r.error;inventory=r.data||[];renderInventory();
-}
-function renderInventory(){
- const s=$("invSearch").value.toLowerCase();
- const list=inventory.filter(x=>(`${x.product_name} ${x.batch_no} ${x.supplier}`.toLowerCase()).includes(s));
- $("inventoryBody").innerHTML=list.map(x=>{
- const b=branches.find(z=>z.id===x.branch_id);
- return `<tr><td><strong>${esc(x.product_name)}</strong><br><small>${esc(x.description||"")}</small></td>
- <td>${esc(x.batch_no)}</td><td>${esc(b?.branch_name||"-")}</td><td>${esc(x.current_qty)}</td><td>${esc(x.unit)}</td>
- <td>${esc(x.expiry_date||"-")}</td><td>${money(x.rate)}</td><td>${esc(x.supplier||"-")}</td>
- <td><button class="action-btn gray" onclick="editInventory('${x.id}')">Edit</button>
- <button class="action-btn red" onclick="deleteInventory('${x.id}')">Delete</button></td></tr>`;
- }).join("");
- $("totalProducts").textContent=new Set(inventory.map(x=>x.product_name)).size;
- $("totalStock").textContent=inventory.reduce((a,x)=>a+Number(x.current_qty||0),0);
- $("lowStock").textContent=inventory.filter(x=>Number(x.current_qty||0)<=Number(x.reorder_level||0)).length;
- const now=new Date(),future=new Date();future.setDate(future.getDate()+30);
- $("expiring").textContent=inventory.filter(x=>x.expiry_date&&new Date(x.expiry_date)>=now&&new Date(x.expiry_date)<=future).length;
-}
-$("invSearch").oninput=renderInventory;
 
-function openInventory(item=null){
- $("inventoryModal").classList.remove("hidden");$("invMessage").textContent="";
- $("invTitle").textContent=item?"Edit Product":"Add Product";$("invId").value=item?.id||"";
- $("invProduct").value=item?.product_name||"";$("invDescription").value=item?.description||"";
- $("invBatch").value=item?.batch_no||"";$("invEntry").value=item?.entry_date||today();$("invExpiry").value=item?.expiry_date||"";
- $("invQty").value=item?.current_qty??0;$("invUnit").value=item?.unit||"Kit";$("invPack").value=item?.units_per_pack??"";
- $("invRate").value=item?.rate??0;$("invGST").value=item?.gst_percent??0;$("invSupplier").value=item?.supplier||"";
- $("invReorder").value=item?.reorder_level??0;$("invBranch").value=item?.branch_id||branchId||branches[0]?.id||"";
-}
-$("addInventoryBtn").onclick=()=>openInventory();
-window.editInventory=id=>openInventory(inventory.find(x=>x.id===id));
-window.deleteInventory=async id=>{if(!confirm("Delete product?"))return;const r=await db.from("inventory_stock").delete().eq("id",id);if(r.error)return alert(r.error.message);loadInventory()};
+ let q=db
+  .from("inventory_stock")
+  .select("*")
+  .eq("is_active",true)
+  .order("product_name");
 
-$("inventoryForm").onsubmit=async e=>{
- e.preventDefault();const id=$("invId").value;
- const data={product_name:$("invProduct").value.trim(),description:$("invDescription").value.trim()||null,branch_id:$("invBranch").value,
- batch_no:$("invBatch").value.trim(),entry_date:$("invEntry").value,expiry_date:$("invExpiry").value||null,current_qty:Number($("invQty").value),
- unit:$("invUnit").value.trim(),units_per_pack:Number($("invPack").value||0),rate:Number($("invRate").value||0),
- gst_percent:Number($("invGST").value||0),supplier:$("invSupplier").value.trim()||"Not specified",reorder_level:Number($("invReorder").value||0),is_active:true};
- let r=id?await db.from("inventory_stock").update(data).eq("id",id):await db.from("inventory_stock").insert(data);
- if(r.error){$("invMessage").textContent=r.error.message;return}closeModal("inventoryModal");loadInventory();
-};
+ if(!admin()&&branchId)
+  q=q.eq("branch_id",branchId);
 
-async function loadParties(){
- let v=await db.from("vendors").select("*").eq("is_active",true).order("name");if(v.error)throw v.error;vendors=v.data||[];
- let c=await db.from("clients").select("*").eq("is_active",true).order("name");if(c.error)throw c.error;clients=c.data||[];
- renderVendors();renderClients();
-}
-function renderVendors(){
- const s=$("vendorSearch").value.toLowerCase();$("vendorsBody").innerHTML=vendors.filter(x=>(`${x.name} ${x.company_name}`.toLowerCase()).includes(s)).map(x=>partyRow(x,"vendor")).join("");
-}
-function renderClients(){
- const s=$("clientSearch").value.toLowerCase();$("clientsBody").innerHTML=clients.filter(x=>(`${x.name} ${x.company_name}`.toLowerCase()).includes(s)).map(x=>partyRow(x,"client")).join("");
-}
-function partyRow(x,t){return `<tr><td>${esc(x.name)}</td><td>${esc(x.company_name||"-")}</td><td>${esc(x.phone||"-")}</td><td>${esc(x.email||"-")}</td><td>${esc(x.gstin||"-")}</td>
-<td><button class="action-btn gray" onclick="openParty('${t}','${x.id}')">Edit</button><button class="action-btn red" onclick="deleteParty('${t}','${x.id}')">Delete</button></td></tr>`}
-$("vendorSearch").oninput=renderVendors;$("clientSearch").oninput=renderClients;
+ const r=await q;
 
-window.openVendor=()=>openParty("vendor");
-window.openClient=()=>openParty("client");
-window.openParty=(type,id=null)=>{
- editingParty=id;$("partyModal").classList.remove("hidden");$("partyType").value=type;$("partyTitle").textContent=(type==="vendor"?"Vendor":"Client")+(id?" — Edit":" — Add");$("partyMessage").textContent="";
- const arr=type==="vendor"?vendors:clients,x=arr.find(a=>a.id===id)||{};
- $("partyId").value=id||"";$("partyName").value=x.name||"";$("partyCompany").value=x.company_name||"";$("partyPhone").value=x.phone||"";$("partyEmail").value=x.email||"";
- $("partyGSTIN").value=x.gstin||"";$("partyContact").value=x.contact_person||"";$("partyAddress").value=x.address||"";$("partyNotes").value=x.notes||"";
-};
-window.deleteParty=async(type,id)=>{
- if(!confirm(`Delete ${type}?`))return;
- const table=type==="vendor"?"vendors":"clients",r=await db.from(table).update({is_active:false}).eq("id",id);
- if(r.error)return alert(r.error.message);loadParties();
-};
-$("partyForm").onsubmit=async e=>{
- e.preventDefault();const type=$("partyType").value,table=type==="vendor"?"vendors":"clients",id=$("partyId").value;
- const data={name:$("partyName").value.trim(),company_name:$("partyCompany").value.trim()||null,address:$("partyAddress").value.trim()||null,phone:$("partyPhone").value.trim()||null,email:$("partyEmail").value.trim()||null,gstin:$("partyGSTIN").value.trim()||null,contact_person:$("partyContact").value.trim()||null,notes:$("partyNotes").value.trim()||null,is_active:true};
- const r=id?await db.from(table).update(data).eq("id",id):await db.from(table).insert(data);
- if(r.error){$("partyMessage").textContent=r.error.message;return}closeModal("partyModal");loadParties();
-};
+ if(r.error)throw r.error;
 
-function fillPartySelect(type){
- const arr=type==="po"?vendors:clients;
- $("docParty").innerHTML='<option value="">Select</option>'+arr.map(x=>`<option value="${x.id}">${esc(x.company_name||x.name)}</option>`).join("");
-}
-function openDocument(type,id=null){
- $("docModal").classList.remove("hidden");$("docType").value=type;$("docId").value=id||"";$("docItems").innerHTML="";docItems=[];
- $("docTitle").textContent=type==="po"?"Purchase Order":"Quotation";$("partyLabel").textContent=type==="po"?"Vendor":"Client";
- $("validBox").classList.toggle("hidden",type==="po");fillPartySelect(type);
- const statuses=type==="po"?["draft","sent","accepted","rejected"]:["draft","sent","accepted","rejected","expired"];
- $("docStatus").innerHTML=statuses.map(x=>`<option value="${x}">${x.toUpperCase()}</option>`).join("");
- $("docDate").value=today();$("docValid").value="";$("docTerms").value="";$("docNotes").value="";
- if(id)loadDocumentForEdit(type,id);else addDocItem();
-}
-window.openPO=()=>openDocument("po");
-window.openQuotation=()=>openDocument("quotation");
+ inventory=r.data||[];
 
-function addDocItem(item={}){
- const i=docItems.length;docItems.push({...item});
- const tr=document.createElement("tr");tr.dataset.i=i;
- tr.innerHTML=`<td><input class="di-name" value="${esc(item.product_name||item.item_name||"")}"></td>
- <td><input class="di-desc" value="${esc(item.description||"")}"></td>
- <td><input class="di-qty" type="number" min="0" step=".01" value="${item.quantity??1}"></td>
- <td><input class="di-unit" value="${esc(item.unit||"Nos")}"></td>
- <td><input class="di-rate" type="number" min="0" step=".01" value="${item.rate??0}"></td>
- <td><input class="di-disc" type="number" min="0" max="100" step=".01" value="${item.discount_percent??0}"></td>
- <td><input class="di-gst" type="number" min="0" max="100" step=".01" value="${item.gst_percent??18}"></td>
- <td class="di-total">₹0.00</td><td><button type="button" class="red" onclick="removeDocItem(${i})">×</button></td>`;
- $("docItems").appendChild(tr);tr.querySelectorAll("input").forEach(x=>x.oninput=recalcDoc);recalcDoc();
+ rebuildFinalFilters();
+
+ renderInventory();
+
+ applyFinalInventorySecurity();
 }
-window.removeDocItem=i=>{docItems[i]=null;const tr=$(`docItems`).querySelector(`tr[data-i="${i}"]`);if(tr)tr.remove();recalcDoc()};
-function collectItems(){
- return [...$("docItems").querySelectorAll("tr")].map(tr=>({name:tr.querySelector(".di-name").value.trim(),description:tr.querySelector(".di-desc").value.trim(),
- quantity:Number(tr.querySelector(".di-qty").value||0),unit:tr.querySelector(".di-unit").value.trim(),rate:Number(tr.querySelector(".di-rate").value||0),
- discount:Number(tr.querySelector(".di-disc").value||0),gst:Number(tr.querySelector(".di-gst").value||0)})).filter(x=>x.name&&x.quantity>0);
-}
-function recalcDoc(){
- let sub=0,disc=0,gst=0;
- $("docItems").querySelectorAll("tr").forEach(tr=>{
-  const q=Number(tr.querySelector(".di-qty").value||0),r=Number(tr.querySelector(".di-rate").value||0),d=Number(tr.querySelector(".di-disc").value||0),g=Number(tr.querySelector(".di-gst").value||0);
-  const gross=q*r,da=gross*d/100,tax=gross-da,ga=tax*g/100,total=tax+ga;sub+=gross;disc+=da;gst+=ga;tr.querySelector(".di-total").textContent=money(total);
+
+
+function finalFilteredInventory(){
+
+ const s=(
+  $("invSearch")?.value||""
+ ).trim().toLowerCase();
+
+ const br=$("invBranchFilter")?.value||"";
+ const pr=$("invProductFilter")?.value||"";
+ const ba=$("invBatchFilter")?.value||"";
+ const st=$("invStockFilter")?.value||"";
+
+
+ return inventory.filter(x=>{
+
+  const q=Number(x.current_qty||0);
+
+  if(br&&x.branch_id!==br)return false;
+
+  if(pr&&x.product_name!==pr)return false;
+
+  if(ba&&x.batch_no!==ba)return false;
+
+  if(st==="in"&&q<=0)return false;
+
+  if(
+   st==="low" &&
+   q>Number(x.reorder_level||0)
+  )return false;
+
+  if(st==="out"&&q!==0)return false;
+
+
+  if(
+   s &&
+   !(
+    `${x.product_name}
+     ${x.batch_no}
+     ${x.description||""}
+     ${x.supplier||""}`
+    .toLowerCase()
+    .includes(s)
+   )
+  )return false;
+
+
+  return true;
+
  });
- $("docSubtotal").textContent=money(sub);$("docDiscount").textContent=money(disc);$("docGST").textContent=money(gst);$("docGrand").textContent=money(sub-disc+gst);
-}
-$("docForm").onsubmit=async e=>{
- e.preventDefault();const type=$("docType").value,id=$("docId").value,items=collectItems();
- if(!$("docParty").value||!items.length){$("docMessage").textContent="Party aur kam se kam 1 item zaroori hai.";return}
- let sub=0,disc=0,gst=0;items.forEach(x=>{const gross=x.quantity*x.rate,da=gross*x.discount/100,tax=gross-da,ga=tax*x.gst/100;sub+=gross;disc+=da;gst+=ga});
- const grand=sub-disc+gst;
- if(type==="po"){
-  const data={po_date:$("docDate").value,vendor_id:$("docParty").value,status:$("docStatus").value,subtotal:sub,gst_amount:gst,grand_total:grand,terms_conditions:$("docTerms").value||null,notes:$("docNotes").value||null};
-  let r=id?await db.from("purchase_orders").update(data).eq("id",id):await db.from("purchase_orders").insert(data).select("id").single();
-  if(r.error){$("docMessage").textContent=r.error.message;return}
-  const poid=id||r.data.id;await db.from("purchase_order_items").delete().eq("purchase_order_id",poid);
-  const rows=items.map(x=>({purchase_order_id:poid,product_name:x.name,description:x.description||null,quantity:x.quantity,unit:x.unit,rate:x.rate,gst_percent:x.gst,taxable_amount:x.quantity*x.rate-x.quantity*x.rate*x.discount/100,gst_amount:(x.quantity*x.rate-x.quantity*x.rate*x.discount/100)*x.gst/100,total_amount:(x.quantity*x.rate-x.quantity*x.rate*x.discount/100)*(1+x.gst/100)}));
-  const ir=await db.from("purchase_order_items").insert(rows);if(ir.error){$("docMessage").textContent=ir.error.message;return}
- }else{
-  const data={quotation_date:$("docDate").value,valid_until:$("docValid").value||null,client_id:$("docParty").value,status:$("docStatus").value,
-  subtotal:sub,discount_amount:disc,gst_amount:gst,grand_total:grand,terms_conditions:$("docTerms").value||null,notes:$("docNotes").value||null};
-  let r=id?await db.from("quotations").update(data).eq("id",id):await db.from("quotations").insert(data).select("id").single();
-  if(r.error){$("docMessage").textContent=r.error.message;return}
-  const qid=id||r.data.id;await db.from("quotation_items").delete().eq("quotation_id",qid);
-  const rows=items.map(x=>({quotation_id:qid,item_name:x.name,description:x.description||null,quantity:x.quantity,unit:x.unit,rate:x.rate,discount_percent:x.discount,gst_percent:x.gst,
-  taxable_amount:x.quantity*x.rate-x.quantity*x.rate*x.discount/100,discount_amount:x.quantity*x.rate*x.discount/100,gst_amount:(x.quantity*x.rate-x.quantity*x.rate*x.discount/100)*x.gst/100,total_amount:(x.quantity*x.rate-x.quantity*x.rate*x.discount/100)*(1+x.gst/100)}));
-  const ir=await db.from("quotation_items").insert(rows);if(ir.error){$("docMessage").textContent=ir.error.message;return}
- }
- closeModal("docModal");loadDocuments();
-};
 
-async function loadDocuments(){
-  const canManageDocs = role === "admin";
-  let p=await db.from("purchase_orders").select("*").order("po_date",{ascending:false});
-  if(p.error) console.warn(p.error); else $("poBody").innerHTML=(p.data||[]).map(x=>{const v=vendors.find(a=>a.id===x.vendor_id);return `<tr><td>${esc(x.po_number)}</td><td>${esc(x.po_date)}</td><td>${esc(v?.company_name||v?.name||"-")}</td><td>${esc(x.status)}</td><td>${money(x.subtotal)}</td><td>${money(x.gst_amount)}</td><td>${money(x.grand_total)}</td><td><button class="action-btn gray" onclick="viewPO('${x.id}')">View</button> <button class="action-btn" onclick="generatePOPDF('${x.id}')">PDF</button> ${canManageDocs?`<button class="action-btn gray" onclick="editPO('${x.id}')">Edit</button><button class="action-btn red" onclick="deletePO('${x.id}')">Delete</button>`:""}</td></tr>`}).join("");
-  let q=await db.from("quotations").select("*").order("quotation_date",{ascending:false});
-  if(q.error) console.warn(q.error); else $("quotationBody").innerHTML=(q.data||[]).map(x=>{const c=clients.find(a=>a.id===x.client_id);return `<tr><td>${esc(x.quotation_number)}</td><td>${esc(x.quotation_date)}</td><td>${esc(x.valid_until||"-")}</td><td>${esc(c?.company_name||c?.name||"-")}</td><td>${esc(x.status)}</td><td>${money(x.subtotal)}</td><td>${money(x.gst_amount)}</td><td>${money(x.grand_total)}</td><td><button class="action-btn gray" onclick="viewQuotation('${x.id}')">View</button> <button class="action-btn" onclick="generateQuotationPDF('${x.id}')">PDF</button> ${canManageDocs?`<button class="action-btn gray" onclick="editQuotation('${x.id}')">Edit</button><button class="action-btn red" onclick="deleteQuotation('${x.id}')">Delete</button>`:""}</td></tr>`}).join("");
-}
-async function makeDocumentView(type,id){
- const isPO=type==='po', headTable=isPO?'purchase_orders':'quotations', itemTable=isPO?'purchase_order_items':'quotation_items', fk=isPO?'purchase_order_id':'quotation_id';
- const hr=await db.from(headTable).select('*').eq('id',id).single(); if(hr.error)return alert(hr.error.message);
- const ir=await db.from(itemTable).select('*').eq(fk,id); if(ir.error)return alert(ir.error.message);
- const h=hr.data, items=ir.data||[], party=isPO?vendors.find(x=>x.id===h.vendor_id):clients.find(x=>x.id===h.client_id);
- const number=isPO?h.po_number:h.quotation_number;
- const rows=items.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(isPO?x.product_name:x.item_name)}</td><td>${esc(x.description||'')}</td><td>${esc(x.quantity)}</td><td>${esc(x.unit||'')}</td><td>${money(x.rate)}</td>${isPO?'':`<td>${esc(x.discount_percent||0)}%</td>`}<td>${esc(x.gst_percent||0)}%</td><td>${money(x.total_amount)}</td></tr>`).join('');
- const w=window.open('','_blank','width=1000,height=800'); if(!w)return alert('Popup blocked hai. Browser mein pop-up allow karo.');
- const partyName=party?.company_name||party?.name||'-', contact=party?.contact_person||'', address=party?.address||'', phone=party?.phone||'', email=party?.email||'', gstin=party?.gstin||'';
- w.document.write(`<!doctype html><html><head><title>${isPO?'PO':'Quotation'} ${esc(number)}</title><style>body{font-family:Arial;margin:35px;color:#172033}.top{display:flex;justify-content:space-between;border-bottom:2px solid #1e293b;padding-bottom:14px}.logo{width:140px}.company{text-align:right}.company h2{margin:0 0 5px}h1{text-align:center;font-size:22px;margin:24px 0}.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.party{border:1px solid #cbd5e1;border-radius:6px;padding:12px;margin-bottom:18px}.party-title{font-weight:700;font-size:13px;margin-bottom:7px;text-transform:uppercase}.party-name{font-size:16px;font-weight:700;margin-bottom:5px}.party-line{font-size:12px;line-height:1.55}table{width:100%;border-collapse:collapse}th,td{border:1px solid #cbd5e1;padding:8px;font-size:12px}th{background:#f1f5f9}.totals{margin-left:auto;width:300px;margin-top:18px;line-height:1.8}.grand{font-size:16px;border-top:2px solid #111;padding-top:6px}.notes{margin-top:22px}.print{margin-bottom:20px;padding:9px 14px;border:0;background:#2563eb;color:white;border-radius:7px;cursor:pointer}@media print{.print{display:none}body{margin:15mm}}</style></head><body><button class='print' onclick='window.print()'>Print / Save PDF</button><div class='top'><img class='logo' src='micron-logo.png' onerror="this.style.display='none'"><div class='company'><h2>${esc(micronCompany.name)}</h2><div>${esc(micronCompany.address)}</div><div>E-mail: ${esc(micronCompany.email)}</div><div>Tel: ${esc(micronCompany.tel||'—')}</div></div></div><h1>${isPO?'PURCHASE ORDER':'QUOTATION'}</h1><div class='meta'><div>${isPO?'PO':'Quotation'} No.: <strong>${esc(number)}</strong></div><div>Date: <strong>${esc(isPO?h.po_date:h.quotation_date)}</strong></div>${isPO?'':`<div>Valid Until: <strong>${esc(h.valid_until||'-')}</strong></div>`}<div>Status: <strong>${esc(h.status||'draft')}</strong></div></div><div class='party'><div class='party-title'>${isPO?'Vendor Details':'Client Details'}</div><div class='party-name'>${esc(partyName)}</div>${contact?`<div class='party-line'><strong>Contact Person:</strong> ${esc(contact)}</div>`:''}${address?`<div class='party-line'><strong>Address:</strong> ${esc(address)}</div>`:''}${phone?`<div class='party-line'><strong>Phone:</strong> ${esc(phone)}</div>`:''}${email?`<div class='party-line'><strong>Email:</strong> ${esc(email)}</div>`:''}${gstin?`<div class='party-line'><strong>GSTIN:</strong> ${esc(gstin)}</div>`:''}</div><table><thead><tr><th>#</th><th>${isPO?'Product':'Item / Test'}</th><th>Description</th><th>Qty</th><th>Unit</th><th>Rate</th>${isPO?'':'<th>Discount</th>'}<th>GST</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table><div class='totals'><div>Subtotal: <strong>${money(h.subtotal)}</strong></div>${isPO?'':`<div>Discount: <strong>${money(h.discount_amount)}</strong></div>`}<div>GST: <strong>${money(h.gst_amount)}</strong></div><div class='grand'>Grand Total: <strong>${money(h.grand_total)}</strong></div></div><div class='notes'><strong>Terms & Conditions</strong><p>${esc(h.terms_conditions||'')}</p><strong>Notes</strong><p>${esc(h.notes||'')}</p></div></body></html>`); w.document.close();
 }
 
-window.viewPO=id=>makeDocumentView("po",id);window.viewQuotation=id=>makeDocumentView("quotation",id);
-async function loadDocumentForEdit(type,id){
- const table=type==="po"?"purchase_orders":"quotations",r=await db.from(table).select("*").eq("id",id).single();if(r.error)return;
- const x=r.data;$("docParty").value=type==="po"?x.vendor_id:x.client_id;$("docDate").value=type==="po"?x.po_date:x.quotation_date;$("docValid").value=x.valid_until||"";
- $("docStatus").value=x.status||"draft";$("docTerms").value=x.terms_conditions||"";$("docNotes").value=x.notes||"";
- const it=await db.from(type==="po"?"purchase_order_items":"quotation_items").select("*").eq(type==="po"?"purchase_order_id":"quotation_id",id);
- if(it.error)return;
- $("docItems").innerHTML="";docItems=[];(it.data||[]).forEach(a=>addDocItem(a));
+
+function renderInventory(){
+
+ const list=finalFilteredInventory();
+
+ $("inventoryBody").innerHTML=
+  list.map(x=>{
+
+   const b=branches.find(
+    z=>z.id===x.branch_id
+   );
+
+   let actions=
+    `<button
+      class="action-btn gray"
+      onclick="openStockFinal('${x.id}')">
+      IN / OUT
+     </button>`;
+
+
+   if(
+    role==="admin"||
+    role==="manager"
+   ){
+
+    actions+=
+     `<button
+       class="action-btn gray"
+       onclick="editInventory('${x.id}')">
+       Edit
+      </button>`;
+   }
+
+
+   if(role==="admin"){
+
+    actions+=
+     `<button
+       class="action-btn red"
+       onclick="deleteInventory('${x.id}')">
+       Delete
+      </button>`;
+   }
+
+
+   return `
+    <tr>
+
+     <td>
+      <strong>${esc(x.product_name)}</strong>
+      <br>
+      <small>${esc(x.description||"")}</small>
+     </td>
+
+     <td>${esc(x.batch_no||"-")}</td>
+
+     <td>${esc(b?.branch_name||"-")}</td>
+
+     <td>${esc(x.entry_date||"")}</td>
+
+     <td>${esc(x.expiry_date||"-")}</td>
+
+     <td>
+      <strong>${esc(x.current_qty)}</strong>
+     </td>
+
+     <td>${esc(x.unit||"")}</td>
+
+     <td class="${admin()?"":"hidden"}">
+      ${money(x.rate)}
+     </td>
+
+     <td class="${admin()?"":"hidden"}">
+      ${esc(x.gst_percent||0)}%
+     </td>
+
+     <td class="${admin()?"":"hidden"}">
+      ${esc(x.supplier||"Not specified")}
+     </td>
+
+     <td>${actions}</td>
+
+    </tr>
+   `;
+
+  }).join("");
+
+
+ const shown=list;
+
+
+ $("totalProducts").textContent=
+  new Set(
+   shown.map(x=>x.product_name)
+  ).size;
+
+
+ $("totalStock").textContent=
+  shown.reduce(
+   (a,x)=>a+Number(x.current_qty||0),
+   0
+  );
+
+
+ $("lowStock").textContent=
+  shown.filter(
+   x=>
+    Number(x.current_qty||0)
+    <=Number(x.reorder_level||0)
+  ).length;
+
+
+ const now=new Date();
+
+ now.setHours(0,0,0,0);
+
+ const future=new Date(now);
+
+ future.setDate(
+  future.getDate()+30
+ );
+
+
+ $("expiring").textContent=
+  shown.filter(
+   x=>
+    x.expiry_date &&
+    new Date(x.expiry_date)>=now &&
+    new Date(x.expiry_date)<=future
+  ).length;
 }
-window.editPO=id=>openDocument("po",id);window.editQuotation=id=>openDocument("quotation",id);
-window.deletePO=async id=>{if(!confirm("Delete PO?"))return;let r=await db.from("purchase_order_items").delete().eq("purchase_order_id",id);if(r.error)return alert(r.error.message);r=await db.from("purchase_orders").delete().eq("id",id);if(r.error)return alert(r.error.message);loadDocuments()};
-window.deleteQuotation=async id=>{if(!confirm("Delete quotation?"))return;let r=await db.from("quotation_items").delete().eq("quotation_id",id);if(r.error)return alert(r.error.message);r=await db.from("quotations").delete().eq("id",id);if(r.error)return alert(r.error.message);loadDocuments()};
 
-function closeModal(id){$(id).classList.add("hidden")}
-document.querySelectorAll(".navBtn").forEach(btn=>btn.onclick=()=>{
- document.querySelectorAll(".navBtn").forEach(x=>x.classList.remove("active"));btn.classList.add("active");
- document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));$(btn.dataset.section).classList.add("active");
-});
-$("loginBtn").onclick=async()=>{
- const m=$("loginMessage");m.textContent="";
- const r=await db.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});
- if(r.error){m.textContent=r.error.message;return}await start();
-};
-$("loginPassword").onkeydown=e=>{if(e.key==="Enter")$("loginBtn").click()};
-$("logoutBtn").onclick=async()=>db.auth.signOut();
 
-async function start(){
- try{await context();$("loginPage").classList.add("hidden");$("app").classList.remove("hidden");await loadBranches();await loadInventory();if(admin()){await loadParties();await loadDocuments()}}
- catch(e){console.error(e);$("loginMessage").textContent=e.message;await db.auth.signOut()}
+function rebuildFinalFilters(){
+
+ if(!$("invBranchFilter"))return;
+
+
+ const oldP=
+  $("invProductFilter").value;
+
+ const oldB=
+  $("invBatchFilter").value;
+
+
+ $("invBranchFilter").innerHTML=
+  (
+   admin()
+   ?'<option value="">All Branches</option>'
+   :""
+  )+
+  branches
+   .filter(
+    b=>admin()||b.id===branchId
+   )
+   .map(
+    b=>
+     `<option value="${b.id}">
+       ${esc(b.branch_name)}
+      </option>`
+   )
+   .join("");
+
+
+ if(!admin())
+  $("invBranchFilter").value=
+   branchId||"";
+
+
+ const products=[
+  ...new Set(
+   inventory
+    .map(x=>x.product_name)
+    .filter(Boolean)
+  )
+ ].sort();
+
+
+ $("invProductFilter").innerHTML=
+  '<option value="">All Products</option>'+
+  products.map(
+   x=>
+    `<option value="${esc(x)}">
+      ${esc(x)}
+     </option>`
+  ).join("");
+
+
+ if(products.includes(oldP))
+  $("invProductFilter").value=oldP;
+
+
+ const batches=[
+  ...new Set(
+   inventory
+    .filter(
+     x=>
+      !$("invProductFilter").value||
+      x.product_name===
+      $("invProductFilter").value
+    )
+    .map(x=>x.batch_no)
+    .filter(Boolean)
+  )
+ ].sort();
+
+
+ $("invBatchFilter").innerHTML=
+  '<option value="">All Batches</option>'+
+  batches.map(
+   x=>
+    `<option value="${esc(x)}">
+      ${esc(x)}
+     </option>`
+  ).join("");
+
+
+ if(batches.includes(oldB))
+  $("invBatchFilter").value=oldB;
 }
-db.auth.onAuthStateChange((event)=>{if(event==="SIGNED_OUT"){$("app").classList.add("hidden");$("loginPage").classList.remove("hidden")}});
-(async()=>{const s=await db.auth.getSession();if(s.data.session)start()})();
 
-/* ===== FINAL SECURITY + FILTER + COMPANY + PDF LAYER ===== */
-let micronCompany = {
-  name:"Micron Laboratory",
-  address:"D-10, Lower Ground Floor, Green Park Main, New Delhi-110016",
-  email:"micronlaboratory.12@gmail.com",
-  tel:""
-};
-try{ const z=JSON.parse(localStorage.getItem("micronCompany")||"null"); if(z) micronCompany=z; }catch(e){}
-
-function isSensitive(){ return role==="admin"; }
-function refreshCompanyUI(){
-  const n=$("docCompanyName"), i=$("docCompanyInfo"), t=$("docCompanyTel");
-  if(n)n.textContent=micronCompany.name;
-  if(i)i.innerHTML=esc(micronCompany.address)+"<br>E-mail: "+esc(micronCompany.email)+"<br>Tel: <span id='docCompanyTel'>"+esc(micronCompany.tel||"—")+"</span>";
-}
-window.editCompanyDetails=function(){
-  const name=prompt("Company Name:",micronCompany.name); if(name===null)return;
-  const address=prompt("Company Address:",micronCompany.address); if(address===null)return;
-  const email=prompt("Company E-mail:",micronCompany.email); if(email===null)return;
-  const tel=prompt("Company Tel:",micronCompany.tel||""); if(tel===null)return;
-  micronCompany={name:name.trim()||"Micron Laboratory",address:address.trim(),email:email.trim(),tel:tel.trim()};
-  localStorage.setItem("micronCompany",JSON.stringify(micronCompany)); refreshCompanyUI();
-};
 
 function applyFinalInventorySecurity(){
-  $("invRateHead")?.classList.toggle("hidden",!isSensitive());
-  $("invGSTHead")?.classList.toggle("hidden",!isSensitive());
-  $("invSupplierHead")?.classList.toggle("hidden",!isSensitive());
-  $("invRate")?.closest("div")?.classList.toggle("hidden",!isSensitive());
-  $("invGST")?.closest("div")?.classList.toggle("hidden",!isSensitive());
-  $("invSupplier")?.closest("div")?.classList.toggle("hidden",!isSensitive());
-  if($("invRate"))$("invRate").disabled=!isSensitive();
-  if($("invGST"))$("invGST").disabled=!isSensitive();
-  if($("invSupplier"))$("invSupplier").disabled=!isSensitive();
-  if($("addInventoryBtn"))$("addInventoryBtn").classList.remove("hidden");
+
+ $("invRateHead")
+  ?.classList.toggle(
+   "hidden",
+   !admin()
+  );
+
+ $("invGSTHead")
+  ?.classList.toggle(
+   "hidden",
+   !admin()
+  );
+
+ $("invSupplierHead")
+  ?.classList.toggle(
+   "hidden",
+   !admin()
+  );
+
+
+ $("invRate")
+  ?.closest("div")
+  ?.classList.toggle(
+   "hidden",
+   !admin()
+  );
+
+ $("invGST")
+  ?.closest("div")
+  ?.classList.toggle(
+   "hidden",
+   !admin()
+  );
+
+ $("invSupplier")
+  ?.closest("div")
+  ?.classList.toggle(
+   "hidden",
+   !admin()
+  );
+
+
+ if($("invRate"))
+  $("invRate").disabled=!admin();
+
+ if($("invGST"))
+  $("invGST").disabled=!admin();
+
+ if($("invSupplier"))
+  $("invSupplier").disabled=!admin();
+
 }
-function finalFilteredInventory(){
-  const s=($("invSearch")?.value||"").trim().toLowerCase();
-  const br=$("invBranchFilter")?.value||"", pr=$("invProductFilter")?.value||"", ba=$("invBatchFilter")?.value||"", st=$("invStockFilter")?.value||"";
-  return inventory.filter(x=>{
-    const q=Number(x.current_qty||0);
-    if(br&&x.branch_id!==br)return false;
-    if(pr&&x.product_name!==pr)return false;
-    if(ba&&x.batch_no!==ba)return false;
-    if(st==="in"&&q<=0)return false;
-    if(st==="low"&&q>Number(x.reorder_level||0))return false;
-    if(st==="out"&&q!==0)return false;
-    if(s&&!(`${x.product_name} ${x.batch_no} ${x.description||""} ${x.supplier||""}`.toLowerCase().includes(s)))return false;
-    return true;
-  });
+
+
+function openInventory(item=null){
+
+ $("inventoryModal")
+  .classList.remove("hidden");
+
+ $("invMessage").textContent="";
+
+ $("invTitle").textContent=
+  item
+  ?"Edit Product"
+  :"Add Product";
+
+ $("invId").value=item?.id||"";
+
+ $("invProduct").value=
+  item?.product_name||"";
+
+ $("invDescription").value=
+  item?.description||"";
+
+ $("invBatch").value=
+  item?.batch_no||"";
+
+ $("invEntry").value=
+  item?.entry_date||today();
+
+ $("invExpiry").value=
+  item?.expiry_date||"";
+
+ $("invQty").value=
+  item?.current_qty??0;
+
+ $("invUnit").value=
+  item?.unit||"Kit";
+
+ $("invPack").value=
+  item?.units_per_pack??"";
+
+ $("invRate").value=
+  item?.rate??0;
+
+ $("invGST").value=
+  item?.gst_percent??0;
+
+ $("invSupplier").value=
+  item?.supplier||"";
+
+ $("invReorder").value=
+  item?.reorder_level??0;
+
+ $("invBranch").value=
+  item?.branch_id||
+  branchId||
+  branches[0]?.id||
+  "";
+
+ applyFinalInventorySecurity();
 }
-function rebuildFinalFilters(){
-  if(!$("invBranchFilter"))return;
-  const oldP=$("invProductFilter").value, oldB=$("invBatchFilter").value;
-  $("invBranchFilter").innerHTML=(admin()?'<option value="">All Branches</option>':'')+
-    branches.filter(b=>admin()||b.id===branchId).map(b=>`<option value="${b.id}">${esc(b.branch_name)}</option>`).join("");
-  if(!admin())$("invBranchFilter").value=branchId||"";
-  const products=[...new Set(inventory.map(x=>x.product_name).filter(Boolean))].sort();
-  $("invProductFilter").innerHTML='<option value="">All Products</option>'+products.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
-  if(products.includes(oldP))$("invProductFilter").value=oldP;
-  const batches=[...new Set(inventory.filter(x=>!$("invProductFilter").value||x.product_name===$("invProductFilter").value).map(x=>x.batch_no).filter(Boolean))].sort();
-  $("invBatchFilter").innerHTML='<option value="">All Batches</option>'+batches.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
-  if(batches.includes(oldB))$("invBatchFilter").value=oldB;
-}
-window.renderInventory=function(){
-  const list=finalFilteredInventory();
-  $("inventoryBody").innerHTML=list.map(x=>{
-    const b=branches.find(z=>z.id===x.branch_id);
-    let actions=`<button class="action-btn gray" onclick="openStockFinal('${x.id}')">IN / OUT</button>`;
-    if(role==="admin"||role==="manager") actions+=`<button class="action-btn gray" onclick="editInventory('${x.id}')">Edit</button>`;
-    if(role==="admin") actions+=`<button class="action-btn red" onclick="deleteInventory('${x.id}')">Delete</button>`;
-    return `<tr><td><strong>${esc(x.product_name)}</strong><br><small>${esc(x.description||"")}</small></td>
-    <td>${esc(x.batch_no||"-")}</td><td>${esc(b?.branch_name||"-")}</td><td>${esc(x.entry_date||"")}</td><td>${esc(x.expiry_date||"-")}</td>
-    <td><strong>${esc(x.current_qty)}</strong></td><td>${esc(x.unit||"")}</td>
-    <td class="${isSensitive()?"":"hidden"}">${money(x.rate)}</td><td class="${isSensitive()?"":"hidden"}">${esc(x.gst_percent||0)}%</td>
-    <td class="${isSensitive()?"":"hidden"}">${esc(x.supplier||"Not specified")}</td><td>${actions}</td></tr>`;
-  }).join("");
-  const shown=list;
-  $("totalProducts").textContent=new Set(shown.map(x=>x.product_name)).size;
-  $("totalStock").textContent=shown.reduce((a,x)=>a+Number(x.current_qty||0),0);
-  $("lowStock").textContent=shown.filter(x=>Number(x.current_qty||0)<=Number(x.reorder_level||0)).length;
-  const now=new Date(); now.setHours(0,0,0,0); const future=new Date(now); future.setDate(future.getDate()+30);
-  $("expiring").textContent=shown.filter(x=>x.expiry_date&&new Date(x.expiry_date)>=now&&new Date(x.expiry_date)<=future).length;
-  applyFinalInventorySecurity();
-};
-window.openStockFinal=function(id){
-  const x=inventory.find(z=>z.id===id); if(!x)return;
-  const qty=prompt(`Current Stock: ${x.current_qty}\nEnter quantity to IN. Cancel for OUT.`); 
-  if(qty===null)return;
-  const n=Number(qty); if(!n||n<=0)return alert("Valid quantity enter karo.");
-  const type=prompt("Type: IN or OUT","IN"); if(!type)return;
-  db.rpc(type.toUpperCase()==="OUT"?"stock_out":"stock_in",{p_stock_id:x.id,p_quantity:n}).then(r=>{
-    if(r.error)alert(r.error.message); else loadInventory();
-  });
-};
-function wireFinalFilters(){
-  ["invBranchFilter","invProductFilter","invBatchFilter","invStockFilter"].forEach(id=>$(id)?.addEventListener("change",()=>{
-    if(id==="invProductFilter"){const old=$("invBatchFilter").value;rebuildFinalFilters();$("invBatchFilter").value=old;}
-    renderInventory();
-  }));
-  $("invSearch")?.addEventListener("input",renderInventory);
-  $("clearInvFilters")?.addEventListener("click",()=>{
-    $("invSearch").value="";$("invProductFilter").value="";$("invBatchFilter").value="";$("invStockFilter").value="";
-    $("invBranchFilter").value=admin()?"":branchId||"";rebuildFinalFilters();renderInventory();
-  });
-}
-function addCompanyToDocPDF(doc){
-  doc.setFontSize(16);doc.text(micronCompany.name,55,18);
-  doc.setFontSize(9);doc.text(micronCompany.address,55,24);
-  doc.text("E-mail: "+micronCompany.email+(micronCompany.tel?" | Tel: "+micronCompany.tel:""),55,29);
-  doc.line(14,34,196,34);
-}
-async function logoData(){
-  try{const r=await fetch("micron-logo.png");const b=await r.blob();return await new Promise(ok=>{const fr=new FileReader();fr.onload=()=>ok(fr.result);fr.readAsDataURL(b);});}catch(e){return null;}
-}
-async function finalPDF(type,id){
-  if(!window.jspdf)return alert("PDF library load nahi hui. Internet on karke page reload karo.");
-  const {jsPDF}=window.jspdf,doc=new jsPDF(); const logo=await logoData();
-  if(logo)doc.addImage(logo,"PNG",14,10,35,18); addCompanyToDocPDF(doc);
-  if(type==="po"){
-    const h=(await db.from("purchase_orders").select("*").eq("id",id).single()).data;
-    const its=(await db.from("purchase_order_items").select("*").eq("purchase_order_id",id)).data||[];
-    const v=vendors.find(x=>x.id===h.vendor_id);
-    doc.setFontSize(16);doc.text("PURCHASE ORDER",14,44);doc.setFontSize(10);
-    doc.text("PO No.: "+h.po_number,14,51);doc.text("Date: "+h.po_date,14,57);
-    doc.text("Vendor: "+(v?.company_name||v?.name||""),110,51);doc.text("Status: "+h.status,110,57);
-    doc.autoTable({startY:64,head:[["Item","Description","Qty","Unit","Rate","GST","Total"]],body:its.map(x=>[x.product_name,x.description||"",x.quantity,x.unit,money(x.rate),x.gst_percent+"%",money(x.total_amount)])});
-    let y=doc.lastAutoTable.finalY+8;doc.text("Subtotal: "+money(h.subtotal),145,y);doc.text("GST: "+money(h.gst_amount),145,y+6);doc.setFontSize(12);doc.text("Grand Total: "+money(h.grand_total),145,y+14);
-    doc.setFontSize(9);if(h.terms_conditions)doc.text("Terms: "+h.terms_conditions,14,y+28,{maxWidth:180});if(h.notes)doc.text("Notes: "+h.notes,14,y+40,{maxWidth:180});
-    doc.save("PO-"+h.po_number+".pdf");
-  }else{
-    const h=(await db.from("quotations").select("*").eq("id",id).single()).data;
-    const its=(await db.from("quotation_items").select("*").eq("quotation_id",id)).data||[];
-    const c=clients.find(x=>x.id===h.client_id);
-    doc.setFontSize(16);doc.text("QUOTATION",14,44);doc.setFontSize(10);
-    doc.text("Quotation No.: "+h.quotation_number,14,51);doc.text("Date: "+h.quotation_date,14,57);
-    doc.text("Client: "+(c?.company_name||c?.name||""),110,51);doc.text("Valid Until: "+(h.valid_until||"-"),110,57);
-    doc.autoTable({startY:64,head:[["Item/Test","Description","Qty","Unit","Rate","Discount","GST","Total"]],body:its.map(x=>[x.item_name,x.description||"",x.quantity,x.unit,money(x.rate),x.discount_percent+"%",x.gst_percent+"%",money(x.total_amount)])});
-    let y=doc.lastAutoTable.finalY+8;doc.text("Subtotal: "+money(h.subtotal),145,y);doc.text("Discount: "+money(h.discount_amount),145,y+6);doc.text("GST: "+money(h.gst_amount),145,y+12);doc.setFontSize(12);doc.text("Grand Total: "+money(h.grand_total),145,y+20);
-    doc.setFontSize(9);if(h.terms_conditions)doc.text("Terms: "+h.terms_conditions,14,y+34,{maxWidth:180});if(h.notes)doc.text("Notes: "+h.notes,14,y+46,{maxWidth:180});
-    doc.save("Quotation-"+h.quotation_number+".pdf");
+
+
+$("addInventoryBtn").onclick=
+ ()=>openInventory();
+
+
+window.editInventory=id=>
+ openInventory(
+  inventory.find(
+   x=>x.id===id
+  )
+ );
+
+
+window.deleteInventory=
+ async id=>{
+
+  if(!confirm("Delete product?"))
+   return;
+
+  const r=
+   await db
+    .from("inventory_stock")
+    .delete()
+    .eq("id",id);
+
+  if(r.error)
+   return alert(r.error.message);
+
+  await loadInventory();
+ };
+
+
+$("inventoryForm").onsubmit=
+ async e=>{
+
+  e.preventDefault();
+
+  const id=$("invId").value;
+
+
+  const data={
+
+   product_name:
+    $("invProduct").value.trim(),
+
+   description:
+    $("invDescription").value.trim()||null,
+
+   branch_id:
+    $("invBranch").value,
+
+   batch_no:
+    $("invBatch").value.trim(),
+
+   entry_date:
+    $("invEntry").value,
+
+   expiry_date:
+    $("invExpiry").value||null,
+
+   current_qty:
+    Number($("invQty").value),
+
+   unit:
+    $("invUnit").value.trim(),
+
+   units_per_pack:
+    Number($("invPack").value||0),
+
+   rate:
+    Number($("invRate").value||0),
+
+   gst_percent:
+    Number($("invGST").value||0),
+
+   supplier:
+    $("invSupplier").value.trim()||
+    "Not specified",
+
+   reorder_level:
+    Number($("invReorder").value||0),
+
+   is_active:true
+  };
+
+
+  let r=
+   id
+   ?await db
+     .from("inventory_stock")
+     .update(data)
+     .eq("id",id)
+   :await db
+     .from("inventory_stock")
+     .insert(data);
+
+
+  if(r.error){
+
+   $("invMessage").textContent=
+    r.error.message;
+
+   return;
   }
+
+
+  closeModal("inventoryModal");
+
+  await loadInventory();
+ };
+
+
+/* =========================================================
+   INVENTORY STOCK
+========================================================= */
+
+window.openStockFinal=
+ function(id){
+
+  const x=
+   inventory.find(z=>z.id===id);
+
+  if(!x)return;
+
+
+  const qty=
+   prompt(
+    `Current Stock: ${x.current_qty}\nEnter quantity to IN. Cancel for OUT.`
+   );
+
+
+  if(qty===null)return;
+
+
+  const n=Number(qty);
+
+  if(!n||n<=0)
+   return alert(
+    "Valid quantity enter karo."
+   );
+
+
+  const type=
+   prompt(
+    "Type: IN or OUT",
+    "IN"
+   );
+
+
+  if(!type)return;
+
+
+  const rpc=
+   type.toUpperCase()==="OUT"
+   ?"stock_out"
+   :"stock_in";
+
+
+  db.rpc(
+   rpc,
+   {
+    p_stock_id:x.id,
+    p_quantity:n
+   }
+  ).then(r=>{
+
+   if(r.error)
+    alert(r.error.message);
+   else
+    loadInventory();
+
+  });
+
+ };
+
+
+function wireFinalFilters(){
+
+ [
+  "invBranchFilter",
+  "invProductFilter",
+  "invBatchFilter",
+  "invStockFilter"
+ ].forEach(id=>
+
+  $(id)?.addEventListener(
+   "change",
+   ()=>{
+
+    if(id==="invProductFilter"){
+
+     const old=
+      $("invBatchFilter").value;
+
+     rebuildFinalFilters();
+
+     $("invBatchFilter").value=
+      old;
+    }
+
+    renderInventory();
+
+   }
+  )
+ );
+
+
+ $("invSearch")
+  ?.addEventListener(
+   "input",
+   renderInventory
+  );
+
+
+ $("clearInvFilters")
+  ?.addEventListener(
+   "click",
+   ()=>{
+
+    $("invSearch").value="";
+    $("invProductFilter").value="";
+    $("invBatchFilter").value="";
+    $("invStockFilter").value="";
+
+    $("invBranchFilter").value=
+     admin()
+     ?""
+     :branchId||"";
+
+    rebuildFinalFilters();
+
+    renderInventory();
+
+   }
+  );
 }
-window.generatePOPDF=id=>finalPDF("po",id); window.generateQuotationPDF=id=>finalPDF("quotation",id);
 
 
-/* Enforce permissions after the original functions run. */
-const originalLoadInventory=loadInventory;
-loadInventory=async function(){await originalLoadInventory();rebuildFinalFilters();wireFinalFilters();applyFinalInventorySecurity();renderInventory();};
-const originalOpenInventory=openInventory;
-openInventory=function(item=null){originalOpenInventory(item);applyFinalInventorySecurity();};
+/* =========================================================
+   PARTIES
+========================================================= */
+
+async function loadParties(){
+
+ let v=
+  await db
+   .from("vendors")
+   .select("*")
+   .eq("is_active",true)
+   .order("name");
+
+ if(v.error)throw v.error;
+
+ vendors=v.data||[];
+
+
+ let c=
+  await db
+   .from("clients")
+   .select("*")
+   .eq("is_active",true)
+   .order("name");
+
+ if(c.error)throw c.error;
+
+ clients=c.data||[];
+
+
+ renderVendors();
+ renderClients();
+}
+
+
+function renderVendors(){
+
+ const s=
+  $("vendorSearch")
+   .value
+   .toLowerCase();
+
+
+ $("vendorsBody").innerHTML=
+  vendors
+   .filter(
+    x=>
+     `${x.name} ${x.company_name}`
+      .toLowerCase()
+      .includes(s)
+   )
+   .map(
+    x=>partyRow(x,"vendor")
+   )
+   .join("");
+}
+
+
+function renderClients(){
+
+ const s=
+  $("clientSearch")
+   .value
+   .toLowerCase();
+
+
+ $("clientsBody").innerHTML=
+  clients
+   .filter(
+    x=>
+     `${x.name} ${x.company_name}`
+      .toLowerCase()
+      .includes(s)
+   )
+   .map(
+    x=>partyRow(x,"client")
+   )
+   .join("");
+}
+
+
+function partyRow(x,t){
+
+ return `
+ <tr>
+
+ <td>${esc(x.name)}</td>
+
+ <td>${esc(x.company_name||"-")}</td>
+
+ <td>${esc(x.phone||"-")}</td>
+
+ <td>${esc(x.email||"-")}</td>
+
+ <td>${esc(x.gstin||"-")}</td>
+
+ <td>
+
+ <button
+  class="action-btn gray"
+  onclick="openParty('${t}','${x.id}')">
+  Edit
+ </button>
+
+ <button
+  class="action-btn red"
+  onclick="deleteParty('${t}','${x.id}')">
+  Delete
+ </button>
+
+ </td>
+
+ </tr>
+ `;
+}
+
+
+$("vendorSearch").oninput=
+ renderVendors;
+
+$("clientSearch").oninput=
+ renderClients;
+
+
+window.openVendor=
+ ()=>openParty("vendor");
+
+window.openClient=
+ ()=>openParty("client");
+
+
+window.openParty=
+ function(type,id=null){
+
+  editingParty=id;
+
+  $("partyModal")
+   .classList.remove("hidden");
+
+  $("partyType").value=type;
+
+  $("partyTitle").textContent=
+   (
+    type==="vendor"
+    ?"Vendor"
+    :"Client"
+   )+
+   (
+    id
+    ?" — Edit"
+    :" — Add"
+   );
+
+  $("partyMessage").textContent="";
+
+
+  const arr=
+   type==="vendor"
+   ?vendors
+   :clients;
+
+  const x=
+   arr.find(a=>a.id===id)||{};
+
+
+  $("partyId").value=id||"";
+  $("partyName").value=x.name||"";
+  $("partyCompany").value=x.company_name||"";
+  $("partyPhone").value=x.phone||"";
+  $("partyEmail").value=x.email||"";
+  $("partyGSTIN").value=x.gstin||"";
+  $("partyContact").value=x.contact_person||"";
+  $("partyAddress").value=x.address||"";
+  $("partyNotes").value=x.notes||"";
+ };
+
+
+window.deleteParty=
+ async function(type,id){
+
+  if(!confirm(`Delete ${type}?`))
+   return;
+
+
+  const table=
+   type==="vendor"
+   ?"vendors"
+   :"clients";
+
+
+  const r=
+   await db
+    .from(table)
+    .update({is_active:false})
+    .eq("id",id);
+
+
+  if(r.error)
+   return alert(r.error.message);
+
+
+  await loadParties();
+ };
+
+
+$("partyForm").onsubmit=
+ async e=>{
+
+  e.preventDefault();
+
+
+  const type=
+   $("partyType").value;
+
+  const table=
+   type==="vendor"
+   ?"vendors"
+   :"clients";
+
+  const id=
+   $("partyId").value;
+
+
+  const data={
+
+   name:
+    $("partyName").value.trim(),
+
+   company_name:
+    $("partyCompany").value.trim()||null,
+
+   address:
+    $("partyAddress").value.trim()||null,
+
+   phone:
+    $("partyPhone").value.trim()||null,
+
+   email:
+    $("partyEmail").value.trim()||null,
+
+   gstin:
+    $("partyGSTIN").value.trim()||null,
+
+   contact_person:
+    $("partyContact").value.trim()||null,
+
+   notes:
+    $("partyNotes").value.trim()||null,
+
+   is_active:true
+  };
+
+
+  const r=
+   id
+   ?await db
+     .from(table)
+     .update(data)
+     .eq("id",id)
+   :await db
+     .from(table)
+     .insert(data);
+
+
+  if(r.error){
+
+   $("partyMessage").textContent=
+    r.error.message;
+
+   return;
+  }
+
+
+  closeModal("partyModal");
+
+  await loadParties();
+ };
+
+
+/* =========================================================
+   DOCUMENT PARTY
+========================================================= */
+
+function fillPartySelect(type){
+
+ const arr=
+  type==="po"
+  ?vendors
+  :clients;
+
+
+ $("docParty").innerHTML=
+  '<option value="">Select</option>'+
+  arr.map(
+   x=>
+    `<option value="${x.id}">
+      ${esc(x.company_name||x.name)}
+     </option>`
+  ).join("");
+}
+
+
+/* =========================================================
+   MATERIAL SEARCH UI
+========================================================= */
+
+function materialSearchHTML(index,value=""){
+
+ return `
+ <div class="material-wrap">
+
+ <input
+  class="di-name material-search"
+  value="${esc(value)}"
+  placeholder="Type material code / name..."
+  autocomplete="off"
+  oninput="searchMaterial(${index},this)"
+ >
+
+ <div
+  class="material-results hidden"
+  id="materialResults_${index}">
+ </div>
+
+ </div>
+ `;
+}
+
+
+window.searchMaterial=
+ function(index,input){
+
+  const box=
+   $(`materialResults_${index}`);
+
+  if(!box)return;
+
+
+  const term=
+   (input.value||"")
+    .trim()
+    .toLowerCase();
+
+
+  if(!term){
+
+   box.classList.add("hidden");
+   box.innerHTML="";
+
+   return;
+  }
+
+
+  const results=
+   materialMaster
+    .filter(m=>{
+
+     const code=
+      materialCode(m)
+       .toLowerCase();
+
+     const desc=
+      materialDescription(m)
+       .toLowerCase();
+
+     return(
+      code.includes(term)||
+      desc.includes(term)
+     );
+
+    })
+    .slice(0,15);
+
+
+  if(!results.length){
+
+   box.innerHTML=
+    `<div class="material-no-result">
+      No material found
+     </div>`;
+
+   box.classList.remove("hidden");
+
+   return;
+  }
+
+
+  box.innerHTML=
+   results.map(m=>{
+
+    const idx=
+     materialMaster.indexOf(m);
+
+    return `
+    <div
+     class="material-option"
+     onclick="selectMaterial(${index},${idx})">
+
+     <span class="m-code">
+      ${esc(materialCode(m))}
+     </span>
+
+     <span class="m-desc">
+      ${esc(materialDescription(m))}
+     </span>
+
+     <span class="m-extra">
+      Pack Size: ${esc(materialPack(m))}
+      &nbsp; | &nbsp;
+      Price: ${money(materialPrice(m))}
+     </span>
+
+    </div>
+    `;
+
+   }).join("");
+
+
+  box.classList.remove("hidden");
+ };
+
+
+window.selectMaterial=
+ function(index,materialIndex){
+
+  const m=
+   materialMaster[materialIndex];
+
+  if(!m)return;
+
+
+  const tr=
+   $("poItems")
+    .querySelector(
+     `tr[data-i="${index}"]`
+    );
+
+  if(!tr)return;
+
+
+  const code=
+   materialCode(m);
+
+  const desc=
+   materialDescription(m);
+
+  const pack=
+   materialPack(m);
+
+  const price=
+   materialPrice(m);
+
+
+  const name=
+   tr.querySelector(".di-name");
+
+  const codeInput=
+   tr.querySelector(".di-code");
+
+  const descInput=
+   tr.querySelector(".di-desc");
+
+  const packInput=
+   tr.querySelector(".di-pack");
+
+  const rateInput=
+   tr.querySelector(".di-rate");
+
+
+  if(name)
+   name.value=code;
+
+  if(codeInput)
+   codeInput.value=code;
+
+  if(descInput)
+   descInput.value=desc;
+
+  if(packInput)
+   packInput.value=pack;
+
+  if(rateInput)
+   rateInput.value=price;
+
+
+  const resultBox=
+   $(`materialResults_${index}`);
+
+  if(resultBox){
+
+   resultBox.classList.add("hidden");
+   resultBox.innerHTML="";
+  }
+
+
+  recalcDoc();
+ };
+
+
+document.addEventListener(
+ "click",
+ e=>{
+
+  if(!e.target.closest(".material-wrap")){
+
+   document
+    .querySelectorAll(".material-results")
+    .forEach(x=>
+     x.classList.add("hidden")
+    );
+
+  }
+
+ }
+);
+
+
+/* =========================================================
+   DOCUMENT OPEN
+========================================================= */
+
+function openDocument(type,id=null){
+
+ $("docModal")
+  .classList.remove("hidden");
+
+ $("docType").value=type;
+
+ $("docId").value=id||"";
+
+ $("docTitle").textContent=
+  type==="po"
+  ?"Purchase Order"
+  :"Quotation";
+
+ $("partyLabel").textContent=
+  type==="po"
+  ?"Vendor"
+  :"Client";
+
+
+ $("validBox")
+  .classList.toggle(
+   "hidden",
+   type==="po"
+  );
+
+
+ $("poItemsWrapper")
+  .classList.toggle(
+   "hidden",
+   type!=="po"
+  );
+
+
+ $("quotationItemsWrapper")
+  .classList.toggle(
+   "hidden",
+   type!=="quotation"
+  );
+
+
+ $("docDiscountRow")
+  .classList.toggle(
+   "hidden",
+   type==="po"
+  );
+
+
+ fillPartySelect(type);
+
+
+ const statuses=
+  type==="po"
+  ?[
+    "draft",
+    "sent",
+    "accepted",
+    "rejected"
+   ]
+  :[
+    "draft",
+    "sent",
+    "accepted",
+    "rejected",
+    "expired"
+   ];
+
+
+ $("docStatus").innerHTML=
+  statuses.map(
+   x=>
+    `<option value="${x}">
+      ${x.toUpperCase()}
+     </option>`
+  ).join("");
+
+
+ $("docDate").value=today();
+
+ $("docValid").value="";
+
+ $("docTerms").value="";
+
+ $("docNotes").value="";
+
+ $("docMessage").textContent="";
+
+ $("poItems").innerHTML="";
+
+ $("quotationItems").innerHTML="";
+
+ docItems=[];
+
+
+ if(id){
+
+  loadDocumentForEdit(
+   type,
+   id
+  );
+
+ }else{
+
+  addDocItem();
+
+ }
+
+}
+
+
+window.openPO=
+ ()=>openDocument("po");
+
+window.openQuotation=
+ ()=>openDocument("quotation");
+
+
+/* =========================================================
+   ADD DOCUMENT ITEM
+========================================================= */
+
+function addDocItem(item={}){
+
+ const i=docItems.length;
+
+ docItems.push({
+  ...item
+ });
+
+
+ const isPO=
+  $("docType").value==="po";
+
+
+ const tr=
+  document.createElement("tr");
+
+ tr.dataset.i=i;
+
+
+ /* =========================
+    PURCHASE ORDER
+ ========================= */
+
+ if(isPO){
+
+  const existingCode=
+   item.product_name||
+   item.item_name||
+   "";
+
+
+  let material=
+   findMaterialByCode(
+    existingCode
+   );
+
+
+  tr.innerHTML=`
+
+  <td class="material-col">
+
+   ${materialSearchHTML(
+     i,
+     existingCode
+   )}
+
+  </td>
+
+
+  <td class="code-col">
+
+   <input
+    class="di-code material-readonly po-code"
+    value="${esc(
+     material
+     ?materialCode(material)
+     :existingCode
+    )}"
+    readonly
+   >
+
+  </td>
+
+
+  <td class="desc-col">
+
+   <input
+    class="di-desc material-readonly"
+    value="${esc(
+     material
+     ?materialDescription(material)
+     :(item.description||"")
+    )}"
+    readonly
+   >
+
+  </td>
+
+
+  <td class="pack-col">
+
+   <input
+    class="di-pack material-readonly"
+    value="${esc(
+     material
+     ?materialPack(material)
+     :(item.pack_size||"")
+    )}"
+    readonly
+   >
+
+  </td>
+
+
+  <td class="qty-col">
+
+   <input
+    class="di-qty"
+    type="number"
+    min="0"
+    step=".01"
+    value="${item.quantity??1}"
+   >
+
+  </td>
+
+
+  <td class="unit-col">
+
+   <input
+    class="di-unit"
+    value="${esc(item.unit||"Nos")}"
+   >
+
+  </td>
+
+
+  <td class="rate-col">
+
+   <input
+    class="di-rate"
+    type="number"
+    min="0"
+    step=".01"
+    value="${material?materialPrice(material):(item.rate??0)}"
+   >
+
+  </td>
+
+
+  <td class="gst-col">
+
+   <select class="di-gst">
+
+    <option value="5"
+     ${Number(item.gst_percent)==5?"selected":""}>
+     5%
+    </option>
+
+    <option value="12"
+     ${Number(item.gst_percent)==12?"selected":""}>
+     12%
+    </option>
+
+    <option value="18"
+     ${Number(item.gst_percent||18)==18?"selected":""}>
+     18%
+    </option>
+
+   </select>
+
+  </td>
+
+
+  <td class="di-total total-col">
+   ₹0.00
+  </td>
+
+
+  <td>
+
+   <button
+    type="button"
+    class="red"
+    onclick="removeDocItem(${i})">
+    ×
+   </button>
+
+  </td>
+
+  `;
+
+
+  $("poItems")
+   .appendChild(tr);
+
+
+ }else{
+
+
+  /* =========================
+     QUOTATION — ORIGINAL
+     BEHAVIOUR
+  ========================= */
+
+  tr.innerHTML=`
+
+  <td>
+
+   <input
+    class="di-name"
+    value="${esc(
+     item.product_name||
+     item.item_name||
+     ""
+    )}"
+   >
+
+  </td>
+
+
+  <td>
+
+   <input
+    class="di-desc"
+    value="${esc(
+     item.description||""
+    )}"
+   >
+
+  </td>
+
+
+  <td>
+
+   <input
+    class="di-qty"
+    type="number"
+    min="0"
+    step=".01"
+    value="${item.quantity??1}"
+   >
+
+  </td>
+
+
+  <td>
+
+   <input
+    class="di-unit"
+    value="${esc(
+     item.unit||"Nos"
+    )}"
+   >
+
+  </td>
+
+
+  <td>
+
+   <input
+    class="di-rate"
+    type="number"
+    min="0"
+    step=".01"
+    value="${item.rate??0}"
+   >
+
+  </td>
+
+
+  <td>
+
+   <input
+    class="di-disc"
+    type="number"
+    min="0"
+    max="100"
+    step=".01"
+    value="${item.discount_percent??0}"
+   >
+
+  </td>
+
+
+  <td>
+
+   <input
+    class="di-gst"
+    type="number"
+    min="0"
+    max="100"
+    step=".01"
+    value="${item.gst_percent??18}"
+   >
+
+  </td>
+
+
+  <td class="di-total">
+   ₹0.00
+  </td>
+
+
+  <td>
+
+   <button
+    type="button"
+    class="red"
+    onclick="removeDocItem(${i})">
+    ×
+   </button>
+
+  </td>
+
+  `;
+
+
+  $("quotationItems")
+   .appendChild(tr);
+
+ }
+
+
+ tr.querySelectorAll(
+  "input,select"
+ ).forEach(x=>{
+
+  x.oninput=recalcDoc;
+  x.onchange=recalcDoc;
+
+ });
+
+
+ recalcDoc();
+}
+
+
+/* =========================================================
+   REMOVE ITEM
+========================================================= */
+
+window.removeDocItem=
+ function(i){
+
+  docItems[i]=null;
+
+
+  const isPO=
+   $("docType").value==="po";
+
+
+  const parent=
+   isPO
+   ?$("poItems")
+   :$("quotationItems");
+
+
+  const tr=
+   parent.querySelector(
+    `tr[data-i="${i}"]`
+   );
+
+
+  if(tr)
+   tr.remove();
+
+
+  recalcDoc();
+ };
+
+
+/* =========================================================
+   COLLECT ITEMS
+========================================================= */
+
+function collectItems(){
+
+ const isPO=
+  $("docType").value==="po";
+
+
+ const parent=
+  isPO
+  ?$("poItems")
+  :$("quotationItems");
+
+
+ if(isPO){
+
+  return [
+   ...parent.querySelectorAll("tr")
+  ]
+  .map(tr=>({
+
+   name:
+    tr.querySelector(
+     ".di-name"
+    ).value.trim(),
+
+   material_code:
+    tr.querySelector(
+     ".di-code"
+    ).value.trim(),
+
+   description:
+    tr.querySelector(
+     ".di-desc"
+    ).value.trim(),
+
+   pack_size:
+    tr.querySelector(
+     ".di-pack"
+    ).value.trim(),
+
+   quantity:
+    Number(
+     tr.querySelector(
+      ".di-qty"
+     ).value||0
+    ),
+
+   unit:
+    tr.querySelector(
+     ".di-unit"
+    ).value.trim(),
+
+   rate:
+    Number(
+     tr.querySelector(
+      ".di-rate"
+     ).value||0
+    ),
+
+   discount:0,
+
+   gst:
+    Number(
+     tr.querySelector(
+      ".di-gst"
+     ).value||0
+    )
+
+  }))
+  .filter(
+   x=>x.name&&x.quantity>0
+  );
+
+ }
+
+
+ /* =========================
+    QUOTATION ORIGINAL
+ ========================= */
+
+ return [
+  ...parent.querySelectorAll("tr")
+ ]
+ .map(tr=>({
+
+  name:
+   tr.querySelector(
+    ".di-name"
+   ).value.trim(),
+
+  description:
+   tr.querySelector(
+    ".di-desc"
+   ).value.trim(),
+
+  quantity:
+   Number(
+    tr.querySelector(
+     ".di-qty"
+    ).value||0
+   ),
+
+  unit:
+   tr.querySelector(
+    ".di-unit"
+   ).value.trim(),
+
+  rate:
+   Number(
+    tr.querySelector(
+     ".di-rate"
+    ).value||0
+   ),
+
+  discount:
+   Number(
+    tr.querySelector(
+     ".di-disc"
+    ).value||0
+   ),
+
+  gst:
+   Number(
+    tr.querySelector(
+     ".di-gst"
+    ).value||0
+   )
+
+ }))
+ .filter(
+  x=>x.name&&x.quantity>0
+ );
+
+}
+
+
+/* =========================================================
+   CALCULATE DOCUMENT
+========================================================= */
+
+function recalcDoc(){
+
+ let sub=0;
+ let disc=0;
+ let gst=0;
+
+
+ const isPO=
+  $("docType").value==="po";
+
+
+ const parent=
+  isPO
+  ?$("poItems")
+  :$("quotationItems");
+
+
+ parent
+  .querySelectorAll("tr")
+  .forEach(tr=>{
+
+   const q=
+    Number(
+     tr.querySelector(
+      ".di-qty"
+     ).value||0
+    );
+
+
+   const r=
+    Number(
+     tr.querySelector(
+      ".di-rate"
+     ).value||0
+    );
+
+
+   const d=
+    isPO
+    ?0
+    :Number(
+     tr.querySelector(
+      ".di-disc"
+     ).value||0
+    );
+
+
+   const g=
+    Number(
+     tr.querySelector(
+      ".di-gst"
+     ).value||0
+    );
+
+
+   const gross=q*r;
+
+   const da=
+    gross*d/100;
+
+   const taxable=
+    gross-da;
+
+   const ga=
+    taxable*g/100;
+
+   const total=
+    taxable+ga;
+
+
+   sub+=gross;
+
+   disc+=da;
+
+   gst+=ga;
+
+
+   const totalCell=
+    tr.querySelector(
+     ".di-total"
+    );
+
+   if(totalCell)
+    totalCell.textContent=
+     money(total);
+
+  });
+
+
+ $("docSubtotal").textContent=
+  money(sub);
+
+ $("docDiscount").textContent=
+  money(disc);
+
+ $("docGST").textContent=
+  money(gst);
+
+ $("docGrand").textContent=
+  money(
+   sub-disc+gst
+  );
+}
+
+
+/* =========================================================
+   SAVE DOCUMENT
+========================================================= */
+
+$("docForm").onsubmit=
+ async e=>{
+
+  e.preventDefault();
+
+
+  const type=
+   $("docType").value;
+
+  const id=
+   $("docId").value;
+
+  const items=
+   collectItems();
+
+
+  if(
+   !$("docParty").value||
+   !items.length
+  ){
+
+   $("docMessage").textContent=
+    "Party aur kam se kam 1 item zaroori hai.";
+
+   return;
+  }
+
+
+  let sub=0;
+  let disc=0;
+  let gst=0;
+
+
+  items.forEach(x=>{
+
+   const gross=
+    x.quantity*x.rate;
+
+   const da=
+    gross*x.discount/100;
+
+   const taxable=
+    gross-da;
+
+   const ga=
+    taxable*x.gst/100;
+
+
+   sub+=gross;
+   disc+=da;
+   gst+=ga;
+
+  });
+
+
+  const grand=
+   sub-disc+gst;
+
+
+ /* ========================================================
+    PURCHASE ORDER
+ ======================================================== */
+
+ if(type==="po"){
+
+  const data={
+
+   po_date:
+    $("docDate").value,
+
+   vendor_id:
+    $("docParty").value,
+
+   status:
+    $("docStatus").value,
+
+   subtotal:
+    sub,
+
+   gst_amount:
+    gst,
+
+   grand_total:
+    grand,
+
+   terms_conditions:
+    $("docTerms").value||null,
+
+   notes:
+    $("docNotes").value||null
+
+  };
+
+
+  let r=
+   id
+   ?await db
+     .from("purchase_orders")
+     .update(data)
+     .eq("id",id)
+
+   :await db
+     .from("purchase_orders")
+     .insert(data)
+     .select("id")
+     .single();
+
+
+  if(r.error){
+
+   $("docMessage").textContent=
+    r.error.message;
+
+   return;
+  }
+
+
+  const poid=
+   id||r.data.id;
+
+
+  const del=
+   await db
+    .from("purchase_order_items")
+    .delete()
+    .eq(
+     "purchase_order_id",
+     poid
+    );
+
+
+  if(del.error){
+
+   $("docMessage").textContent=
+    del.error.message;
+
+   return;
+  }
+
+
+  /*
+    IMPORTANT:
+    Existing purchase_order_items
+    columns are used.
+
+    Material code is saved in
+    product_name.
+
+    Description / quantity /
+    unit / rate / GST remain
+    compatible with existing SQL.
+  */
+
+  const rows=
+   items.map(x=>{
+
+    const gross=
+     x.quantity*x.rate;
+
+    const taxable=
+     gross-
+     gross*x.discount/100;
+
+    const gstAmount=
+     taxable*x.gst/100;
+
+
+    return {
+
+     purchase_order_id:
+      poid,
+
+     product_name:
+      x.material_code||
+      x.name,
+
+     description:
+      x.description||null,
+
+     quantity:
+      x.quantity,
+
+     unit:
+      x.unit,
+
+     rate:
+      x.rate,
+
+     gst_percent:
+      x.gst,
+
+     taxable_amount:
+      taxable,
+
+     gst_amount:
+      gstAmount,
+
+     total_amount:
+      taxable+gstAmount
+
+    };
+
+   });
+
+
+  const ir=
+   await db
+    .from("purchase_order_items")
+    .insert(rows);
+
+
+  if(ir.error){
+
+   $("docMessage").textContent=
+    ir.error.message;
+
+   return;
+  }
+
+
+ }else{
+
+
+ /* ========================================================
+    QUOTATION
+    ORIGINAL LOGIC
+ ======================================================== */
+
+  const data={
+
+   quotation_date:
+    $("docDate").value,
+
+   valid_until:
+    $("docValid").value||null,
+
+   client_id:
+    $("docParty").value,
+
+   status:
+    $("docStatus").value,
+
+   subtotal:
+    sub,
+
+   discount_amount:
+    disc,
+
+   gst_amount:
+    gst,
+
+   grand_total:
+    grand,
+
+   terms_conditions:
+    $("docTerms").value||null,
+
+   notes:
+    $("docNotes").value||null
+
+  };
+
+
+  let r=
+   id
+   ?await db
+     .from("quotations")
+     .update(data)
+     .eq("id",id)
+
+   :await db
+     .from("quotations")
+     .insert(data)
+     .select("id")
+     .single();
+
+
+  if(r.error){
+
+   $("docMessage").textContent=
+    r.error.message;
+
+   return;
+  }
+
+
+  const qid=
+   id||r.data.id;
+
+
+  const del=
+   await db
+    .from("quotation_items")
+    .delete()
+    .eq(
+     "quotation_id",
+     qid
+    );
+
+
+  if(del.error){
+
+   $("docMessage").textContent=
+    del.error.message;
+
+   return;
+  }
+
+
+  const rows=
+   items.map(x=>({
+
+    quotation_id:
+     qid,
+
+    item_name:
+     x.name,
+
+    description:
+     x.description||null,
+
+    quantity:
+     x.quantity,
+
+    unit:
+     x.unit,
+
+    rate:
+     x.rate,
+
+    discount_percent:
+     x.discount,
+
+    gst_percent:
+     x.gst,
+
+    taxable_amount:
+     x.quantity*x.rate-
+     x.quantity*x.rate*x.discount/100,
+
+    discount_amount:
+     x.quantity*x.rate*x.discount/100,
+
+    gst_amount:
+     (
+      x.quantity*x.rate-
+      x.quantity*x.rate*x.discount/100
+     )*
+     x.gst/100,
+
+    total_amount:
+     (
+      x.quantity*x.rate-
+      x.quantity*x.rate*x.discount/100
+     )*
+     (1+x.gst/100)
+
+   }));
+
+
+  const ir=
+   await db
+    .from("quotation_items")
+    .insert(rows);
+
+
+  if(ir.error){
+
+   $("docMessage").textContent=
+    ir.error.message;
+
+   return;
+  }
+
+ }
+
+
+ closeModal("docModal");
+
+ await loadDocuments();
+
+};
+
+
+/* =========================================================
+   LOAD DOCUMENTS
+========================================================= */
+
+async function loadDocuments(){
+
+ const canManageDocs=
+  role==="admin";
+
+
+ /* ================= PO ================= */
+
+ let p=
+  await db
+   .from("purchase_orders")
+   .select("*")
+   .order(
+    "po_date",
+    {ascending:false}
+   );
+
+
+ if(p.error){
+
+  console.warn(p.error);
+
+ }else{
+
+  $("poBody").innerHTML=
+   (p.data||[])
+    .map(x=>{
+
+     const v=
+      vendors.find(
+       a=>a.id===x.vendor_id
+      );
+
+
+     return `
+
+     <tr>
+
+      <td>${esc(x.po_number)}</td>
+
+      <td>${esc(x.po_date)}</td>
+
+      <td>
+       ${esc(
+        v?.company_name||
+        v?.name||
+        "-"
+       )}
+      </td>
+
+      <td>${esc(x.status)}</td>
+
+      <td>${money(x.subtotal)}</td>
+
+      <td>${money(x.gst_amount)}</td>
+
+      <td>${money(x.grand_total)}</td>
+
+      <td>
+
+       <button
+        class="action-btn gray"
+        onclick="viewPO('${x.id}')">
+        View
+       </button>
+
+       <button
+        class="action-btn"
+        onclick="generatePOPDF('${x.id}')">
+        PDF
+       </button>
+
+       ${
+        canManageDocs
+        ?`
+         <button
+          class="action-btn gray"
+          onclick="editPO('${x.id}')">
+          Edit
+         </button>
+
+         <button
+          class="action-btn red"
+          onclick="deletePO('${x.id}')">
+          Delete
+         </button>
+        `
+        :""
+       }
+
+      </td>
+
+     </tr>
+
+     `;
+
+    })
+    .join("");
+
+ }
+
+
+ /* ================= QUOTATION ================= */
+
+ let q=
+  await db
+   .from("quotations")
+   .select("*")
+   .order(
+    "quotation_date",
+    {ascending:false}
+   );
+
+
+ if(q.error){
+
+  console.warn(q.error);
+
+ }else{
+
+  $("quotationBody").innerHTML=
+   (q.data||[])
+    .map(x=>{
+
+     const c=
+      clients.find(
+       a=>a.id===x.client_id
+      );
+
+
+     return `
+
+     <tr>
+
+      <td>
+       ${esc(x.quotation_number)}
+      </td>
+
+      <td>
+       ${esc(x.quotation_date)}
+      </td>
+
+      <td>
+       ${esc(x.valid_until||"-")}
+      </td>
+
+      <td>
+       ${esc(
+        c?.company_name||
+        c?.name||
+        "-"
+       )}
+      </td>
+
+      <td>
+       ${esc(x.status)}
+      </td>
+
+      <td>
+       ${money(x.subtotal)}
+      </td>
+
+      <td>
+       ${money(x.gst_amount)}
+      </td>
+
+      <td>
+       ${money(x.grand_total)}
+      </td>
+
+      <td>
+
+       <button
+        class="action-btn gray"
+        onclick="viewQuotation('${x.id}')">
+        View
+       </button>
+
+       <button
+        class="action-btn"
+        onclick="generateQuotationPDF('${x.id}')">
+        PDF
+       </button>
+
+       ${
+        canManageDocs
+        ?`
+         <button
+          class="action-btn gray"
+          onclick="editQuotation('${x.id}')">
+          Edit
+         </button>
+
+         <button
+          class="action-btn red"
+          onclick="deleteQuotation('${x.id}')">
+          Delete
+         </button>
+        `
+        :""
+       }
+
+      </td>
+
+     </tr>
+
+     `;
+
+    })
+    .join("");
+
+ }
+
+}
+
+
+/* =========================================================
+   EDIT DOCUMENT
+========================================================= */
+
+async function loadDocumentForEdit(
+ type,
+ id
+){
+
+ const table=
+  type==="po"
+  ?"purchase_orders"
+  :"quotations";
+
+
+ const r=
+  await db
+   .from(table)
+   .select("*")
+   .eq("id",id)
+   .single();
+
+
+ if(r.error){
+
+  alert(r.error.message);
+
+  return;
+ }
+
+
+ const x=r.data;
+
+
+ $("docParty").value=
+  type==="po"
+  ?x.vendor_id
+  :x.client_id;
+
+
+ $("docDate").value=
+  type==="po"
+  ?x.po_date
+  :x.quotation_date;
+
+
+ $("docValid").value=
+  x.valid_until||"";
+
+
+ $("docStatus").value=
+  x.status||"draft";
+
+
+ $("docTerms").value=
+  x.terms_conditions||"";
+
+
+ $("docNotes").value=
+  x.notes||"";
+
+
+ const it=
+  await db
+   .from(
+    type==="po"
+    ?"purchase_order_items"
+    :"quotation_items"
+   )
+   .select("*")
+   .eq(
+    type==="po"
+    ?"purchase_order_id"
+    :"quotation_id",
+    id
+   );
+
+
+ if(it.error){
+
+  alert(it.error.message);
+
+  return;
+ }
+
+
+ $("poItems").innerHTML="";
+ $("quotationItems").innerHTML="";
+
+ docItems=[];
+
+
+ if(type==="po"){
+
+  (it.data||[])
+   .forEach(a=>
+    addDocItem(a)
+   );
+
+ }else{
+
+  (it.data||[])
+   .forEach(a=>
+    addDocItem(a)
+   );
+
+ }
+
+}
+
+
+window.editPO=
+ id=>openDocument("po",id);
+
+
+window.editQuotation=
+ id=>openDocument(
+  "quotation",
+  id
+);
+
+
+/* =========================================================
+   DELETE DOCUMENTS
+========================================================= */
+
+window.deletePO=
+ async id=>{
+
+  if(!confirm("Delete PO?"))
+   return;
+
+
+  let r=
+   await db
+    .from("purchase_order_items")
+    .delete()
+    .eq(
+     "purchase_order_id",
+     id
+    );
+
+
+  if(r.error)
+   return alert(
+    r.error.message
+   );
+
+
+  r=
+   await db
+    .from("purchase_orders")
+    .delete()
+    .eq("id",id);
+
+
+  if(r.error)
+   return alert(
+    r.error.message
+   );
+
+
+  await loadDocuments();
+
+ };
+
+
+window.deleteQuotation=
+ async id=>{
+
+  if(!confirm("Delete quotation?"))
+   return;
+
+
+  let r=
+   await db
+    .from("quotation_items")
+    .delete()
+    .eq(
+     "quotation_id",
+     id
+    );
+
+
+  if(r.error)
+   return alert(
+    r.error.message
+   );
+
+
+  r=
+   await db
+    .from("quotations")
+    .delete()
+    .eq("id",id);
+
+
+  if(r.error)
+   return alert(
+    r.error.message
+   );
+
+
+  await loadDocuments();
+
+ };
+
+
+/* =========================================================
+   DOCUMENT VIEW
+========================================================= */
+
+async function makeDocumentView(
+ type,
+ id
+){
+
+ const isPO=
+  type==="po";
+
+
+ const headTable=
+  isPO
+  ?"purchase_orders"
+  :"quotations";
+
+
+ const itemTable=
+  isPO
+  ?"purchase_order_items"
+  :"quotation_items";
+
+
+ const fk=
+  isPO
+  ?"purchase_order_id"
+  :"quotation_id";
+
+
+ const hr=
+  await db
+   .from(headTable)
+   .select("*")
+   .eq("id",id)
+   .single();
+
+
+ if(hr.error)
+  return alert(
+   hr.error.message
+  );
+
+
+ const ir=
+  await db
+   .from(itemTable)
+   .select("*")
+   .eq(fk,id);
+
+
+ if(ir.error)
+  return alert(
+   ir.error.message
+  );
+
+
+ const h=hr.data;
+
+ const items=ir.data||[];
+
+
+ const party=
+  isPO
+  ?vendors.find(
+   x=>x.id===h.vendor_id
+  )
+  :clients.find(
+   x=>x.id===h.client_id
+  );
+
+
+ const number=
+  isPO
+  ?h.po_number
+  :h.quotation_number;
+
+
+ const rows=
+  items.map(
+   (x,i)=>{
+
+    const mat=
+     isPO
+     ?findMaterialByCode(
+      x.product_name
+     )
+     :null;
+
+
+    const code=
+     isPO
+     ?(
+      mat
+      ?materialCode(mat)
+      :x.product_name
+     )
+     :"";
+
+
+    const desc=
+     isPO
+     ?(
+      mat
+      ?materialDescription(mat)
+      :(x.description||"")
+     )
+     :(x.description||"");
+
+
+    const pack=
+     isPO
+     ?(
+      mat
+      ?materialPack(mat)
+      :""
+     )
+     :"";
+
+
+    if(isPO){
+
+     return `
+      <tr>
+
+       <td>${i+1}</td>
+
+       <td>${esc(code)}</td>
+
+       <td>${esc(desc)}</td>
+
+       <td>${esc(pack)}</td>
+
+       <td>${esc(x.quantity)}</td>
+
+       <td>${esc(x.unit||"")}</td>
+
+       <td>${money(x.rate)}</td>
+
+       <td>${esc(x.gst_percent||0)}%</td>
+
+       <td>${money(x.total_amount)}</td>
+
+      </tr>
+     `;
+
+    }
+
+
+    return `
+     <tr>
+
+      <td>${i+1}</td>
+
+      <td>${esc(x.item_name)}</td>
+
+      <td>${esc(x.description||"")}</td>
+
+      <td>${esc(x.quantity)}</td>
+
+      <td>${esc(x.unit||"")}</td>
+
+      <td>${money(x.rate)}</td>
+
+      <td>${esc(x.discount_percent||0)}%</td>
+
+      <td>${esc(x.gst_percent||0)}%</td>
+
+      <td>${money(x.total_amount)}</td>
+
+     </tr>
+    `;
+
+   }
+  ).join("");
+
+
+ const w=
+  window.open(
+   "",
+   "_blank",
+   "width=1100,height=850"
+  );
+
+
+ if(!w)
+  return alert(
+   "Popup blocked hai. Browser mein pop-up allow karo."
+  );
+
+
+ const partyName=
+  party?.company_name||
+  party?.name||
+  "-";
+
+ const contact=
+  party?.contact_person||"";
+
+ const address=
+  party?.address||"";
+
+ const phone=
+  party?.phone||"";
+
+ const email=
+  party?.email||"";
+
+ const gstin=
+  party?.gstin||"";
+
+
+ const itemHead=
+  isPO
+  ?`
+   <th>#</th>
+   <th>Material Code</th>
+   <th>Description</th>
+   <th>Pack Size</th>
+   <th>Qty</th>
+   <th>Unit</th>
+   <th>Price</th>
+   <th>GST</th>
+   <th>Total</th>
+  `
+  :`
+   <th>#</th>
+   <th>Item / Test</th>
+   <th>Description</th>
+   <th>Qty</th>
+   <th>Unit</th>
+   <th>Rate</th>
+   <th>Discount</th>
+   <th>GST</th>
+   <th>Total</th>
+  `;
+
+
+ const discountLine=
+  isPO
+  ?""
+  :`
+   <div>
+    Discount:
+    <strong>
+     ${money(h.discount_amount)}
+    </strong>
+   </div>
+  `;
+
+
+ w.document.write(`
+
+ <!doctype html>
+
+ <html>
+
+ <head>
+
+ <title>
+ ${isPO?"PO":"Quotation"}
+ ${esc(number)}
+ </title>
+
+ <style>
+
+ body{
+  font-family:Arial;
+  margin:35px;
+  color:#172033
+ }
+
+ .top{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:2px solid #1e293b;
+  padding-bottom:14px
+ }
+
+ .logo{
+  width:140px
+ }
+
+ .company{
+  text-align:right
+ }
+
+ .company h2{
+  margin:0 0 5px
+ }
+
+ h1{
+  text-align:center;
+  font-size:22px;
+  margin:24px 0
+ }
+
+ .meta{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:18px
+ }
+
+ .party{
+  border:1px solid #cbd5e1;
+  border-radius:6px;
+  padding:12px;
+  margin-bottom:18px
+ }
+
+ .party-title{
+  font-weight:700;
+  font-size:13px;
+  margin-bottom:7px;
+  text-transform:uppercase
+ }
+
+ .party-name{
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:5px
+ }
+
+ .party-line{
+  font-size:12px;
+  line-height:1.55
+ }
+
+ table{
+  width:100%;
+  border-collapse:collapse
+ }
+
+ th,td{
+  border:1px solid #cbd5e1;
+  padding:8px;
+  font-size:12px
+ }
+
+ th{
+  background:#f1f5f9
+ }
+
+ .totals{
+  margin-left:auto;
+  width:300px;
+  margin-top:18px;
+  line-height:1.8
+ }
+
+ .grand{
+  font-size:16px;
+  border-top:2px solid #111;
+  padding-top:6px
+ }
+
+ .notes{
+  margin-top:22px
+ }
+
+ .print{
+  margin-bottom:20px;
+  padding:9px 14px;
+  border:0;
+  background:#2563eb;
+  color:white;
+  border-radius:7px;
+  cursor:pointer
+ }
+
+ @media print{
+  .print{
+   display:none
+  }
+
+  body{
+   margin:15mm
+  }
+ }
+
+ </style>
+
+ </head>
+
+ <body>
+
+ <button
+  class="print"
+  onclick="window.print()">
+  Print / Save PDF
+ </button>
+
+
+ <div class="top">
+
+  <img
+   class="logo"
+   src="micron-logo.png"
+   onerror="this.style.display='none'"
+  >
+
+  <div class="company">
+
+   <h2>
+    ${esc(micronCompany.name)}
+   </h2>
+
+   <div>
+    ${esc(micronCompany.address)}
+   </div>
+
+   <div>
+    E-mail: ${esc(micronCompany.email)}
+   </div>
+
+   <div>
+    Tel: ${esc(micronCompany.tel||"—")}
+   </div>
+
+  </div>
+
+ </div>
+
+
+ <h1>
+  ${isPO?"PURCHASE ORDER":"QUOTATION"}
+ </h1>
+
+
+ <div class="meta">
+
+  <div>
+   ${isPO?"PO":"Quotation"} No.:
+   <strong>
+    ${esc(number)}
+   </strong>
+  </div>
+
+  <div>
+   Date:
+   <strong>
+    ${esc(
+     isPO
+     ?h.po_date
+     :h.quotation_date
+    )}
+   </strong>
+  </div>
+
+  ${
+   isPO
+   ?""
+   :`
+    <div>
+     Valid Until:
+     <strong>
+      ${esc(h.valid_until||"-")}
+     </strong>
+    </div>
+   `
+  }
+
+  <div>
+   Status:
+   <strong>
+    ${esc(h.status||"draft")}
+   </strong>
+  </div>
+
+ </div>
+
+
+ <div class="party">
+
+  <div class="party-title">
+   ${isPO?"Vendor Details":"Client Details"}
+  </div>
+
+  <div class="party-name">
+   ${esc(partyName)}
+  </div>
+
+  ${
+   contact
+   ?`
+    <div class="party-line">
+     <strong>Contact Person:</strong>
+     ${esc(contact)}
+    </div>
+   `
+   :""
+  }
+
+  ${
+   address
+   ?`
+    <div class="party-line">
+     <strong>Address:</strong>
+     ${esc(address)}
+    </div>
+   `
+   :""
+  }
+
+  ${
+   phone
+   ?`
+    <div class="party-line">
+     <strong>Phone:</strong>
+     ${esc(phone)}
+    </div>
+   `
+   :""
+  }
+
+  ${
+   email
+   ?`
+    <div class="party-line">
+     <strong>Email:</strong>
+     ${esc(email)}
+    </div>
+   `
+   :""
+  }
+
+  ${
+   gstin
+   ?`
+    <div class="party-line">
+     <strong>GSTIN:</strong>
+     ${esc(gstin)}
+    </div>
+   `
+   :""
+  }
+
+ </div>
+
+
+ <table>
+
+ <thead>
+
+ <tr>
+ ${itemHead}
+ </tr>
+
+ </thead>
+
+ <tbody>
+ ${rows}
+ </tbody>
+
+ </table>
+
+
+ <div class="totals">
+
+  <div>
+   Subtotal:
+   <strong>
+    ${money(h.subtotal)}
+   </strong>
+  </div>
+
+  ${discountLine}
+
+  <div>
+   GST:
+   <strong>
+    ${money(h.gst_amount)}
+   </strong>
+  </div>
+
+  <div class="grand">
+   Grand Total:
+   <strong>
+    ${money(h.grand_total)}
+   </strong>
+  </div>
+
+ </div>
+
+
+ <div class="notes">
+
+  <strong>
+   Terms & Conditions
+  </strong>
+
+  <p>
+   ${esc(h.terms_conditions||"")}
+  </p>
+
+  <strong>
+   Notes
+  </strong>
+
+  <p>
+   ${esc(h.notes||"")}
+  </p>
+
+ </div>
+
+
+ </body>
+
+ </html>
+
+ `);
+
+ w.document.close();
+
+}
+
+
+window.viewPO=
+ id=>makeDocumentView(
+  "po",
+  id
+ );
+
+
+window.viewQuotation=
+ id=>makeDocumentView(
+  "quotation",
+  id
+ );
+
+
+/* =========================================================
+   COMPANY
+========================================================= */
+
+let micronCompany={
+
+ name:"Micron Laboratory",
+
+ address:
+  "D-10, Lower Ground Floor, Green Park Main, New Delhi-110016",
+
+ email:
+  "micronlaboratory.12@gmail.com",
+
+ tel:""
+
+};
+
+
+try{
+
+ const z=
+  JSON.parse(
+   localStorage.getItem(
+    "micronCompany"
+   )||"null"
+  );
+
+ if(z)
+  micronCompany=z;
+
+}catch(e){}
+
+
+function refreshCompanyUI(){
+
+ const n=
+  $("docCompanyName");
+
+ const i=
+  $("docCompanyInfo");
+
+ if(n)
+  n.textContent=
+   micronCompany.name;
+
+ if(i)
+  i.innerHTML=
+   esc(micronCompany.address)+
+   "<br>E-mail: "+
+   esc(micronCompany.email)+
+   "<br>Tel: "+
+   esc(micronCompany.tel||"—");
+
+}
+
+
+window.editCompanyDetails=
+ function(){
+
+  const name=
+   prompt(
+    "Company Name:",
+    micronCompany.name
+   );
+
+  if(name===null)return;
+
+
+  const address=
+   prompt(
+    "Company Address:",
+    micronCompany.address
+   );
+
+  if(address===null)return;
+
+
+  const email=
+   prompt(
+    "Company E-mail:",
+    micronCompany.email
+   );
+
+  if(email===null)return;
+
+
+  const tel=
+   prompt(
+    "Company Tel:",
+    micronCompany.tel||""
+   );
+
+  if(tel===null)return;
+
+
+  micronCompany={
+
+   name:
+    name.trim()||
+    "Micron Laboratory",
+
+   address:
+    address.trim(),
+
+   email:
+    email.trim(),
+
+   tel:
+    tel.trim()
+
+  };
+
+
+  localStorage.setItem(
+   "micronCompany",
+   JSON.stringify(
+    micronCompany
+   )
+  );
+
+
+  refreshCompanyUI();
+
+ };
+
+
+/* =========================================================
+   PDF
+========================================================= */
+
+function addCompanyToDocPDF(doc){
+
+ doc.setFontSize(16);
+
+ doc.text(
+  micronCompany.name,
+  55,
+  18
+ );
+
+ doc.setFontSize(9);
+
+ doc.text(
+  micronCompany.address,
+  55,
+  24
+ );
+
+ doc.text(
+  "E-mail: "+
+  micronCompany.email+
+  (
+   micronCompany.tel
+   ?" | Tel: "+micronCompany.tel
+   :""
+  ),
+  55,
+  29
+ );
+
+ doc.line(
+  14,
+  34,
+  196,
+  34
+ );
+
+}
+
+
+async function logoData(){
+
+ try{
+
+  const r=
+   await fetch(
+    "micron-logo.png"
+   );
+
+  const b=
+   await r.blob();
+
+  return await new Promise(
+   ok=>{
+
+    const fr=
+     new FileReader();
+
+    fr.onload=
+     ()=>ok(fr.result);
+
+    fr.readAsDataURL(b);
+
+   }
+  );
+
+ }catch(e){
+
+  return null;
+
+ }
+
+}
+
+
+async function finalPDF(
+ type,
+ id
+){
+
+ if(!window.jspdf)
+  return alert(
+   "PDF library load nahi hui. Internet on karke page reload karo."
+  );
+
+
+ const {jsPDF}=
+  window.jspdf;
+
+
+ const doc=
+  new jsPDF();
+
+
+ const logo=
+  await logoData();
+
+
+ if(logo)
+  doc.addImage(
+   logo,
+   "PNG",
+   14,
+   10,
+   35,
+   18
+  );
+
+
+ addCompanyToDocPDF(doc);
+
+
+ /* ================= PO PDF ================= */
+
+ if(type==="po"){
+
+  const hr=
+   await db
+    .from("purchase_orders")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+
+  if(hr.error)
+   return alert(
+    hr.error.message
+   );
+
+
+  const h=hr.data;
+
+
+  const ir=
+   await db
+    .from("purchase_order_items")
+    .select("*")
+    .eq(
+     "purchase_order_id",
+     id
+    );
+
+
+  if(ir.error)
+   return alert(
+    ir.error.message
+   );
+
+
+  const its=
+   ir.data||[];
+
+
+  const v=
+   vendors.find(
+    x=>x.id===h.vendor_id
+   );
+
+
+  doc.setFontSize(16);
+
+  doc.text(
+   "PURCHASE ORDER",
+   14,
+   44
+  );
+
+
+  doc.setFontSize(10);
+
+
+  doc.text(
+   "PO No.: "+
+   h.po_number,
+   14,
+   51
+  );
+
+
+  doc.text(
+   "Date: "+
+   h.po_date,
+   14,
+   57
+  );
+
+
+  doc.text(
+   "Vendor: "+
+   (
+    v?.company_name||
+    v?.name||
+    ""
+   ),
+   110,
+   51
+  );
+
+
+  doc.text(
+   "Status: "+
+   h.status,
+   110,
+   57
+  );
+
+
+  doc.autoTable({
+
+   startY:64,
+
+   head:[
+    [
+     "Material Code",
+     "Description",
+     "Pack Size",
+     "Qty",
+     "Unit",
+     "Price",
+     "GST",
+     "Total"
+    ]
+   ],
+
+   body:
+    its.map(x=>{
+
+     const mat=
+      findMaterialByCode(
+       x.product_name
+      );
+
+
+     return [
+
+      mat
+      ?materialCode(mat)
+      :x.product_name,
+
+      mat
+      ?materialDescription(mat)
+      :(x.description||""),
+
+      mat
+      ?materialPack(mat)
+      :"",
+
+      x.quantity,
+
+      x.unit,
+
+      money(x.rate),
+
+      x.gst_percent+"%",
+
+      money(x.total_amount)
+
+     ];
+
+    })
+
+  });
+
+
+  let y=
+   doc.lastAutoTable.finalY+8;
+
+
+  doc.text(
+   "Subtotal: "+
+   money(h.subtotal),
+   145,
+   y
+  );
+
+
+  doc.text(
+   "GST: "+
+   money(h.gst_amount),
+   145,
+   y+6
+  );
+
+
+  doc.setFontSize(12);
+
+
+  doc.text(
+   "Grand Total: "+
+   money(h.grand_total),
+   145,
+   y+14
+  );
+
+
+  doc.setFontSize(9);
+
+
+  if(h.terms_conditions){
+
+   doc.text(
+    "Terms: "+
+    h.terms_conditions,
+    14,
+    y+28,
+    {maxWidth:180}
+   );
+
+  }
+
+
+  if(h.notes){
+
+   doc.text(
+    "Notes: "+
+    h.notes,
+    14,
+    y+40,
+    {maxWidth:180}
+   );
+
+  }
+
+
+  doc.save(
+   "PO-"+h.po_number+".pdf"
+  );
+
+
+  return;
+
+ }
+
+
+ /* ================= QUOTATION PDF ================= */
+
+ const hr=
+  await db
+   .from("quotations")
+   .select("*")
+   .eq("id",id)
+   .single();
+
+
+ if(hr.error)
+  return alert(
+   hr.error.message
+  );
+
+
+ const h=hr.data;
+
+
+ const ir=
+  await db
+   .from("quotation_items")
+   .select("*")
+   .eq(
+    "quotation_id",
+    id
+   );
+
+
+ if(ir.error)
+  return alert(
+   ir.error.message
+  );
+
+
+ const its=
+  ir.data||[];
+
+
+ const c=
+  clients.find(
+   x=>x.id===h.client_id
+  );
+
+
+ doc.setFontSize(16);
+
+ doc.text(
+  "QUOTATION",
+  14,
+  44
+ );
+
+
+ doc.setFontSize(10);
+
+
+ doc.text(
+  "Quotation No.: "+
+  h.quotation_number,
+  14,
+  51
+ );
+
+
+ doc.text(
+  "Date: "+
+  h.quotation_date,
+  14,
+  57
+ );
+
+
+ doc.text(
+  "Client: "+
+  (
+   c?.company_name||
+   c?.name||
+   ""
+  ),
+  110,
+  51
+ );
+
+
+ doc.text(
+  "Valid Until: "+
+  (
+   h.valid_until||
+   "-"
+  ),
+  110,
+  57
+ );
+
+
+ doc.autoTable({
+
+  startY:64,
+
+  head:[
+   [
+    "Item/Test",
+    "Description",
+    "Qty",
+    "Unit",
+    "Rate",
+    "Discount",
+    "GST",
+    "Total"
+   ]
+  ],
+
+  body:
+   its.map(
+    x=>[
+     x.item_name,
+     x.description||"",
+     x.quantity,
+     x.unit,
+     money(x.rate),
+     x.discount_percent+"%",
+     x.gst_percent+"%",
+     money(x.total_amount)
+    ]
+   )
+
+ });
+
+
+ let y=
+  doc.lastAutoTable.finalY+8;
+
+
+ doc.text(
+  "Subtotal: "+
+  money(h.subtotal),
+  145,
+  y
+ );
+
+
+ doc.text(
+  "Discount: "+
+  money(h.discount_amount),
+  145,
+  y+6
+ );
+
+
+ doc.text(
+  "GST: "+
+  money(h.gst_amount),
+  145,
+  y+12
+ );
+
+
+ doc.setFontSize(12);
+
+
+ doc.text(
+  "Grand Total: "+
+  money(h.grand_total),
+  145,
+  y+20
+ );
+
+
+ doc.setFontSize(9);
+
+
+ if(h.terms_conditions){
+
+  doc.text(
+   "Terms: "+
+   h.terms_conditions,
+   14,
+   y+34,
+   {maxWidth:180}
+  );
+
+ }
+
+
+ if(h.notes){
+
+  doc.text(
+   "Notes: "+
+   h.notes,
+   14,
+   y+46,
+   {maxWidth:180}
+  );
+
+ }
+
+
+ doc.save(
+  "Quotation-"+
+  h.quotation_number+
+  ".pdf"
+ );
+
+}
+
+
+window.generatePOPDF=
+ id=>finalPDF(
+  "po",
+  id
+ );
+
+
+window.generateQuotationPDF=
+ id=>finalPDF(
+  "quotation",
+  id
+ );
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function closeModal(id){
+
+ $(id)
+  .classList.add(
+   "hidden"
+  );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+document
+ .querySelectorAll(".navBtn")
+ .forEach(btn=>
+
+  btn.onclick=()=>{
+
+   document
+    .querySelectorAll(".navBtn")
+    .forEach(x=>
+     x.classList.remove(
+      "active"
+     )
+    );
+
+
+   btn.classList.add(
+    "active"
+   );
+
+
+   document
+    .querySelectorAll(".section")
+    .forEach(x=>
+     x.classList.remove(
+      "active"
+     )
+    );
+
+
+   $(
+    btn.dataset.section
+   ).classList.add(
+    "active"
+   );
+
+  }
+
+ );
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+$("loginBtn").onclick=
+ async()=>{
+
+  const m=
+   $("loginMessage");
+
+  m.textContent="";
+
+
+  const r=
+   await db.auth.signInWithPassword({
+
+    email:
+     $("loginEmail")
+      .value
+      .trim(),
+
+    password:
+     $("loginPassword")
+      .value
+
+   });
+
+
+  if(r.error){
+
+   m.textContent=
+    r.error.message;
+
+   return;
+  }
+
+
+  await start();
+
+ };
+
+
+$("loginPassword").onkeydown=
+ e=>{
+
+  if(e.key==="Enter")
+   $("loginBtn").click();
+
+ };
+
+
+$("logoutBtn").onclick=
+ async()=>{
+
+  await db.auth.signOut();
+
+ };
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+db.auth.onAuthStateChange(
+ event=>{
+
+  if(event==="SIGNED_OUT"){
+
+   $("app")
+    .classList.add(
+     "hidden"
+    );
+
+   $("loginPage")
+    .classList.remove(
+     "hidden"
+    );
+
+  }
+
+ }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+async function start(){
+
+ try{
+
+  await context();
+
+  $("loginPage")
+   .classList.add(
+    "hidden"
+   );
+
+  $("app")
+   .classList.remove(
+    "hidden"
+   );
+
+
+  await loadBranches();
+
+  /*
+    MATERIAL MASTER
+    NEW
+  */
+
+  await loadMaterialMaster();
+
+
+  await loadInventory();
+
+
+  if(admin()){
+
+   await loadParties();
+
+   await loadDocuments();
+
+  }
+
+
+  rebuildFinalFilters();
+
+  wireFinalFilters();
+
+  applyFinalInventorySecurity();
+
+  refreshCompanyUI();
+
+
+ }catch(e){
+
+  console.error(e);
+
+  $("loginMessage")
+   .textContent=
+   e.message;
+
+
+  await db.auth.signOut();
+
+ }
+
+}
+
+
+/* =========================================================
+   INITIAL SESSION
+========================================================= */
+
+(async()=>{
+
+ const s=
+  await db.auth.getSession();
+
+
+ if(s.data.session)
+  start();
+
+})();
+
+
+/* =========================================================
+   COMPANY UI
+========================================================= */
+
 refreshCompanyUI();
 
 </script>
+
 </body>
 </html>
