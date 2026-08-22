@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Micron Laboratory - Management Panel</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
 .hidden{display:none!important}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 5px 20px rgba(0,0,0,.05)}
@@ -26,6 +28,7 @@ header{min-height:72px;background:#fff;border-bottom:1px solid #ddd;display:flex
 .modal-header{display:flex;justify-content:space-between;align-items:center}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}.full{grid-column:1/-1}.items-table{overflow:auto}.items-table table{min-width:900px}
 .summary{max-width:400px;margin-left:auto;margin-top:15px}.summary div{display:flex;justify-content:space-between;padding:5px 0}.summary .grand{font-size:18px;font-weight:700;border-top:1px solid #ddd;margin-top:5px;padding-top:10px}
 @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.header-title{display:none}.header-logo{width:120px}}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
@@ -62,11 +65,16 @@ header{min-height:72px;background:#fff;border-bottom:1px solid #ddd;display:flex
 <div class="card stat"><small>Low Stock</small><strong id="lowStock">0</strong></div>
 <div class="card stat"><small>Expiring Soon</small><strong id="expiring">0</strong></div>
 </div>
-<div class="card table-card"><div style="padding:15px"><div class="toolbar">
-<div class="field"><label>Search</label><input id="invSearch" placeholder="Product / Batch"></div>
-<button id="addInventoryBtn">+ Add Product</button>
+<div class="card table-card"><div style="padding:15px">
+<div class="toolbar">
+<div class="field"><label>Branch</label><select id="invBranchFilter"><option value="">All Branches</option></select></div>
+<div class="field"><label>Product</label><select id="invProductFilter"><option value="">All Products</option></select></div>
+<div class="field"><label>Batch / Lot</label><select id="invBatchFilter"><option value="">All Batches</option></select></div>
+<div class="field"><label>Stock Status</label><select id="invStockFilter"><option value="">All Stock</option><option value="in">In Stock</option><option value="low">Low Stock</option><option value="out">Out of Stock</option></select></div>
+<div class="field"><label>Search Product / Batch</label><input id="invSearch" placeholder="Type TSH, E2, batch..."></div>
+<button id="clearInvFilters" class="gray">Clear</button><button id="addInventoryBtn">+ Add Product</button>
 </div></div>
-<table><thead><tr><th>Product</th><th>Batch</th><th>Branch</th><th>Qty</th><th>Unit</th><th>Expiry</th><th>Rate</th><th>Supplier</th><th>Actions</th></tr></thead>
+<table><thead><tr><th>Product</th><th>Batch</th><th>Branch</th><th>Entry Date</th><th>Expiry</th><th>Qty</th><th>Unit</th><th id="invRateHead">Rate</th><th id="invGSTHead">GST</th><th id="invSupplierHead">Supplier</th><th>Actions</th></tr></thead>
 <tbody id="inventoryBody"></tbody></table></div>
 </section>
 
@@ -121,6 +129,11 @@ header{min-height:72px;background:#fff;border-bottom:1px solid #ddd;display:flex
 <div id="docModal" class="modal hidden"><div class="card modal-box">
 <div class="modal-header"><h2 id="docTitle">Document</h2><button class="gray" onclick="closeModal('docModal')">×</button></div>
 <form id="docForm"><input type="hidden" id="docType"><input type="hidden" id="docId">
+<div class="card" style="padding:12px;margin-bottom:12px;background:#f8fafc">
+<button type="button" class="gray" style="float:right" onclick="editCompanyDetails()">Edit Company Details</button>
+<strong id="docCompanyName">Micron Laboratory</strong>
+<div id="docCompanyInfo">D-10, Lower Ground Floor, Green Park Main, New Delhi-110016<br>E-mail: micronlaboratory.12@gmail.com<br>Tel: <span id="docCompanyTel">—</span></div>
+</div>
 <div class="grid">
 <div><label id="partyLabel">Vendor</label><select id="docParty" required></select></div>
 <div><label>Date</label><input id="docDate" type="date" required></div>
@@ -349,6 +362,164 @@ async function start(){
 }
 db.auth.onAuthStateChange((event)=>{if(event==="SIGNED_OUT"){$("app").classList.add("hidden");$("loginPage").classList.remove("hidden")}});
 (async()=>{const s=await db.auth.getSession();if(s.data.session)start()})();
+
+/* ===== FINAL SECURITY + FILTER + COMPANY + PDF LAYER ===== */
+let micronCompany = {
+  name:"Micron Laboratory",
+  address:"D-10, Lower Ground Floor, Green Park Main, New Delhi-110016",
+  email:"micronlaboratory.12@gmail.com",
+  tel:""
+};
+try{ const z=JSON.parse(localStorage.getItem("micronCompany")||"null"); if(z) micronCompany=z; }catch(e){}
+
+function isSensitive(){ return role==="admin"; }
+function refreshCompanyUI(){
+  const n=$("docCompanyName"), i=$("docCompanyInfo"), t=$("docCompanyTel");
+  if(n)n.textContent=micronCompany.name;
+  if(i)i.innerHTML=esc(micronCompany.address)+"<br>E-mail: "+esc(micronCompany.email)+"<br>Tel: <span id='docCompanyTel'>"+esc(micronCompany.tel||"—")+"</span>";
+}
+window.editCompanyDetails=function(){
+  const name=prompt("Company Name:",micronCompany.name); if(name===null)return;
+  const address=prompt("Company Address:",micronCompany.address); if(address===null)return;
+  const email=prompt("Company E-mail:",micronCompany.email); if(email===null)return;
+  const tel=prompt("Company Tel:",micronCompany.tel||""); if(tel===null)return;
+  micronCompany={name:name.trim()||"Micron Laboratory",address:address.trim(),email:email.trim(),tel:tel.trim()};
+  localStorage.setItem("micronCompany",JSON.stringify(micronCompany)); refreshCompanyUI();
+};
+
+function applyFinalInventorySecurity(){
+  $("invRateHead")?.classList.toggle("hidden",!isSensitive());
+  $("invGSTHead")?.classList.toggle("hidden",!isSensitive());
+  $("invSupplierHead")?.classList.toggle("hidden",!isSensitive());
+  $("invRate")?.closest("div")?.classList.toggle("hidden",!isSensitive());
+  $("invGST")?.closest("div")?.classList.toggle("hidden",!isSensitive());
+  $("invSupplier")?.closest("div")?.classList.toggle("hidden",!isSensitive());
+  if($("invRate"))$("invRate").disabled=!isSensitive();
+  if($("invGST"))$("invGST").disabled=!isSensitive();
+  if($("invSupplier"))$("invSupplier").disabled=!isSensitive();
+  if($("addInventoryBtn"))$("addInventoryBtn").classList.remove("hidden");
+}
+function finalFilteredInventory(){
+  const s=($("invSearch")?.value||"").trim().toLowerCase();
+  const br=$("invBranchFilter")?.value||"", pr=$("invProductFilter")?.value||"", ba=$("invBatchFilter")?.value||"", st=$("invStockFilter")?.value||"";
+  return inventory.filter(x=>{
+    const q=Number(x.current_qty||0);
+    if(br&&x.branch_id!==br)return false;
+    if(pr&&x.product_name!==pr)return false;
+    if(ba&&x.batch_no!==ba)return false;
+    if(st==="in"&&q<=0)return false;
+    if(st==="low"&&q>Number(x.reorder_level||0))return false;
+    if(st==="out"&&q!==0)return false;
+    if(s&&!(`${x.product_name} ${x.batch_no} ${x.description||""} ${x.supplier||""}`.toLowerCase().includes(s)))return false;
+    return true;
+  });
+}
+function rebuildFinalFilters(){
+  if(!$("invBranchFilter"))return;
+  const oldP=$("invProductFilter").value, oldB=$("invBatchFilter").value;
+  $("invBranchFilter").innerHTML=(admin()?'<option value="">All Branches</option>':'')+
+    branches.filter(b=>admin()||b.id===branchId).map(b=>`<option value="${b.id}">${esc(b.branch_name)}</option>`).join("");
+  if(!admin())$("invBranchFilter").value=branchId||"";
+  const products=[...new Set(inventory.map(x=>x.product_name).filter(Boolean))].sort();
+  $("invProductFilter").innerHTML='<option value="">All Products</option>'+products.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
+  if(products.includes(oldP))$("invProductFilter").value=oldP;
+  const batches=[...new Set(inventory.filter(x=>!$("invProductFilter").value||x.product_name===$("invProductFilter").value).map(x=>x.batch_no).filter(Boolean))].sort();
+  $("invBatchFilter").innerHTML='<option value="">All Batches</option>'+batches.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
+  if(batches.includes(oldB))$("invBatchFilter").value=oldB;
+}
+window.renderInventory=function(){
+  const list=finalFilteredInventory();
+  $("inventoryBody").innerHTML=list.map(x=>{
+    const b=branches.find(z=>z.id===x.branch_id);
+    let actions=`<button class="action-btn gray" onclick="openStockFinal('${x.id}')">IN / OUT</button>`;
+    if(role==="admin"||role==="manager") actions+=`<button class="action-btn gray" onclick="editInventory('${x.id}')">Edit</button>`;
+    if(role==="admin") actions+=`<button class="action-btn red" onclick="deleteInventory('${x.id}')">Delete</button>`;
+    return `<tr><td><strong>${esc(x.product_name)}</strong><br><small>${esc(x.description||"")}</small></td>
+    <td>${esc(x.batch_no||"-")}</td><td>${esc(b?.branch_name||"-")}</td><td>${esc(x.entry_date||"")}</td><td>${esc(x.expiry_date||"-")}</td>
+    <td><strong>${esc(x.current_qty)}</strong></td><td>${esc(x.unit||"")}</td>
+    <td class="${isSensitive()?"":"hidden"}">${money(x.rate)}</td><td class="${isSensitive()?"":"hidden"}">${esc(x.gst_percent||0)}%</td>
+    <td class="${isSensitive()?"":"hidden"}">${esc(x.supplier||"Not specified")}</td><td>${actions}</td></tr>`;
+  }).join("");
+  const shown=list;
+  $("totalProducts").textContent=new Set(shown.map(x=>x.product_name)).size;
+  $("totalStock").textContent=shown.reduce((a,x)=>a+Number(x.current_qty||0),0);
+  $("lowStock").textContent=shown.filter(x=>Number(x.current_qty||0)<=Number(x.reorder_level||0)).length;
+  const now=new Date(); now.setHours(0,0,0,0); const future=new Date(now); future.setDate(future.getDate()+30);
+  $("expiring").textContent=shown.filter(x=>x.expiry_date&&new Date(x.expiry_date)>=now&&new Date(x.expiry_date)<=future).length;
+  applyFinalInventorySecurity();
+};
+window.openStockFinal=function(id){
+  const x=inventory.find(z=>z.id===id); if(!x)return;
+  const qty=prompt(`Current Stock: ${x.current_qty}\nEnter quantity to IN. Cancel for OUT.`); 
+  if(qty===null)return;
+  const n=Number(qty); if(!n||n<=0)return alert("Valid quantity enter karo.");
+  const type=prompt("Type: IN or OUT","IN"); if(!type)return;
+  db.rpc(type.toUpperCase()==="OUT"?"stock_out":"stock_in",{p_stock_id:x.id,p_quantity:n}).then(r=>{
+    if(r.error)alert(r.error.message); else loadInventory();
+  });
+};
+function wireFinalFilters(){
+  ["invBranchFilter","invProductFilter","invBatchFilter","invStockFilter"].forEach(id=>$(id)?.addEventListener("change",()=>{
+    if(id==="invProductFilter"){const old=$("invBatchFilter").value;rebuildFinalFilters();$("invBatchFilter").value=old;}
+    renderInventory();
+  }));
+  $("invSearch")?.addEventListener("input",renderInventory);
+  $("clearInvFilters")?.addEventListener("click",()=>{
+    $("invSearch").value="";$("invProductFilter").value="";$("invBatchFilter").value="";$("invStockFilter").value="";
+    $("invBranchFilter").value=admin()?"":branchId||"";rebuildFinalFilters();renderInventory();
+  });
+}
+function addCompanyToDocPDF(doc){
+  doc.setFontSize(16);doc.text(micronCompany.name,55,18);
+  doc.setFontSize(9);doc.text(micronCompany.address,55,24);
+  doc.text("E-mail: "+micronCompany.email+(micronCompany.tel?" | Tel: "+micronCompany.tel:""),55,29);
+  doc.line(14,34,196,34);
+}
+async function logoData(){
+  try{const r=await fetch("micron-logo.png");const b=await r.blob();return await new Promise(ok=>{const fr=new FileReader();fr.onload=()=>ok(fr.result);fr.readAsDataURL(b);});}catch(e){return null;}
+}
+async function finalPDF(type,id){
+  if(!window.jspdf)return alert("PDF library load nahi hui. Internet on karke page reload karo.");
+  const {jsPDF}=window.jspdf,doc=new jsPDF(); const logo=await logoData();
+  if(logo)doc.addImage(logo,"PNG",14,10,35,18); addCompanyToDocPDF(doc);
+  if(type==="po"){
+    const h=(await db.from("purchase_orders").select("*").eq("id",id).single()).data;
+    const its=(await db.from("purchase_order_items").select("*").eq("purchase_order_id",id)).data||[];
+    const v=vendors.find(x=>x.id===h.vendor_id);
+    doc.setFontSize(16);doc.text("PURCHASE ORDER",14,44);doc.setFontSize(10);
+    doc.text("PO No.: "+h.po_number,14,51);doc.text("Date: "+h.po_date,14,57);
+    doc.text("Vendor: "+(v?.company_name||v?.name||""),110,51);doc.text("Status: "+h.status,110,57);
+    doc.autoTable({startY:64,head:[["Item","Description","Qty","Unit","Rate","GST","Total"]],body:its.map(x=>[x.product_name,x.description||"",x.quantity,x.unit,money(x.rate),x.gst_percent+"%",money(x.total_amount)])});
+    let y=doc.lastAutoTable.finalY+8;doc.text("Subtotal: "+money(h.subtotal),145,y);doc.text("GST: "+money(h.gst_amount),145,y+6);doc.setFontSize(12);doc.text("Grand Total: "+money(h.grand_total),145,y+14);
+    doc.setFontSize(9);if(h.terms_conditions)doc.text("Terms: "+h.terms_conditions,14,y+28,{maxWidth:180});if(h.notes)doc.text("Notes: "+h.notes,14,y+40,{maxWidth:180});
+    doc.save("PO-"+h.po_number+".pdf");
+  }else{
+    const h=(await db.from("quotations").select("*").eq("id",id).single()).data;
+    const its=(await db.from("quotation_items").select("*").eq("quotation_id",id)).data||[];
+    const c=clients.find(x=>x.id===h.client_id);
+    doc.setFontSize(16);doc.text("QUOTATION",14,44);doc.setFontSize(10);
+    doc.text("Quotation No.: "+h.quotation_number,14,51);doc.text("Date: "+h.quotation_date,14,57);
+    doc.text("Client: "+(c?.company_name||c?.name||""),110,51);doc.text("Valid Until: "+(h.valid_until||"-"),110,57);
+    doc.autoTable({startY:64,head:[["Item/Test","Description","Qty","Unit","Rate","Discount","GST","Total"]],body:its.map(x=>[x.item_name,x.description||"",x.quantity,x.unit,money(x.rate),x.discount_percent+"%",x.gst_percent+"%",money(x.total_amount)])});
+    let y=doc.lastAutoTable.finalY+8;doc.text("Subtotal: "+money(h.subtotal),145,y);doc.text("Discount: "+money(h.discount_amount),145,y+6);doc.text("GST: "+money(h.gst_amount),145,y+12);doc.setFontSize(12);doc.text("Grand Total: "+money(h.grand_total),145,y+20);
+    doc.setFontSize(9);if(h.terms_conditions)doc.text("Terms: "+h.terms_conditions,14,y+34,{maxWidth:180});if(h.notes)doc.text("Notes: "+h.notes,14,y+46,{maxWidth:180});
+    doc.save("Quotation-"+h.quotation_number+".pdf");
+  }
+}
+window.generatePOPDF=id=>finalPDF("po",id); window.generateQuotationPDF=id=>finalPDF("quotation",id);
+
+/* Make PDF buttons available in existing lists. */
+const oldLoadPOs=window.loadPOs, oldLoadQuotations=window.loadQuotations;
+window.loadPOs=async function(){await oldLoadPOs?.();document.querySelectorAll("#poBody tr").forEach(tr=>{const edit=tr.querySelector("button.gray");if(edit&&!tr.querySelector(".pdfBtn")){const id=(edit.getAttribute("onclick")||"").match(/'([^']+)'/)?.[1];if(id)edit.insertAdjacentHTML("afterend",`<button class="action-btn pdfBtn" onclick="generatePOPDF('${id}')">PDF</button>`);}})};
+window.loadQuotations=async function(){await oldLoadQuotations?.();document.querySelectorAll("#quotationBody tr").forEach(tr=>{const edit=tr.querySelector("button.gray");if(edit&&!tr.querySelector(".pdfBtn")){const id=(edit.getAttribute("onclick")||"").match(/'([^']+)'/)?.[1];if(id)edit.insertAdjacentHTML("afterend",`<button class="action-btn pdfBtn" onclick="generateQuotationPDF('${id}')">PDF</button>`);}})};
+
+/* Enforce permissions after the original functions run. */
+const originalLoadInventory=loadInventory;
+loadInventory=async function(){await originalLoadInventory();rebuildFinalFilters();wireFinalFilters();applyFinalInventorySecurity();renderInventory();};
+const originalOpenInventory=openInventory;
+openInventory=function(item=null){originalOpenInventory(item);applyFinalInventorySecurity();};
+refreshCompanyUI();
+
 </script>
 </body>
 </html>
