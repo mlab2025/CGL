@@ -136,7 +136,7 @@ header{min-height:72px;background:#fff;border-bottom:1px solid #ddd;display:flex
 <div><label>Entry Date *</label><input id="invEntry" type="date" required></div><div><label>Expiry Date</label><input id="invExpiry" type="date"></div>
 <div><label>Current Qty *</label><input id="invQty" type="number" min="0" step=".01" required></div><div><label>Unit *</label><input id="invUnit" value="Kit" required></div>
 <div><label>Units per Pack</label><input id="invPack" type="number" min="0"></div><div class="sensitive-field"><label>Rate</label><input id="invRate" type="number" min="0" step=".01"></div>
-<div class="sensitive-field"><label>GST %</label><select id="invGST"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18">18%</option></select></div><div class="sensitive-field"><label>Supplier</label><input id="invSupplier"></div>
+<div class="sensitive-field"><label>GST %</label><select id="invGST"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18">18%</option></select></div><div class="sensitive-field"><label>Supplier</label><select id="invSupplier"><option value="">Select Supplier</option></select></div>
 <div><label>Reorder Level</label><input id="invReorder" type="number" min="0"></div>
 </div><div style="text-align:right;margin-top:15px"><button type="button" class="gray" onclick="closeModal('inventoryModal')">Cancel</button> <button>Save Product</button></div>
 <div id="invMessage" class="message"></div></form></div></div>
@@ -213,6 +213,17 @@ function fillInventoryMaterials(selected=""){
  $("invMaterial").innerHTML='<option value="">Select Material</option>'+materials.map(x=>`<option value="${x.id}">${esc(x.material_code)} — ${esc(x.material_description)}${x.pack_size?" ("+esc(x.pack_size)+")":""}</option>`).join("");
  if(selected)$("invMaterial").value=selected;
 }
+function fillInventorySuppliers(selected=""){
+ const sel=$("invSupplier");
+ if(!sel)return;
+ sel.innerHTML='<option value="">Select Supplier</option>'+vendors.map(v=>{const name=v.company_name||v.name||"";return `<option value="${esc(name)}">${esc(name)}</option>`}).join("");
+ if(selected){
+   const exists=[...sel.options].some(o=>o.value===selected);
+   if(!exists){const o=document.createElement("option");o.value=selected;o.textContent=selected;sel.appendChild(o);}
+   sel.value=selected;
+ }
+}
+
 $("materialSearch").oninput=renderMaterials;
 window.openMaterial=id=>{
  const x=materials.find(a=>a.id===id)||{};
@@ -282,8 +293,9 @@ $("clearInvFilters").onclick=()=>{$("invSearch").value="";$("invProductFilter").
 function openInventory(item=null){
  $("inventoryModal").classList.remove("hidden");$("invMessage").textContent="";$("invTitle").textContent=item?"Edit Product":"Add Product";$("invId").value=item?.id||"";
  fillInventoryMaterials();
+ fillInventorySuppliers(item?.supplier||"");
  const material=materials.find(m=>m.material_description===item?.product_name);
- $("invMaterial").value=item?.material_id||material?.id||"";
+ $("invMaterial").value=material?.id||"";
  $("invDescription").value=item?.description||"";$("invBatch").value=item?.batch_no||"";$("invEntry").value=item?.entry_date||today();$("invExpiry").value=item?.expiry_date||"";
  $("invQty").value=item?.current_qty??0;$("invUnit").value=item?.unit||"Kit";$("invPack").value=item?.units_per_pack??"";$("invRate").value=item?.rate??0;$("invGST").value=String(item?.gst_percent??0);
  $("invSupplier").value=item?.supplier||"";$("invReorder").value=item?.reorder_level??0;$("invBranch").value=item?.branch_id||branchId||branches[0]?.id||"";applySecurity();
@@ -293,7 +305,7 @@ $("invMaterial").onchange=()=>{const m=materials.find(x=>x.id===$("invMaterial")
 $("inventoryForm").onsubmit=async e=>{
  e.preventDefault();const id=$("invId").value,m=materials.find(x=>x.id===$("invMaterial").value);
  if(!m){$("invMessage").textContent="Material select karo.";return}
- const data={product_name:m.material_description,material_id:m.id,description:$("invDescription").value.trim()||null,branch_id:$("invBranch").value,batch_no:$("invBatch").value.trim(),
+ const data={product_name:m.material_description,description:$("invDescription").value.trim()||null,branch_id:$("invBranch").value,batch_no:$("invBatch").value.trim(),
  entry_date:$("invEntry").value,expiry_date:$("invExpiry").value||null,current_qty:Number($("invQty").value),unit:$("invUnit").value.trim(),units_per_pack:Number($("invPack").value||0),
  rate:admin()?Number($("invRate").value||0):0,gst_percent:admin()?Number($("invGST").value||0):0,supplier:admin()?($("invSupplier").value.trim()||"Not specified"):"Not specified",reorder_level:Number($("invReorder").value||0),is_active:true};
  const r=id?await db.from("inventory_stock").update(data).eq("id",id):await db.from("inventory_stock").insert(data);
@@ -336,7 +348,7 @@ function addDocItem(item={}){
  <td><select class="di-gst"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18">18%</select></td>
  <td class="di-total">₹0.00</td><td><button type="button" class="red" onclick="removeDocItem(${i})">×</button></td>`;
  $("docItems").appendChild(tr);
- if(isPO){const sel=tr.querySelector(".di-material");sel.value=item.material_id||materials.find(m=>m.material_description===item.product_name)?.id||"";sel.onchange=()=>{const m=materials.find(a=>a.id===sel.value);if(m){tr.querySelector(".di-desc").value=m.material_description;tr.querySelector(".di-rate").value=m.price??0;recalcDoc()}}}
+ if(isPO){const sel=tr.querySelector(".di-material");sel.value=materials.find(m=>m.material_description===item.product_name)?.id||"";sel.onchange=()=>{const m=materials.find(a=>a.id===sel.value);if(m){tr.querySelector(".di-desc").value=m.material_description;tr.querySelector(".di-rate").value=m.price??0;recalcDoc()}}}
  tr.querySelector(".di-gst").value=String(item.gst_percent??0);tr.querySelectorAll("input,select").forEach(x=>x.oninput=recalcDoc);recalcDoc();
 }
 window.removeDocItem=i=>{docItems[i]=null;$(`docItems`).querySelector(`tr[data-i="${i}"]`)?.remove();recalcDoc()};
@@ -345,7 +357,7 @@ function collectItems(){
  return [...$("docItems").querySelectorAll("tr")].map(tr=>{
   const m=isPO?materials.find(x=>x.id===tr.querySelector(".di-material").value):null;
   const qty=Number(tr.querySelector(".di-qty").value||0),rate=Number(tr.querySelector(".di-rate").value||0),disc=isPO?0:Number(tr.querySelector(".di-disc").value||0),gst=Number(tr.querySelector(".di-gst").value||0);
-  return {material_id:m?.id||null,name:isPO?(m?.material_description||""):tr.querySelector(".di-name").value.trim(),description:tr.querySelector(".di-desc").value.trim(),quantity:qty,unit:tr.querySelector(".di-unit").value.trim(),rate,discount:disc,gst};
+  return {name:isPO?(m?.material_description||""):tr.querySelector(".di-name").value.trim(),description:tr.querySelector(".di-desc").value.trim(),quantity:qty,unit:tr.querySelector(".di-unit").value.trim(),rate,discount:disc,gst};
  }).filter(x=>x.name&&x.quantity>0)
 }
 function recalcDoc(){
@@ -373,7 +385,7 @@ $("docForm").onsubmit=async e=>{
   }
   if(r.error){$("docMessage").textContent=r.error.message;return}
   const poid=id||r.data.id;let dr=await db.from("purchase_order_items").delete().eq("purchase_order_id",poid);if(dr.error){$("docMessage").textContent=dr.error.message;return}
-  const rows=items.map(x=>({purchase_order_id:poid,material_id:x.material_id||null,product_name:x.name,description:x.description||null,quantity:x.quantity,unit:x.unit,rate:x.rate,gst_percent:x.gst,taxable_amount:(x.quantity*x.rate)-(x.quantity*x.rate*x.discount/100),gst_amount:((x.quantity*x.rate)-(x.quantity*x.rate*x.discount/100))*x.gst/100,total_amount:((x.quantity*x.rate)-(x.quantity*x.rate*x.discount/100))*(1+x.gst/100)}));
+  const rows=items.map(x=>({purchase_order_id:poid,product_name:x.name,description:x.description||null,quantity:x.quantity,unit:x.unit,rate:x.rate,gst_percent:x.gst,taxable_amount:(x.quantity*x.rate)-(x.quantity*x.rate*x.discount/100),gst_amount:((x.quantity*x.rate)-(x.quantity*x.rate*x.discount/100))*x.gst/100,total_amount:((x.quantity*x.rate)-(x.quantity*x.rate*x.discount/100))*(1+x.gst/100)}));
   const ir=await db.from("purchase_order_items").insert(rows);if(ir.error){$("docMessage").textContent=ir.error.message;return}
  }else{
   const base={quotation_date:$("docDate").value,valid_until:$("docValid").value||null,client_id:$("docParty").value,status:$("docStatus").value,subtotal:sub,discount_amount:disc,gst_amount:gst,grand_total:grand,terms_conditions:$("docTerms").value||null,notes:$("docNotes").value||null};
@@ -455,20 +467,20 @@ async function emailPO(id){
  const h=(await db.from("purchase_orders").select("*").eq("id",id).single()).data;if(!h)return;
  const v=vendors.find(x=>x.id===h.vendor_id);if(!v?.email)return alert("Vendor ka email saved nahi hai.");
  const subject="Purchase Order "+h.po_number;
- const body="Dear "+(v.contact_person||v.name||"Sir/Madam")+",\n\nPlease find the attached PO order and arrange materials accordingly.\n\nPO No.: "+h.po_number+"\nPO Date: "+h.po_date+"\nGrand Total: "+money(h.grand_total)+"\n\nRegards,\n"+micronCompany.name;
- await finalPDF("po",id);gmailCompose(v.email,subject,body);
+ const body="Dear Sir,\n\nPlease find the attached PO order and arrange materials accordingly.\n\nPO No.: "+h.po_number+"\nPO Date: "+h.po_date+"\nGrand Total: "+money(h.grand_total)+"\n\nFor further clarification please feel free to contact us.\n\nWarm regards,\n\nBest Regards,\n"+micronCompany.name+"\n"+micronCompany.address+(micronCompany.tel?"\nMob: "+micronCompany.tel:"");
+ gmailCompose(v.email,subject,body);
 }
 async function emailQuotation(id){
  const h=(await db.from("quotations").select("*").eq("id",id).single()).data;if(!h)return;
  const c=clients.find(x=>x.id===h.client_id);if(!c?.email)return alert("Client ka email saved nahi hai.");
  const subject="Quotation "+h.quotation_number;
- const body="Dear "+(c.contact_person||c.name||"Sir/Madam")+",\n\nPlease find the attached quotation and make the payment accordingly.\n\nQuotation No.: "+h.quotation_number+"\nQuotation Date: "+h.quotation_date+"\nGrand Total: "+money(h.grand_total)+"\n\nRegards,\n"+micronCompany.name;
- await finalPDF("quotation",id);gmailCompose(c.email,subject,body);
+ const body="Dear Sir,\n\nPlease find the attached quotation for your reference.\n\nFor further clarification please feel free to contact us.\n\nWarm regards,\n\nBest Regards,\n"+micronCompany.name+"\n"+micronCompany.address+(micronCompany.tel?"\nMob: "+micronCompany.tel:"");
+ gmailCompose(c.email,subject,body);
 }
 
 $("loginBtn").onclick=async()=>{const m=$("loginMessage");m.textContent="";const r=await db.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});if(r.error){m.textContent=r.error.message;return}start()};
 $("loginPassword").onkeydown=e=>{if(e.key==="Enter")$("loginBtn").click()};$("logoutBtn").onclick=()=>db.auth.signOut();
-async function start(){try{await context();$("loginPage").classList.add("hidden");$("app").classList.remove("hidden");await loadBranches();await loadMaterials();await loadInventory();if(admin()){await loadParties();await loadDocuments()}refreshCompanyUI()}catch(e){console.error(e);$("loginMessage").textContent=e.message;await db.auth.signOut()}}
+async function start(){try{await context();$("loginPage").classList.add("hidden");$("app").classList.remove("hidden");await loadBranches();await loadMaterials();await loadParties();await loadInventory();if(admin()){await loadDocuments()}refreshCompanyUI()}catch(e){console.error(e);$("loginMessage").textContent=e.message;await db.auth.signOut()}}
 db.auth.onAuthStateChange(event=>{if(event==="SIGNED_OUT"){$("app").classList.add("hidden");$("loginPage").classList.remove("hidden")}});
 (async()=>{const s=await db.auth.getSession();if(s.data.session)start()})();
 </script>
